@@ -37,3 +37,7 @@ next-env.d.ts
 .idea
 .vscode/*
 !.vscode/extensions.json
+
+# tooling caches
+.config
+.npm
