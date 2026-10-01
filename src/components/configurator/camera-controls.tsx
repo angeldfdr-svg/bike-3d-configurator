@@ -1,14 +1,23 @@
 'use client';
 
-import { Move3d } from 'lucide-react';
+import { Move3d, RotateCw } from 'lucide-react';
 
 import { cameraViews } from '@/config/configurator';
+import { useBikeStore } from '@/store/bike-store';
+import { cn } from '@/lib/utils';
 
 /**
- * Preset camera controls. Disabled on purpose: they become functional with the
- * 3D scene in Phase 4. Kept visible so the final layout is already clear.
+ * Preset camera controls.
+ *
+ * Wired to the store: the 3D scene reads `camera.view` and `camera.autoRotate`
+ * and moves the camera accordingly.
  */
 export function CameraControls() {
+  const view = useBikeStore((state) => state.camera.view);
+  const autoRotate = useBikeStore((state) => state.camera.autoRotate);
+  const setCameraView = useBikeStore((state) => state.setCameraView);
+  const toggleAutoRotate = useBikeStore((state) => state.toggleAutoRotate);
+
   return (
     <section
       aria-labelledby="camera-title"
@@ -23,25 +32,48 @@ export function CameraControls() {
           Câmara
         </h2>
 
-        <div className="ml-auto flex flex-wrap gap-1.5">
-          {cameraViews.map((view) => (
-            <button
-              key={view.id}
-              type="button"
-              disabled
-              aria-disabled="true"
-              title="Disponível na Fase 4, com a cena 3D"
-              className="rounded-xs border border-line px-2.5 py-1.5 text-xs font-medium text-fog-500 transition-colors duration-200 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 hover:enabled:border-line-strong hover:enabled:text-fog-200"
-            >
-              {view.label}
-            </button>
-          ))}
+        <div className="ml-auto flex flex-wrap gap-1.5" role="group" aria-label="Vistas predefinidas">
+          {cameraViews.map((preset) => {
+            const active = view === preset.id;
+
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setCameraView(preset.id)}
+                className={cn(
+                  'rounded-xs border px-2.5 py-1.5 text-xs font-medium transition-colors duration-200',
+                  active
+                    ? 'border-lime-400/50 bg-lime-400/12 text-lime-300'
+                    : 'border-line text-fog-400 hover:border-line-strong hover:text-fog-100',
+                )}
+              >
+                {preset.label}
+              </button>
+            );
+          })}
+
+          <button
+            type="button"
+            aria-pressed={autoRotate}
+            onClick={toggleAutoRotate}
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-xs border px-2.5 py-1.5 text-xs font-medium transition-colors duration-200',
+              autoRotate
+                ? 'border-lime-400/50 bg-lime-400/12 text-lime-300'
+                : 'border-line text-fog-400 hover:border-line-strong hover:text-fog-100',
+            )}
+          >
+            <RotateCw className="size-3.5" aria-hidden="true" />
+            Rodar
+          </button>
         </div>
       </div>
 
       <p className="mt-3 text-xs leading-relaxed text-fog-500">
-        Rotação, zoom e vistas predefinidas (frontal, lateral, traseira e superior) ficam
-        ativos com a cena 3D.
+        Rode com o ponteiro ou com um dedo, aproxime com a roda ou com dois dedos. A
+        bicicleta mantém-se centrada em qualquer vista.
       </p>
     </section>
   );
