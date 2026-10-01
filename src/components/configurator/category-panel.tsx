@@ -3,6 +3,7 @@
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
+import { FrameSizePicker, ProductList } from '@/components/configurator/product-picker';
 import { Badge } from '@/components/ui/badge';
 import { configuratorCategories } from '@/config/configurator';
 import { cn } from '@/lib/utils';
@@ -10,8 +11,8 @@ import { cn } from '@/lib/utils';
 /**
  * Category navigation for the configurator.
  *
- * Phase 1 exposes the structure and the attributes each category will show.
- * Product lists, prices and weights arrive with the catalog in Phase 2.
+ * Each category expands into the real product list from the catalog, so the
+ * choice written into the store is what the 3D scene draws.
  */
 export function CategoryPanel() {
   const [openId, setOpenId] = useState<string | null>(configuratorCategories[0]?.id ?? null);
@@ -28,7 +29,7 @@ export function CategoryPanel() {
         >
           Componentes
         </h2>
-        <Badge variant="muted">Fase 2</Badge>
+        <Badge variant="muted">A selecionar</Badge>
       </header>
 
       <ul className="divide-y divide-line">
@@ -67,19 +68,9 @@ export function CategoryPanel() {
               </h3>
 
               <div id={panelId} hidden={!expanded} className="px-5 pb-5 pl-13">
-                <p className="text-xs leading-relaxed text-fog-400">
-                  Atributos apresentados em cada produto:
-                </p>
-                <ul className="mt-3 flex flex-wrap gap-1.5">
-                  {category.attributes.map((attribute) => (
-                    <li
-                      key={attribute}
-                      className="rounded-xs border border-line bg-ink-850/70 px-2 py-1 text-[0.6875rem] text-fog-300"
-                    >
-                      {attribute}
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-xs leading-relaxed text-fog-400">{category.summary}</p>
+                <ProductList categoryId={category.id} />
+                {category.id === 'quadro' ? <FrameSizePicker /> : null}
               </div>
             </li>
           );
