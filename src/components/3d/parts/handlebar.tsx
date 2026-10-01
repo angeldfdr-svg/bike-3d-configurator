@@ -1,61 +1,61 @@
 'use client';
 
-import { useMemo } from 'react';
-import { MathUtils } from 'three';
-
 import { Tube } from '@/components/3d/tube';
-import { bikeMaterials } from '@/components/3d/materials';
+import { torus, unitBox, unitCylinder } from '@/components/3d/geometry-cache';
+import { standardMaterial } from '@/components/3d/material-cache';
 import type { BikeGeometry } from '@/lib/3d/bike-geometry';
+import type { HandlebarVariant } from '@/lib/3d/part-variants';
 
-const DROP_RADIUS = 0.085;
+type HandlebarProps = {
+  geometry: BikeGeometry;
+  variant: HandlebarVariant;
+};
 
 /**
  * Handlebar: stem, tops and drops.
  *
- * Width comes from the selected handlebar, so a 40 cm bar is visibly narrower
- * than a 44 cm gravel bar.
+ * Width, drop and reach come from the selected bar, and a gravel bar flares
+ * outwards towards the drops, so it is visibly wider at the bottom than at the
+ * top.
  */
-export function Handlebar({ geometry }: { geometry: BikeGeometry }) {
+export function Handlebar({ geometry, variant }: HandlebarProps) {
   const { handlebarCenter, headTubeTop, handlebarWidth } = geometry;
+  const { flare, dropRadius, bodyMaterial, tapeMaterial } = variant;
 
-  const drops = useMemo(
-    () =>
-      [-1, 1].map((side) => {
-        const z = side * (handlebarWidth / 2);
-        const bend = 0.075;
-
-        return { key: side, z, bend };
-      }),
-    [handlebarWidth],
-  );
+  const drops = dropOffsets(handlebarWidth, flare);
 
   return (
     <group name="handlebar">
       {/* Stem */}
-      <Tube
-        from={headTubeTop}
-        to={[handlebarCenter[0], handlebarCenter[1], 0]}
-        radius={0.013}
-        material="carbon"
-      />
+      <Tube from={headTubeTop} to={[handlebarCenter[0], handlebarCenter[1], 0]} radius={0.013} material="carbon" />
 
-      {/* Tops */}
-      <mesh position={[handlebarCenter[0], handlebarCenter[1], 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.0125, 0.0125, handlebarWidth, 14]} />
-        <meshStandardMaterial {...bikeMaterials.barTape} />
+      {/* Bar clamp */}
+      <mesh position={[handlebarCenter[0], handlebarCenter[1], 0]} scale={[0.03, 0.03, handlebarWidth + 0.01]}>
+        <primitive object={unitCylinder(14)} attach="geometry" />
+        <primitive object={standardMaterial('darkMetal')} attach="material" />
       </mesh>
 
-      {/* Drops */}
+      {/* Tops */}
+      <mesh
+        position={[handlebarCenter[0], handlebarCenter[1], 0]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[0.0125, handlebarWidth, 0.0125]}
+      >
+        <primitive object={unitCylinder(14)} attach="geometry" />
+        <primitive object={standardMaterial(tapeMaterial)} attach="material" />
+      </mesh>
+
+      {/* Drops, flared outwards on gravel bars */}
       {drops.map((drop) => (
         <group key={drop.key} position={[handlebarCenter[0], handlebarCenter[1], drop.z]}>
           <mesh rotation={[0, Math.PI / 2, 0]}>
-            <torusGeometry args={[DROP_RADIUS, 0.0125, 8, 24, Math.PI]} />
-            <meshStandardMaterial {...bikeMaterials.barTape} />
+            <primitive object={torus(dropRadius, 0.0125, 8, 24, Math.PI)} attach="geometry" />
+            <primitive object={standardMaterial(bodyMaterial)} attach="material" />
           </mesh>
           {/* Hoods */}
-          <mesh position={[DROP_RADIUS * 0.55, DROP_RADIUS * 0.45, 0]}>
-            <boxGeometry args={[0.075, 0.05, 0.032]} />
-            <meshStandardMaterial {...bikeMaterials.barTape} />
+          <mesh position={[dropRadius * 0.55, dropRadius * 0.45, 0]} scale={[0.075, 0.05, 0.032]}>
+            <primitive object={unitBox()} attach="geometry" />
+            <primitive object={standardMaterial(tapeMaterial)} attach="material" />
           </mesh>
         </group>
       ))}
@@ -64,10 +64,11 @@ export function Handlebar({ geometry }: { geometry: BikeGeometry }) {
 }
 
 /** Brake/shift levers, mounted on the hoods. */
-export function Levers({ geometry }: { geometry: BikeGeometry }) {
+export function Levers({ geometry, variant }: HandlebarProps) {
   const { handlebarCenter, handlebarWidth } = geometry;
+  const { flare, dropRadius, reach } = variant;
 
-  const sides = useMemo(() => [-1, 1], []);
+  const sides = [-1, 1];
 
   return (
     <group name="levers">
@@ -75,16 +76,25 @@ export function Levers({ geometry }: { geometry: BikeGeometry }) {
         <mesh
           key={side}
           position={[
-            handlebarCenter[0] + DROP_RADIUS * 0.62,
-            handlebarCenter[1] + DROP_RADIUS * 0.3,
-            side * (handlebarWidth / 2),
+            handlebarCenter[0] + dropRadius * 0.62 + reach * 0.2,
+            handlebarCenter[1] + dropRadius * 0.3,
+            side * (handlebarWidth / 2 + flare),
           ]}
-          rotation={[0, 0, MathUtils.degToRad(-12)]}
+          rotation={[0, 0, -0.21]}
+          scale={[0.03, 0.11, 0.022]}
         >
-          <boxGeometry args={[0.03, 0.11, 0.022]} />
-          <meshStandardMaterial {...bikeMaterials.darkMetal} />
+          <primitive object={unitBox()} attach="geometry" />
+          <primitive object={standardMaterial('darkMetal')} attach="material" />
         </mesh>
       ))}
     </group>
   );
+}
+
+/** Where each drop sits: half the width, plus the flare on gravel bars. */
+function dropOffsets(width: number, flare: number): readonly { key: string; z: number }[] {
+  return [
+    { key: 'left', z: -(width / 2 + flare) },
+    { key: 'right', z: width / 2 + flare },
+  ];
 }
