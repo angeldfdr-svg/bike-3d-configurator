@@ -1,0 +1,121 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-ink-950: #07080a;
+  --color-ink-900: #0b0d10;
+  --color-ink-850: #101317;
+  --color-ink-800: #161a1f;
+  --color-ink-700: #1e232a;
+  --color-ink-600: #2a3138;
+
+  --color-line: #212830;
+  --color-line-strong: #33404a;
+
+  --color-fog-50: #f7f9f6;
+  --color-fog-100: #edf1eb;
+  --color-fog-200: #d5dbd1;
+  --color-fog-300: #b2baad;
+  --color-fog-400: #8b938a;
+  --color-fog-500: #6a7167;
+  --color-fog-600: #4c524c;
+
+  --color-lime-200: #e6f7b4;
+  --color-lime-300: #d3f085;
+  --color-lime-400: #bfe35c;
+  --color-lime-500: #a8d23a;
+  --color-lime-600: #87ac26;
+
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+
+  --animate-rise: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade: fade 0.9s ease-out both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-950 font-sans text-fog-100 antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-fog-50;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-lime-400/25 text-fog-50;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-lime-400;
+  }
+
+  [aria-disabled='true'] {
+    @apply cursor-not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility surface {
+  @apply rounded-lg border border-line bg-ink-900/70;
+}
+
+@utility label-eyebrow {
+  @apply text-[0.6875rem] font-semibold tracking-[0.24em] text-fog-400 uppercase;
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
