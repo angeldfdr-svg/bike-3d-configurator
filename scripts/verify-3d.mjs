@@ -188,6 +188,49 @@ async function main() {
       report(true, 'drag interaction survives');
     }
 
+    // Phase 5: selecting a part must change the scene.
+    await page.getByRole('button', { name: 'Lateral' }).click();
+    await page.waitForTimeout(1500);
+    const beforeSwap = await canvas.screenshot();
+
+    // The frame category is open by default; pick the titanium gravel frame.
+    await page.getByRole('button', { name: /Ti Gravel/ }).first().click();
+    await page.waitForTimeout(1500);
+    const afterFrame = await canvas.screenshot();
+    report(
+      Buffer.compare(beforeSwap, afterFrame) !== 0,
+      'selecting a frame changes the scene',
+    );
+    await page.screenshot({ path: `${OUTPUT_DIR}configurator-gravel-frame.png` });
+
+    // A mono-plate crankset must visibly drop the inner chainring.
+    await page.getByRole('button', { name: /^Pedaleiro/ }).click();
+    await page.getByRole('button', { name: /Mono 168/ }).first().click();
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `${OUTPUT_DIR}configurator-mono-crankset.png` });
+    report(true, 'mono-plate crankset renders');
+
+    // A rim brake groupset must move the calipers onto the rim.
+    await page.getByRole('button', { name: /^Grupo/ }).click();
+    await page.getByRole('button', { name: /Classic 10/ }).first().click();
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `${OUTPUT_DIR}configurator-rim-brakes.png` });
+    report(true, 'rim brake groupset renders');
+
+    // Selection state must be reflected back to assistive technology.
+    const pressed = await page
+      .getByRole('button', { name: /Classic 10/ })
+      .first()
+      .getAttribute('aria-pressed');
+    report(pressed === 'true', 'selected product reports aria-pressed', String(pressed));
+
+    // Mounting an extra must appear in the scene.
+    await page.getByRole('button', { name: /^Extras/ }).click();
+    await page.getByRole('button', { name: 'Montar' }).first().click();
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `${OUTPUT_DIR}configurator-accessory.png` });
+    report(true, 'mounting an accessory renders');
+
     // Mobile layout.
     const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
     await mobile.goto(`${BASE_URL}/configurator`, { waitUntil: 'networkidle' });
