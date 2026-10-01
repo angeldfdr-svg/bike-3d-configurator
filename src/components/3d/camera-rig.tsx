@@ -1,0 +1,101 @@
+'use client';
+
+import { useFrame, useThree } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import type { ElementRef, RefObject } from 'react';
+import { useEffect, useRef } from 'react';
+import { Vector3 } from 'three';
+
+import { resolveCameraPreset } from '@/lib/3d/camera-views';
+import type { BikeGeometry } from '@/lib/3d/bike-geometry';
+import { useBikeStore } from '@/store/bike-store';
+
+type Controls = ElementRef<typeof OrbitControls>;
+
+/** Radians per second while auto rotation is on. */
+const AUTO_ROTATE_SPEED = 0.45;
+/** Settling speed for preset transitions. */
+const SETTLE = 0.0015;
+const SETTLE_DISTANCE = 0.004;
+
+/**
+ * Camera behaviour.
+ *
+ * Preset views animate the camera to a framing computed from the bike, auto
+ * rotation orbits it, and the pointer always takes over. Only one code path
+ * writes the camera, so the three never fight each other.
+ */
+export function CameraRig({
+  geometry,
+  controlsRef,
+}: {
+  geometry: BikeGeometry;
+  controlsRef: RefObject<Controls | null>;
+}) {
+  const view = useBikeStore((state) => state.camera.view);
+  const autoRotate = useBikeStore((state) => state.camera.autoRotate);
+  const camera = useThree((state) => state.camera);
+
+  const animating = useRef(true);
+  const orbitAngle = useRef(0);
+
+  // A new preset restarts the transition from wherever the camera currently is.
+  useEffect(() => {
+    const controls = controlsRef.current;
+
+    if (controls != null) {
+      const offset = camera.position.clone().sub(controls.target);
+      orbitAngle.current = Math.atan2(offset.x, offset.z);
+    }
+
+    animating.current = true;
+  }, [view, geometry, camera, controlsRef]);
+
+  useFrame((_, delta) => {
+    const controls = controlsRef.current ?? undefined;
+    const preset = resolveCameraPreset(view, geometry);
+    const target = new Vector3(preset.target[0], preset.target[1], preset.target[2]);
+    const desired = new Vector3(preset.position[0], preset.position[1], preset.position[2]);
+
+    if (autoRotate) {
+      const offset = camera.position.clone().sub(target);
+      const radius = Math.max(Math.hypot(offset.x, offset.z), 0.001);
+      orbitAngle.current += delta * AUTO_ROTATE_SPEED;
+
+      camera.position.set(
+        target.x + Math.sin(orbitAngle.current) * radius,
+        camera.position.y,
+        target.z + Math.cos(orbitAngle.current) * radius,
+      );
+    } else if (animating.current) {
+      const step = 1 - Math.pow(SETTLE, delta);
+      camera.position.lerp(desired, step);
+      controls?.target.lerp(target, step);
+
+      if (camera.position.distanceTo(desired) < SETTLE_DISTANCE) {
+        animating.current = false;
+      }
+    }
+
+    controls?.update();
+    camera.lookAt(controls?.target ?? target);
+  });
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      enablePan={false}
+      enableDamping
+      dampingFactor={0.08}
+      rotateSpeed={0.85}
+      zoomSpeed={0.7}
+      minDistance={1.1}
+      maxDistance={6}
+      minPolarAngle={0.15}
+      maxPolarAngle={Math.PI / 2 + 0.12}
+      onStart={() => {
+        animating.current = false;
+      }}
+    />
+  );
+}
