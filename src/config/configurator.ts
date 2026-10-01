@@ -9,6 +9,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
+import type { CameraView } from '@/types/configuration';
+
 /**
  * Structural outline of the configurator.
  *
@@ -92,13 +94,8 @@ export const configuratorCategories: readonly ConfiguratorCategory[] = [
   },
 ] as const;
 
-export type CameraView = {
-  id: string;
-  label: string;
-};
-
-/** Preset camera views planned for the 3D stage. */
-export const cameraViews: readonly CameraView[] = [
+/** Preset camera views of the 3D stage. */
+export const cameraViews: readonly { id: CameraView; label: string }[] = [
   { id: 'frontal', label: 'Frontal' },
   { id: 'lateral', label: 'Lateral' },
   { id: 'traseira', label: 'Traseira' },
