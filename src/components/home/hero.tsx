@@ -13,7 +13,7 @@ export function Hero() {
       <div className="absolute inset-0 -z-10">
         <Image
           src="/images/bike-hero.webp"
-          alt="Bicicleta de estrada em carbono fotografia de estúdio sobre fundo escuro"
+          alt="Bicicleta de estrada em carbono, fotografia de estúdio sobre fundo escuro"
           fill
           priority
           sizes="100vw"
@@ -63,7 +63,7 @@ export function Hero() {
         </div>
 
         <dl
-          className="mt-14 grid max-w-2xl grid-cols-1 gap-px border-t border-line/80 pt-8 sm:grid-cols-3 animate-rise"
+          className="mt-14 grid max-w-2xl grid-cols-1 gap-6 border-t border-line/80 pt-8 sm:grid-cols-3 sm:gap-8 animate-rise"
           style={{ animationDelay: '330ms' }}
         >
           {heroFacts.map((fact) => (
