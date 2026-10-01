@@ -7,8 +7,8 @@ pedaleiro, guiador, selim, pneus e extras, e vê a bicicleta mudar em 3D enquant
 o peso, as especificações e a compatibilidade são recalculados em tempo real.
 
 O projeto está a ser construído por fases, com verificação no fim de cada fase. Este
-repositório contém a **Fase 3**: modelo de dados, catálogo, estado global e
-testes.
+repositório contém a **Fase 4**: modelo de dados, catálogo, estado global, cena 3D
+interativa e testes.
 
 ---
 
@@ -16,16 +16,18 @@ testes.
 
 | | |
 | --- | --- |
-| Fase | **3 de 11** — dados, estado global e interface |
-| Build | `next build` ✅ (5 rotas estáticas) |
+| Fase | **4 de 11** — dados, estado global, interface e cena 3D |
+| Build | `next build --webpack` ✅ (5 rotas estáticas) |
 | Typecheck | `tsc --noEmit` ✅ (TypeScript estrito) |
 | Lint | `eslint .` ✅ (0 erros, 0 avisos) |
-| Testes | `vitest run` ✅ (72 testes) |
+| Testes | `vitest run` ✅ (95 testes) |
 | Smoke test | `npm run smoke` ✅ (25 verificações) |
+| Cena 3D | `npm run verify:3d` ✅ (15 verificações em Chromium real) |
 
-Ainda **não** existem estado global, cena 3D, preço, peso ou motor de compatibilidade. A
-interface mostra a estrutura final dessas áreas e identifica em que fase cada uma entra —
-nada é simulado.
+A bicicleta já é visível e interativa em 3D, centrada e enquadrada em quatro vistas, com
+rotação, zoom e rotação automática. Ainda **não** existem preço, peso, especificações
+calculadas nem motor de compatibilidade: a interface mostra a estrutura final dessas áreas
+e identifica em que fase cada uma entra — nada é simulado.
 
 ---
 
@@ -40,13 +42,17 @@ nada é simulado.
 | **Componentes UI** | Primitivas próprias ao estilo shadcn/ui (`Button`, `Badge`, `LinkButton`) |
 | **Zod 4** | Contrato de validação do catálogo e das configurações |
 | **Zustand 5** | Estado global do configurador (store vanilla testável) |
-| **Vitest 3** | Testes de integridade do catálogo e das regras de domínio |
+| **Three.js 0.186** | Motor WebGL da cena |
+| **React Three Fiber 9** | Árvore de componentes React sobre Three.js |
+| **Drei 10** | `OrbitControls` e utilitários de cena |
+| **Vitest 3** | Testes de integridade do catálogo, geometria e regras de domínio |
+| **Playwright** (dev) | Verificação da cena em Chromium real com WebGL |
 | **Lucide** | Ícones |
 | **Tipografia** | Manrope auto-alojada em `src/assets/fonts` (sem CDN em runtime) |
 
-Planeado e ainda não instalado, por não ser necessário nesta fase: Three.js + React Three
-Fiber + Drei (Fases 4–5). A animação da landing page usa CSS, pelo que Framer Motion não
-foi adicionado.
+A animação da landing page usa CSS, pelo que Framer Motion não foi adicionado. Nenhuma
+dependência foi incluída sem uso efectivo: Three.js só é descarregado quando o palco 3D
+monta (ver *Notas de engenharia*).
 
 ---
 
@@ -77,7 +83,11 @@ npm run lint       # ESLint
 npm test           # Vitest (uma corrida)
 npm run test:watch # Vitest em modo observação
 npm run smoke      # build + arranque do servidor + verificações de rota/SEO/assets
+npm run verify:3d  # verificação da cena em Chromium headless (WebGL por software)
 ```
+
+`npm run verify:3d` precisa de build de produção prévio e descarrega o Chromium do
+Playwright na primeira execução (`npx playwright install chromium`).
 
 ---
 
@@ -98,13 +108,25 @@ src/
 │  ├─ layout/               # header, footer, marca
 │  ├─ home/                 # secções da landing page
 │  ├─ configurator/         # shell, palco, categorias, resumo, roadmap
-│  └─ 3d/                   # (Fases 4–5) cena e peças
+│  └─ 3d/                   # cena e peças procedurais
+│     ├─ bike-model.tsx     # monta a bicicleta a partir da geometria
+│     ├─ bike-scene.tsx     # Canvas, luzes e Suspense
+│     ├─ camera-rig.tsx     # vistas predefinidas, rotação automática, OrbitControls
+│     ├─ stage-canvas.tsx   # entrada pública: lazy, fallbacks, suporte WebGL
+│     ├─ scene-boundary.tsx # error boundary da cena
+│     ├─ webgl-support.ts   # deteção de WebGL sem hydration mismatch
+│     ├─ materials.ts       # paleta de materiais partilhada
+│     ├─ tube.tsx           # cilindro entre dois pontos
+│     └─ parts/             # quadro, rodas, pneus, grupo, pedaleiro, guiador, selim
 ├─ config/                  # dados de estrutura: site, categorias, regras planeadas
 ├─ data/
 │  └─ catalog/              # catálogo tipado por categoria + validação opcional
 ├─ lib/
 │  ├─ catalog.ts            # acessores puros sobre o catálogo + type guards
 │  ├─ configuration.ts      # helpers puros de configuração
+│  ├─ 3d/
+│  │  ├─ bike-geometry.ts   # geometria procedural em metros (pura, sem Three.js)
+│  │  └─ camera-views.ts    # enquadramento das vistas predefinidas (puro)
 │  ├─ validation/           # schemas Zod (contrato de runtime)
 │  └─ utils.ts, site-url.ts
 ├─ store/
@@ -114,7 +136,10 @@ src/
 └─ types/
    └─ components.ts         # modelo de domínio
 tests/
-└─ catalog.test.ts          # integridade do catálogo e da validação
+├─ catalog.test.ts          # integridade do catálogo e da validação
+├─ configuration.test.ts    # helpers e serialização de configuração
+├─ bike-store.test.ts       # store, persistência e invariantes
+└─ 3d-geometry.test.ts      # geometria da bicicleta e enquadramento das vistas
 public/images/              # assets editoriais
 docs/                       # roadmap técnico
 scripts/                    # smoke test sem dependências
@@ -125,7 +150,10 @@ scripts/                    # smoke test sem dependências
 - **UI** nunca contém regras de negócio: preço, peso e compatibilidade viverão em
   `src/lib` como funções puras, testáveis sem React.
 - **Dados** de produto são objetos tipados em `src/data`, nunca espalhados por componentes.
-- **3D** é isolado em `src/components/3d` e comunica com a UI apenas através do estado.
+- **3D** é isolado em `src/components/3d` e comunica com a UI apenas através do estado: a
+  cena lê a configuração do store e nunca escreve nela.
+- **Geometria 3D** vive em `src/lib/3d` como funções puras, sem Three.js. A cena desenha o
+  que essa função devolve, por isso a forma da bicicleta é testável sem renderer.
 - **Estado** global chega na Fase 3; até lá o único estado local é o acordeão de categorias.
 - **Validação** vive num módulo próprio e é importada dinamicamente, para que Zod não
   entre no bundle inicial do cliente.
@@ -183,6 +211,27 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   *skip link*, landmarks, foco visível, 404.
 - Responsivo: desktop, portátil, tablet e telemóvel (3D → componentes → resumo).
 
+**Fase 4 — cena 3D**
+
+- `Canvas` do React Three Fiber carregado de forma lazy (`next/dynamic` com `ssr: false`),
+  dentro de `Suspense` e de um error boundary próprio.
+- Bicicleta **procedural e centrada**: quadro, roda dianteira e traseira com aro, raios,
+  pneu e cubo, cassete, desviador, corrente, travões, pedaleiro, pratos, pedais, guiador
+  com drops e manetes, e selim com carris.
+- Geometria derivada da configuração em metros (`src/lib/3d/bike-geometry.ts`): tamanho do
+  quadro, dimensão da roda, largura do pneu limitada pelo quadro, comprimento da pedaleira,
+  largura do guiador e relação de pratos. Trocar uma peça muda a silhueta.
+- Quatro vistas predefinidas (frontal, lateral, traseira e superior) ligadas ao estado
+  `camera.view` do store, com transição animada até ao enquadramento.
+- Rotação, zoom e rotação automática através de `OrbitControls`, com um único caminho de
+  código a escrever a câmara para que os três modos nunca se sobressaiam.
+- Degradação em três camadas: sem WebGL → fotografia de referência; exceção na cena → o
+  mesmo fallback; a carregar → indicador. A deteção de WebGL usa `useSyncExternalStore`
+  para não introduzir *hydration mismatch*.
+- A landing page mantém-se leve: o Three.js não entra no bundle inicial de `/`.
+- Verificação real em Chromium headless com WebGL por software (`npm run verify:3d`):
+  contexto vivo, pixels desenhados, vistas, rotação, arrasto e viewport móvel.
+
 **Fase 3 — estado**
 
 - Store Zustand (`src/store/bike-store.ts`) criado por uma fábrica que recebe o
@@ -198,7 +247,8 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   browser, memória em SSR/testes, API no futuro — sem alterar o store.
 - O store guarda ids, nunca produtos: a configuração é pequena, serializável para
   URL ou base de dados, e continua válida quando o catálogo muda.
-- 72 testes no total (catálogo, helpers de configuração, serialização e store).
+- 95 testes no total (catálogo, helpers de configuração, serialização, store, geometria 3D
+  e enquadramento de câmara).
 
 **Fase 2 — dados**
 
@@ -224,7 +274,7 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 | 1 | Arquitetura, configuração, UI inicial, SEO, README | ✅ concluída |
 | 2 | Modelo de dados, catálogo, validação Zod, testes de integridade | ✅ concluída |
 | 3 | Zustand: seleção, configuração, loading, câmara, persistência | ✅ concluída |
-| 4 | Cena 3D (React Three Fiber, Drei, Suspense, fallback de WebGL, vistas de câmara) | pendente |
+| 4 | Cena 3D (React Three Fiber, Drei, Suspense, fallback de WebGL, vistas de câmara) | ✅ concluída |
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | pendente |
 | 6 | Preço e peso em tempo real (funções puras + testes) | pendente |
 | 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | pendente |
@@ -268,6 +318,18 @@ A arquitetura já separa o que é preciso para suportar, sem implementar:
 - **Store vanilla**: o estado é criado por `createStore` e exposto a React através de
   `useStore` com seletores, o que permite testar todo o comportamento sem renderizar
   componentes.
+- **Three.js fora do bundle inicial**: a cena é um `dynamic(..., { ssr: false })`, por isso
+  `/` e o primeiro paint de `/configurator` não carregam os ~700 KB do motor 3D. Confirmado
+  comparando os chunks referenciados no HTML de cada rota.
+- **Geometria sem renderer**: `src/lib/3d/bike-geometry.ts` não importa Three.js. A
+  conversão de mm para metros acontece uma única vez, nesse limite, e as invariantes
+  (altura do selim, drop do guiador, altura da coroa do garfo, enquadramento) são testadas
+  em `tests/3d-geometry.test.ts`.
+- **Uma só escrita na câmara**: `CameraRig` resolve vistas, rotação automática e controle
+  do utilizador no mesmo `useFrame`, evitando o clássico conflito entre `OrbitControls` e
+  posições definidas por código.
+- **Sombra por textura**: o chão usa uma elipse gerada em canvas em vez de *shadow maps*,
+  o que mantém a cena barata em dispositivos sem GPU dedicada.
 - **ESLint 9**: o plugin de React incluído no `eslint-config-next` 16 ainda chama
   `context.getFilename()`, que o ESLint 10 removeu. A versão está fixa na linha 9.x.
 - **Build**: validado com `next build --webpack`. O Turbopack (padrão do Next 16) também é
