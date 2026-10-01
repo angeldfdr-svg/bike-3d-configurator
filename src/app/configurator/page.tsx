@@ -38,7 +38,7 @@ export default function ConfiguratorPage() {
           </div>
 
           <Badge variant="neutral" className="num shrink-0 self-start lg:self-auto">
-            Fase 1 de 11
+            Fase 3 de 11
           </Badge>
         </div>
       </div>

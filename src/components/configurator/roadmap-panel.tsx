@@ -2,8 +2,8 @@ import { Check } from 'lucide-react';
 
 const phases = [
   { phase: 1, label: 'Arquitetura e interface', done: true },
-  { phase: 2, label: 'Catálogo de componentes', done: false },
-  { phase: 3, label: 'Estado global (Zustand)', done: false },
+  { phase: 2, label: 'Catálogo de componentes', done: true },
+  { phase: 3, label: 'Estado global (Zustand)', done: true },
   { phase: 4, label: 'Cena 3D (React Three Fiber)', done: false },
   { phase: 5, label: 'Peças 3D intercambiáveis', done: false },
   { phase: 6, label: 'Preço e peso em tempo real', done: false },

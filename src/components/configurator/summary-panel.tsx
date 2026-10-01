@@ -1,3 +1,4 @@
+import { ConfigurationStatus } from '@/components/configurator/configuration-status';
 import { Badge } from '@/components/ui/badge';
 
 type SummaryRow = {
@@ -36,14 +37,17 @@ export function SummaryPanel() {
       aria-labelledby="summary-title"
       className="overflow-hidden rounded-lg border border-line bg-ink-900/50"
     >
-      <header className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
         <h2
           id="summary-title"
           className="text-[0.8125rem] font-bold tracking-[0.18em] text-fog-100 uppercase"
         >
           Resumo
         </h2>
-        <Badge variant="muted">Fase 6</Badge>
+        <div className="flex items-center gap-3">
+          <ConfigurationStatus />
+          <Badge variant="muted">Fase 6</Badge>
+        </div>
       </header>
 
       <dl className="divide-y divide-line">
