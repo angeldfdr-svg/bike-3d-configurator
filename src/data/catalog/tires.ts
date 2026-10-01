@@ -1,0 +1,93 @@
+import type { Tire } from '@/types/components';
+
+/** Demonstrative catalog — see the note in `frames.ts`. */
+export const rawTires = [
+  {
+    id: 'tire-voltaic-cotton-28',
+    name: 'Cotton 28',
+    brand: 'Voltaic',
+    category: 'pneus',
+    model: 'VOL-CT28',
+    price: 6900,
+    weight: 220,
+    description:
+      'Pneu de 28 mm com carcassa de algodão e alta contagem de fios. Rolamento suave e aderência em asfalto seco.',
+    specifications: [
+      { label: 'Largura', value: '28 mm' },
+      { label: 'Tipo', value: 'Clincher (tubeless ready)' },
+      { label: 'TPI', value: '320' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '220 g' },
+    ],
+    width: 28,
+    type: 'clincher',
+    tpi: 320,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-voltaic-cotton-32',
+    name: 'Cotton 32',
+    brand: 'Voltaic',
+    category: 'pneus',
+    model: 'VOL-CT32',
+    price: 7400,
+    weight: 260,
+    description:
+      'Pneu tubeless de 32 mm para estrada irregular e paragens de gravilha, com proteção lateral reforçada.',
+    specifications: [
+      { label: 'Largura', value: '32 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '320' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '260 g' },
+    ],
+    width: 32,
+    type: 'tubeless',
+    tpi: 320,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-voltaic-allweather-30',
+    name: 'All-weather 30',
+    brand: 'Voltaic',
+    category: 'pneus',
+    model: 'VOL-AW30',
+    price: 5900,
+    weight: 300,
+    description:
+      'Pneu de 30 mm com compostos para piso molhado e maior durabilidade. Opção de uso diário em qualquer estação.',
+    specifications: [
+      { label: 'Largura', value: '30 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '60' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '300 g' },
+    ],
+    width: 30,
+    type: 'tubeless',
+    tpi: 60,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-meridian-gravel-40',
+    name: 'Gravel 40',
+    brand: 'Meridian',
+    category: 'pneus',
+    model: 'VOL-GR40',
+    price: 8400,
+    weight: 380,
+    description:
+      'Pneu de 40 mm com tacos centrais e laterais, para gravilha solta e caminhos de terra batida.',
+    specifications: [
+      { label: 'Largura', value: '40 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '120' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '380 g' },
+    ],
+    width: 40,
+    type: 'tubeless',
+    tpi: 120,
+    wheelSize: '700c',
+  },
+] as const satisfies readonly Tire[];
