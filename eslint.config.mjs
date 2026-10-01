@@ -12,6 +12,11 @@ import nextConfig from 'eslint-config-next';
  * removed. Type-level strictness is enforced separately by `tsc --noEmit`.
  */
 export default [
+  // Local caches and verification artefacts, not project source.
+  {
+    name: 'project/ignores',
+    ignores: ['.cache/**', '.verify/**', 'playwright-report/**', 'test-results/**'],
+  },
   ...nextConfig,
   {
     name: 'project/quality',

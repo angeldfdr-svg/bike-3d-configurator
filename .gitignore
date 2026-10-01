@@ -41,3 +41,10 @@ next-env.d.ts
 # tooling caches
 .config
 .npm
+.cache
+
+# browser verification artefacts
+.verify
+playwright-report
+test-results
+.sudo_as_admin_successful
