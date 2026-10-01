@@ -23,20 +23,23 @@ src/
 ├─ app/              layout, metadata, landing page, /configurator, robots.ts, sitemap.ts, not-found.tsx
 ├─ assets/fonts/     Manrope auto-alojada (400–800)
 ├─ components/
-│  ├─ ui/            Button, LinkButton, Badge (estilo shadcn/ui, sem dependência de slot)
+│  ├─ ui/            Button, LinkButton, Badge
 │  ├─ layout/        SiteHeader, SiteFooter, BrandMark
 │  ├─ home/          Hero, CategoryGrid, ProcessSection, CompatibilitySection, ClosingCta
-│  ├─ configurator/  ConfiguratorView, StagePanel, CameraControls, CategoryPanel, SummaryPanel, RoadmapPanel
+│  ├─ configurator/  ConfiguratorView, StagePanel, CameraControls, CategoryPanel,
+│  │                 SummaryPanel, RoadmapPanel, ConfigurationStatus
 │  └─ 3d/            (Fases 4–5) ainda não criado
-├─ config/           site.ts, configurator.ts (categorias, vistas, regras planeadas)
+├─ config/           site.ts, configurator.ts
 ├─ data/catalog/     frames, wheelsets, groupsets, cranksets, handlebars, saddles, tires,
-│                    accessories, index (catálogo tipado + validateCatalog lazy)
-├─ lib/              catalog.ts (acessores puros e type guards), validation/catalog-schema.ts (Zod),
+│                    accessories, index
+├─ lib/              catalog.ts, configuration.ts, validation/ (catálogo + configuração),
 │                    utils.ts, site-url.ts
-├─ store/            (Fase 3) ainda não criado
+├─ store/
+│  ├─ bike-store.ts       store Zustand (factory + singleton lazy + hook)
+│  └─ repositories.ts     ConfigurationRepository: localStorage / memória
 ├─ services/         (futuro) persistência e API
-└─ types/components.ts   modelo de domínio (ComponentBase + 8 subtipos + Component)
-tests/catalog.test.ts   29 testes
+└─ types/            components.ts (domínio), configuration.ts (estado)
+tests/               catalog.test.ts, configuration.test.ts, bike-store.test.ts (72 testes)
 public/images/       bike-hero.webp, bike-stage.webp, og-cover.jpg
 docs/                TECHNICAL_ROADMAP.md
 scripts/             smoke.mjs
@@ -44,86 +47,91 @@ scripts/             smoke.mjs
 
 ## Tecnologias instaladas
 Next.js 16.3.8, React 19.3.0, TypeScript 5.9.3, Tailwind CSS 4.3.3, ESLint 9.39.5,
-eslint-config-next 16.3.8, Zod 4.6.5, Vitest 3.2.7, class-variance-authority, clsx,
-tailwind-merge, lucide-react.
+eslint-config-next 16.3.8, Zod 4.6.5, Zustand 5.0.15, Vitest 3.2.7, class-variance-authority,
+clsx, tailwind-merge, lucide-react.
 
-Ainda não instalado, por não ser necessário: Zustand (Fase 3), Three.js + React Three Fiber
-+ Drei (Fases 4–5), Framer Motion (as animações atuais são CSS).
+Ainda não instalado, por não ser necessário: Three.js + React Three Fiber + Drei
+(Fases 4–5), Framer Motion (as animações atuais são CSS).
 
 ## Fase atual
-**Fase 2 concluída e verificada.**
+**Fase 3 concluída e verificada.**
 
 ## Funcionalidades concluídas
 
-**Fase 1** — Next.js App Router, TypeScript estrito, Tailwind 4 com design system,
-landing page premium, shell do configurador, SEO completo, responsividade, smoke test.
+**Fase 1** — Next.js App Router, TypeScript estrito, Tailwind 4 com design system, landing
+page premium, shell do configurador, SEO completo, responsividade, smoke test.
 
-**Fase 2 — modelo de dados e catálogo**
-- `src/types/components.ts`: `ComponentBase` e os oito subtipos (`BikeFrame`, `Wheelset`,
-  `Groupset`, `Crankset`, `Handlebar`, `Saddle`, `Tire`, `Accessory`), com `Component` como
-  union discriminado por `category`.
-- Unidades fixas no modelo: preço em **cêntimos** (inteiro), peso em **gramas** (inteiro),
-  medidas em **milímetros**.
-- Atributos técnicos que as regras de compatibilidade vão consumir: standard de movimento
-  pedaleiro, sistema de travagem, núcleo de cassete, eixos, diâmetro de espigão, largura
-  máxima de pneus, número de velocidades, abraçadeira do guiador, roda e TPI.
-- Catálogo demonstrativo com **31 produtos** (4 quadros, 4 rodas, 4 grupos, 4 pedaleiros,
-  4 guiadores, 3 selins, 4 pneus, 4 extras), cada um com especificações de exibição.
-- Esquemas Zod por subtipo e para o catálogo completo, com caminho do campo inválido nas
-  mensagens.
-- Acessores puros em `src/lib/catalog.ts` (`allProducts`, `productsByCategory`,
-  `findProductById`, `countByCategory`) e oito *type guards*. Recebem o catálogo como
-  argumento, por isso servem dados locais hoje e payloads remotos amanhã.
-- `validateCatalog()` com import dinâmico do Zod, para manter o Zod fora do bundle inicial
-  do cliente.
-- 29 testes em `tests/catalog.test.ts`.
+**Fase 2** — modelo de domínio (`ComponentBase` + 8 subtipos, union discriminado),
+catálogo de 31 produtos demonstrativos, atributos técnicos para compatibilidade, esquemas
+Zod, acessores puros, type guards.
+
+**Fase 3 — estado global**
+- `src/types/configuration.ts`: `BikeConfiguration` (ids + tamanho do quadro + extras com
+  quantidade), `CameraState`, `SavedConfiguration`, `ConfigurationStatus`,
+  `componentSlots`.
+- `src/lib/configuration.ts`: helpers puros (`emptyConfiguration`, `configurationIds`,
+  `isConfigurationComplete`, `resolveFrameSize`, `addAccessory`, `setAccessoryQuantity`,
+  `removeAccessory`, `danglingIds`).
+- `src/lib/validation/configuration-schema.ts`: schema versionado (`version: 1`) para
+  configurações e configurações guardadas, serialização e parse com rejeição de payloads
+  inválidos.
+- `src/store/repositories.ts`: interface `ConfigurationRepository` (assíncrona, para
+  suportar API no futuro) com implementações `localStorage`, memória e
+  `createBrowserRepository` com degradação segura em SSR.
+- `src/store/bike-store.ts`: store criado por fábrica (`createBikeStore({ repository,
+  catalog })`), singleton lazy (`getBikeStore`) que não toca em `localStorage` durante SSR,
+  e hook `useBikeStore` com seletores granulares.
+- Ações: seleção por categoria, `setFrameSize`, `toggleAccessory`,
+  `setAccessoryQuantity`, `removeAccessory`, `setCameraView`, `toggleAutoRotate`,
+  `resetConfiguration`, `hydrate`, `saveConfiguration`, `restoreSavedConfiguration`,
+  `clearSavedConfiguration`.
+- Integração mínima e honesta na UI: `ConfigurationStatus` lê o estado real
+  (`N/7 componentes · extras · status`) e dispara a hidratação no mount. Nenhum valor
+  fictício foi introduzido.
 
 ## Verificações executadas
 | Comando | Resultado |
 | --- | --- |
 | `npx tsc --noEmit` | ✅ 0 erros |
 | `npx eslint .` | ✅ 0 erros, 0 avisos |
-| `npx vitest run` | ✅ 29 passed, 0 failed |
+| `npx vitest run` | ✅ 72 passed, 0 failed (3 ficheiros) |
 | `npx next build --webpack` | ✅ 5 rotas estáticas |
 | `npm run smoke` | ✅ 25 passed, 0 failed |
+| Bundle | chunk do Zod confirmado como não carregado no primeiro paint |
 
 Problemas encontrados e corrigidos nesta fase:
-1. `z.enum` com valores numéricos não funciona como esperado no Zod 4 — substituído por
-   `z.union([z.literal(...)])` para `seatpostDiameter` e `clamp`.
-2. `flatMap` sobre as chaves do catálogo produzia inferência incorrecta do tipo de retorno —
-   substituído por ciclo explícito em `allProducts`.
-3. *Type guards* de compilação não usados disparavam `noUnusedLocals` — passaram a um tipo
-   exportado (`SchemaTypeGuards`).
-4. Contagem de produtos no teste estava errada (29 vs 31) — corrigida.
+1. Parâmetros `set`/`get` sem tipo na *state creator* — resolvido tipando o retorno como
+   `StateCreator<BikeStore, [], []>`.
+2. Zod entrava no bundle inicial do cliente através do repositório — passou a import
+   dinâmico, mantido fora do primeiro paint.
+3. `serializeConfiguration` produzia um payload sem `savedAt`, que o schema rejeitava —
+   separados `configurationPayloadSchema` e `savedConfigurationSchema`.
 
 ## Decisões técnicas
-- **Duas vistas de dados por produto**: `specifications` (exibição) e atributos estruturados
-  (regras). Um teste garante que não divergem.
-- **Unidades no modelo**, não na UI: cêntimos e gramas evitam aritmética de ponto flutuante
-  e obrigam a formatar só na apresentação (Fase 6).
-- **Compatibilidade por atributos**, não por listas de IDs: as regras comparam standards
-  (travão, BB, núcleo, eixo, espigão, largura de pneu, velocidades), o que escala para
-  catálogos novos sem reescrever regras.
-- **Catálogo fictício e identificado como tal**: marcas (`VELOCE`, `Ardent`, `Northwind`,
-  `Meridian`, `Voltaic`, `Cinder`), produtos e preços são ilustrativos. Evita inventar
-  especificações e preços para produtos comerciais reais.
-- **Zod importado dinamicamente** pelo catálogo: validação disponível para testes e para a
-  futura fronteira de API, sem peso no bundle do cliente.
-- **Vitest adicionado nesta fase** (não na Fase 10) porque a integridade do catálogo é
-  pré-requisito das Fases 6 e 7.
+- **Store vanilla + hook**: `createStore` com injeção de dependências. Testa-se o
+  comportamento sem React nem DOM; a UI subscreve por seletores.
+- **Configuração guarda ids, não produtos**: pequena, serializável para URL/base de dados e
+  resistente a mudanças de catálogo.
+- **Repositório assíncrono**: trocar `localStorage` por API não altera o store.
+- **Payload versionado** (`version: 1`): permite migração futura sem quebrar
+  configurações antigas.
+- **Ids desconhecidos são ignorados** pelo store, e payloads inválidos são rejeitados pelo
+  Zod antes de chegarem ao estado.
+- **Sem lógica de negócio no store**: preço, peso e compatibilidade chegam como funções
+  puras em `src/lib` e serão ligadas por seletores nas Fases 6 e 7.
+- **Singleton lazy**: `getBikeStore()` só cria o store no cliente, evitando acesso a
+  `localStorage` durante SSR.
 
 ## Problemas conhecidos
-- Ambiente de build com 2 vCPU e 2 GB RAM: builds longos podem ser lentos (webpack compilou
-  em ~20 s).
-- Nenhum produto tem `image`; o campo existe no modelo e a UI terá de renderizar um
-  *fallback* quando as fases 5/9 chegarem.
+- Ainda não há UI para selecionar componentes: o store está testado e integrado apenas na
+  leitura de estado. A seleção visual chega com as listas de produtos (Fases 5–8).
+- Nenhum produto tem `image`; a UI terá de renderizar um *fallback*.
+- Ambiente de build com 2 vCPU e 2 GB RAM: builds longos podem ser lentos.
 - Sem MCP/ECC disponíveis nesta sessão.
-- Sem remoto GitHub configurado: `git push` precisa do repositório e credenciais do
-  utilizador.
+- Sem remoto GitHub configurado.
 
 ## Próximo passo recomendado
-Iniciar a **Fase 3 — estado global com Zustand**: store tipado com seleção por categoria,
-configuração atual, tamanho de quadro, extras com quantidade, estado de carregamento,
-câmara e configuração guardada; ações e seletores granulares; persistência local atrás de
-uma interface (sem backend). Testes de seleção, reset, configuração inicial e invariantes
-antes de ligar qualquer UI.
+Iniciar a **Fase 4 — cena 3D**: instalar Three.js, React Three Fiber e Drei; `Canvas` lazy
+com Suspense; fallback acessível quando WebGL não está disponível; `OrbitControls` com
+rotação, zoom e pan; bicicleta procedural centrada; vistas predefinidas ligadas ao
+`camera` do store. Verificar typecheck, lint, testes, build e smoke antes de avançar.

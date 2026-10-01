@@ -7,8 +7,8 @@ pedaleiro, guiador, selim, pneus e extras, e vê a bicicleta mudar em 3D enquant
 o peso, as especificações e a compatibilidade são recalculados em tempo real.
 
 O projeto está a ser construído por fases, com verificação no fim de cada fase. Este
-repositório contém a **Fase 2**: modelo de dados, catálogo, validação e testes de
-integridade.
+repositório contém a **Fase 3**: modelo de dados, catálogo, estado global e
+testes.
 
 ---
 
@@ -16,11 +16,11 @@ integridade.
 
 | | |
 | --- | --- |
-| Fase | **2 de 11** — modelo de dados e catálogo |
+| Fase | **3 de 11** — dados, estado global e interface |
 | Build | `next build` ✅ (5 rotas estáticas) |
 | Typecheck | `tsc --noEmit` ✅ (TypeScript estrito) |
 | Lint | `eslint .` ✅ (0 erros, 0 avisos) |
-| Testes | `vitest run` ✅ (29 testes) |
+| Testes | `vitest run` ✅ (72 testes) |
 | Smoke test | `npm run smoke` ✅ (25 verificações) |
 
 Ainda **não** existem estado global, cena 3D, preço, peso ou motor de compatibilidade. A
@@ -38,14 +38,15 @@ nada é simulado.
 | **TypeScript 5.9** (estrito) | Tipos em todo o projeto, `noUncheckedIndexedAccess`, `noUnusedLocals` |
 | **Tailwind CSS 4** | Design system em `src/app/globals.css` (`@theme`) |
 | **Componentes UI** | Primitivas próprias ao estilo shadcn/ui (`Button`, `Badge`, `LinkButton`) |
-| **Zod 4** | Contrato de validação do catálogo (runtime) |
+| **Zod 4** | Contrato de validação do catálogo e das configurações |
+| **Zustand 5** | Estado global do configurador (store vanilla testável) |
 | **Vitest 3** | Testes de integridade do catálogo e das regras de domínio |
 | **Lucide** | Ícones |
 | **Tipografia** | Manrope auto-alojada em `src/assets/fonts` (sem CDN em runtime) |
 
-Planeado e ainda não instalado, por não ser necessário nesta fase: Zustand (Fase 3),
-Three.js + React Three Fiber + Drei (Fases 4–5). A animação da landing page usa CSS, pelo
-que Framer Motion não foi adicionado.
+Planeado e ainda não instalado, por não ser necessário nesta fase: Three.js + React Three
+Fiber + Drei (Fases 4–5). A animação da landing page usa CSS, pelo que Framer Motion não
+foi adicionado.
 
 ---
 
@@ -103,9 +104,12 @@ src/
 │  └─ catalog/              # catálogo tipado por categoria + validação opcional
 ├─ lib/
 │  ├─ catalog.ts            # acessores puros sobre o catálogo + type guards
+│  ├─ configuration.ts      # helpers puros de configuração
 │  ├─ validation/           # schemas Zod (contrato de runtime)
 │  └─ utils.ts, site-url.ts
-├─ store/                   # (Fase 3) Zustand
+├─ store/
+│  ├─ bike-store.ts         # store Zustand + hook de subscrição
+│  └─ repositories.ts       # persistência (localStorage / memória / API)
 ├─ services/                # (futuro) persistência e API
 └─ types/
    └─ components.ts         # modelo de domínio
@@ -179,6 +183,23 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   *skip link*, landmarks, foco visível, 404.
 - Responsivo: desktop, portátil, tablet e telemóvel (3D → componentes → resumo).
 
+**Fase 3 — estado**
+
+- Store Zustand (`src/store/bike-store.ts`) criado por uma fábrica que recebe o
+  repositório e o catálogo, por isso é testável sem DOM e sem `localStorage`.
+- Estado: configuração (ids, tamanho do quadro, extras com quantidade), estado de
+  carregamento, erro, câmara (vista predefinida e rotação automática) e
+  configuração guardada.
+- Ações tipadas para cada categoria, tamanho do quadro, extras, câmara, reset,
+  hidratação, guardar, restaurar e limpar.
+- Configurações inválidas (id desconhecido) são ignoradas em silêncio no store, e
+  payloads corrompidos são rejeitados pelo Zod antes de chegarem ao estado.
+- Persistência atrás da interface `ConfigurationRepository`: `localStorage` no
+  browser, memória em SSR/testes, API no futuro — sem alterar o store.
+- O store guarda ids, nunca produtos: a configuração é pequena, serializável para
+  URL ou base de dados, e continua válida quando o catálogo muda.
+- 72 testes no total (catálogo, helpers de configuração, serialização e store).
+
 **Fase 2 — dados**
 
 - Modelo de domínio completo em `src/types/components.ts`, com union discriminado por
@@ -202,7 +223,7 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 | --- | --- | --- |
 | 1 | Arquitetura, configuração, UI inicial, SEO, README | ✅ concluída |
 | 2 | Modelo de dados, catálogo, validação Zod, testes de integridade | ✅ concluída |
-| 3 | Zustand: seleção, configuração, loading, câmara, persistência | pendente |
+| 3 | Zustand: seleção, configuração, loading, câmara, persistência | ✅ concluída |
 | 4 | Cena 3D (React Three Fiber, Drei, Suspense, fallback de WebGL, vistas de câmara) | pendente |
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | pendente |
 | 6 | Preço e peso em tempo real (funções puras + testes) | pendente |
@@ -241,9 +262,12 @@ A arquitetura já separa o que é preciso para suportar, sem implementar:
 - **Unidades**: preço em cêntimos e peso em gramas, ambos inteiros. Evita erros de
   aritmética de ponto flutuante e força a formatação a acontecer só na camada de
   apresentação.
-- **Zod fora do bundle do cliente**: o catálogo embutido é verificado em tempo de
-  compilação com `satisfies`; a validação de runtime é importada dinamicamente e usada
-  pelos testes e, no futuro, pela fronteira de API.
+- **Zod fora do bundle inicial do cliente**: o catálogo embutido é verificado em tempo de
+  compilação com `satisfies`; a validação de runtime é importada dinamicamente (ficou
+  confirmado que o chunk do Zod não é carregado no primeiro paint).
+- **Store vanilla**: o estado é criado por `createStore` e exposto a React através de
+  `useStore` com seletores, o que permite testar todo o comportamento sem renderizar
+  componentes.
 - **ESLint 9**: o plugin de React incluído no `eslint-config-next` 16 ainda chama
   `context.getFilename()`, que o ESLint 10 removeu. A versão está fixa na linha 9.x.
 - **Build**: validado com `next build --webpack`. O Turbopack (padrão do Next 16) também é
