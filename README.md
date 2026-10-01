@@ -7,8 +7,8 @@ pedaleiro, guiador, selim, pneus e extras, e vê a bicicleta mudar em 3D enquant
 o peso, as especificações e a compatibilidade são recalculados em tempo real.
 
 O projeto está a ser construído por fases, com verificação no fim de cada fase. Este
-repositório contém a **Fase 4**: modelo de dados, catálogo, estado global, cena 3D
-interativa e testes.
+repositório contém a **Fase 5**: modelo de dados, catálogo, estado global, cena 3D
+interativa com peças intercambiáveis e testes.
 
 ---
 
@@ -16,18 +16,21 @@ interativa e testes.
 
 | | |
 | --- | --- |
-| Fase | **4 de 11** — dados, estado global, interface e cena 3D |
+| Fase | **5 de 11** — dados, estado, interface, cena 3D e peças intercambiáveis |
 | Build | `next build --webpack` ✅ (5 rotas estáticas) |
 | Typecheck | `tsc --noEmit` ✅ (TypeScript estrito) |
 | Lint | `eslint .` ✅ (0 erros, 0 avisos) |
-| Testes | `vitest run` ✅ (95 testes) |
+| Testes | `vitest run` ✅ (136 testes) |
 | Smoke test | `npm run smoke` ✅ (25 verificações) |
-| Cena 3D | `npm run verify:3d` ✅ (15 verificações em Chromium real) |
+| Cena 3D | `npm run verify:3d` ✅ (20 verificações em Chromium real) |
 
-A bicicleta já é visível e interativa em 3D, centrada e enquadrada em quatro vistas, com
-rotação, zoom e rotação automática. Ainda **não** existem preço, peso, especificações
-calculadas nem motor de compatibilidade: a interface mostra a estrutura final dessas áreas
-e identifica em que fase cada uma entra — nada é simulado.
+A bicicleta é visível e interativa em 3D, centrada e enquadrada em quatro vistas, com
+rotação, zoom e rotação automática. **Cada categoria já lista os produtos reais do
+catálogo e a escolha muda a peça desenhada**: um pedaleiro mono-prato perde o prato
+interno, um grupo com travões de aro move os calibradores para o aro, um quadro de
+titânio aparece em metal nu. Ainda **não** existem preço total, peso total nem motor de
+compatibilidade: a interface mostra a estrutura final dessas áreas e identifica em que
+fase cada uma entra — nada é simulado.
 
 ---
 
@@ -107,26 +110,35 @@ src/
 │  ├─ ui/                   # primitivas de design system (Button, Badge, LinkButton)
 │  ├─ layout/               # header, footer, marca
 │  ├─ home/                 # secções da landing page
-│  ├─ configurator/         # shell, palco, categorias, resumo, roadmap
+│  ├─ configurator/         # shell, palco, categorias, seleção de produtos, resumo
 │  └─ 3d/                   # cena e peças procedurais
-│     ├─ bike-model.tsx     # monta a bicicleta a partir da geometria
+│     ├─ bike-model.tsx     # monta a bicicleta a partir das variantes
 │     ├─ bike-scene.tsx     # Canvas, luzes e Suspense
 │     ├─ camera-rig.tsx     # vistas predefinidas, rotação automática, OrbitControls
 │     ├─ stage-canvas.tsx   # entrada pública: lazy, fallbacks, suporte WebGL
 │     ├─ scene-boundary.tsx # error boundary da cena
 │     ├─ webgl-support.ts   # deteção de WebGL sem hydration mismatch
-│     ├─ materials.ts       # paleta de materiais partilhada
+│     ├─ geometry-cache.ts  # geometrias partilhadas (um buffer por forma)
+│     ├─ material-cache.ts  # materiais partilhados (um programa por acabamento)
+│     ├─ instanced-parts.tsx# peças repetidas numa só draw call
+│     ├─ shadow.ts          # sombra de contacto gerada em canvas
 │     ├─ tube.tsx           # cilindro entre dois pontos
-│     └─ parts/             # quadro, rodas, pneus, grupo, pedaleiro, guiador, selim
+│     └─ parts/             # quadro, rodas, grupo, pedaleiro, guiador, selim, extras
+│        ├─ registry.ts     # categoria → componente que a desenha
+│        └─ glb-models.ts   # ponto de extensão para modelos GLB
 ├─ config/                  # dados de estrutura: site, categorias, regras planeadas
 ├─ data/
 │  └─ catalog/              # catálogo tipado por categoria + validação opcional
 ├─ lib/
-│  ├─ catalog.ts            # acessores puros sobre o catálogo + type guards
+│  ├─ catalog.ts            # acessores puros sobre o catálogo + seleção de configuração
 │  ├─ configuration.ts      # helpers puros de configuração
+│  ├─ format.ts             # formatação de preço, peso e comprimento (pt-PT)
 │  ├─ 3d/
 │  │  ├─ bike-geometry.ts   # geometria procedural em metros (pura, sem Three.js)
-│  │  └─ camera-views.ts    # enquadramento das vistas predefinidas (puro)
+│  │  ├─ camera-views.ts    # enquadramento das vistas predefinidas (puro)
+│  │  ├─ part-variants.ts   # variante visual de cada produto (pura)
+│  │  ├─ instances.ts       # colocação de peças repetidas (puro)
+│  │  └─ material-palette.ts# paleta de materiais como dados
 │  ├─ validation/           # schemas Zod (contrato de runtime)
 │  └─ utils.ts, site-url.ts
 ├─ store/
@@ -139,7 +151,9 @@ tests/
 ├─ catalog.test.ts          # integridade do catálogo e da validação
 ├─ configuration.test.ts    # helpers e serialização de configuração
 ├─ bike-store.test.ts       # store, persistência e invariantes
-└─ 3d-geometry.test.ts      # geometria da bicicleta e enquadramento das vistas
+├─ 3d-geometry.test.ts      # geometria da bicicleta e enquadramento das vistas
+├─ 3d-parts.test.ts         # variantes visuais, instâncias e registry
+└─ format.test.ts           # formatação de preço, peso e comprimento
 public/images/              # assets editoriais
 docs/                       # roadmap técnico
 scripts/                    # smoke test sem dependências
@@ -211,6 +225,28 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   *skip link*, landmarks, foco visível, 404.
 - Responsivo: desktop, portátil, tablet e telemóvel (3D → componentes → resumo).
 
+**Fase 5 — peças intercambiáveis**
+
+- Cada categoria do configurador lista os **31 produtos reais** do catálogo, com nome,
+  modelo, atributos técnicos, preço e peso. A escolha escreve diretamente no store.
+- **Variantes visuais derivadas dos atributos**, em `src/lib/3d/part-variants.ts`:
+  quadro *aero* de carbono com tubos achatados e cablagem interna versus quadro *gravel*
+  de titânio com tubos redondos e metal nu; aro carbono de 45 mm com 20 raios versus aro
+  de alumínio com 28 e pista de travão maquinada; pneu *slick* de 320 tpi versus pneu
+  *gravel* com blocos; pedaleiro duplo versus mono-prato; grupo mecânico com cabos
+  versus eletrónico com bateria; travões de disco com rotores versus travões de aro com
+  calibradores no aro; cassete com um carreto por velocidade e corpo XDR mais estreito;
+  guiador *gravel* com *flare*; selim de corrida de nariz curto versus selim de
+  endurance; e extras montáveis (computador, luzes, bidões, bolsa).
+- **Registry** (`src/components/3d/parts/registry.ts`): um único ficheiro mapeia categoria
+  → componente que a desenha, e `glb-models.ts` é o ponto de extensão tipado para modelos
+  GLB. Nenhum produto declara modelo ainda, por isso não existe loader sem uso — um teste
+  garante essa invariante.
+- **Otimização medida**: 55 a 64 *draw calls*, 12 000 a 16 000 triângulos, **18 a 25
+  geometrias distintas** e **3 programas de shader** para a bicicleta completa. Raios e
+  blocos de pneu são instanciados, e todas as formas repetidas partilham um buffer.
+- Seleção de tamanho de quadro e quantidade de extras integradas no store.
+
 **Fase 4 — cena 3D**
 
 - `Canvas` do React Three Fiber carregado de forma lazy (`next/dynamic` com `ssr: false`),
@@ -230,7 +266,9 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   para não introduzir *hydration mismatch*.
 - A landing page mantém-se leve: o Three.js não entra no bundle inicial de `/`.
 - Verificação real em Chromium headless com WebGL por software (`npm run verify:3d`):
-  contexto vivo, pixels desenhados, vistas, rotação, arrasto e viewport móvel.
+  contexto vivo, pixels desenhados, vistas, rotação, arrasto, viewport móvel, troca de
+  quadro a alterar a cena, pedaleiro mono-prato, grupo com travões de aro, extra montado
+  e `aria-pressed` na seleção — 20 verificações.
 
 **Fase 3 — estado**
 
@@ -247,8 +285,8 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   browser, memória em SSR/testes, API no futuro — sem alterar o store.
 - O store guarda ids, nunca produtos: a configuração é pequena, serializável para
   URL ou base de dados, e continua válida quando o catálogo muda.
-- 95 testes no total (catálogo, helpers de configuração, serialização, store, geometria 3D
-  e enquadramento de câmara).
+- 136 testes no total (catálogo, helpers de configuração, serialização, store, geometria
+  3D, variantes visuais, instâncias e formatação).
 
 **Fase 2 — dados**
 
@@ -275,7 +313,7 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 | 2 | Modelo de dados, catálogo, validação Zod, testes de integridade | ✅ concluída |
 | 3 | Zustand: seleção, configuração, loading, câmara, persistência | ✅ concluída |
 | 4 | Cena 3D (React Three Fiber, Drei, Suspense, fallback de WebGL, vistas de câmara) | ✅ concluída |
-| 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | pendente |
+| 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
 | 6 | Preço e peso em tempo real (funções puras + testes) | pendente |
 | 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | pendente |
 | 8 | Responsividade do configurador (desktop split, mobile empilhado) | pendente |
@@ -330,6 +368,18 @@ A arquitetura já separa o que é preciso para suportar, sem implementar:
   posições definidas por código.
 - **Sombra por textura**: o chão usa uma elipse gerada em canvas em vez de *shadow maps*,
   o que mantém a cena barata em dispositivos sem GPU dedicada.
+- **Geometria e material partilhados**: `geometry-cache.ts` e `material-cache.ts` guardam
+  um buffer por forma e um material por acabamento. A bicicleta completa usa 18 a 25
+  geometrias e 3 programas de shader, contra ~60 geometrias se cada malha criasse a sua.
+- **Instâncias para o que repete**: raios e blocos de pneu são `InstancedMesh`, pelo que
+  uma roda com 28 raios continua a custar uma *draw call*.
+- **Variantes como dados**: `src/lib/3d/part-variants.ts` decide *o que* desenhar a partir
+  dos atributos do produto, sem React e sem Three.js. As regras visuais são testáveis e a
+  Fase 7 pode reutilizar os mesmos atributos para as regras de compatibilidade.
+- **Medição de performance**: os números de *draw calls*, triângulos, geometrias e
+  programas foram lidos de `renderer.info` numa sessão de perfis temporária. O FPS em
+  Chromium headless com WebGL por software não é representativo de GPU real e não é
+  usado como métrica.
 - **ESLint 9**: o plugin de React incluído no `eslint-config-next` 16 ainda chama
   `context.getFilename()`, que o ESLint 10 removeu. A versão está fixa na linha 9.x.
 - **Build**: validado com `next build --webpack`. O Turbopack (padrão do Next 16) também é
