@@ -46,12 +46,12 @@ export function StagePanel() {
               Cena 3D
             </h2>
             <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-fog-400">
-              Arraste para rodar, use a roda do rato para aproximar. A geometria
-              já responde ao tamanho do quadro, às rodas e ao guiador.
+              Arraste para rodar, use a roda do rato para aproximar. Cada
+              componente escolhido muda a peça desenhada na cena.
             </p>
           </div>
           <p className="num text-[0.6875rem] tracking-[0.16em] text-fog-500 uppercase">
-            Procedural · metros
+            Procedural · intercambiável
           </p>
         </div>
       </div>
