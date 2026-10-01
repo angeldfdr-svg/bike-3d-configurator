@@ -12,6 +12,7 @@ import type {
   Tire,
   Wheelset,
 } from '@/types/components';
+import type { BikeConfiguration } from '@/types/configuration';
 
 /**
  * Pure accessors over the catalog.
@@ -75,6 +76,49 @@ export function countByCategory(source: Catalog, category: ComponentCategory): n
 /* ------------------------------------------------------------------ *
  * Type guards
  * ------------------------------------------------------------------ */
+
+/**
+ * The products a configuration points at, resolved against the catalog.
+ *
+ * The configuration stores ids; this turns them into typed products. Unknown
+ * or absent ids resolve to `undefined`, which every consumer already has to
+ * handle — the scene falls back to demonstrative geometry and the price engine
+ * reports the build as incomplete.
+ */
+export type ConfigurationSelection = {
+  readonly frame: BikeFrame | undefined;
+  readonly wheelset: Wheelset | undefined;
+  readonly groupset: Groupset | undefined;
+  readonly crankset: Crankset | undefined;
+  readonly handlebar: Handlebar | undefined;
+  readonly saddle: Saddle | undefined;
+  readonly tire: Tire | undefined;
+  readonly accessories: readonly Accessory[];
+};
+
+export function findSelection(
+  source: Catalog,
+  configuration: BikeConfiguration,
+): ConfigurationSelection {
+  const accessories: Accessory[] = [];
+
+  for (const selected of configuration.accessories) {
+    const accessory = source.accessories.find((item) => item.id === selected.id);
+
+    if (accessory !== undefined) accessories.push(accessory);
+  }
+
+  return {
+    frame: findProductById(source, configuration.frameId ?? '') as BikeFrame | undefined,
+    wheelset: findProductById(source, configuration.wheelsetId ?? '') as Wheelset | undefined,
+    groupset: findProductById(source, configuration.groupsetId ?? '') as Groupset | undefined,
+    crankset: findProductById(source, configuration.cranksetId ?? '') as Crankset | undefined,
+    handlebar: findProductById(source, configuration.handlebarId ?? '') as Handlebar | undefined,
+    saddle: findProductById(source, configuration.saddleId ?? '') as Saddle | undefined,
+    tire: findProductById(source, configuration.tireId ?? '') as Tire | undefined,
+    accessories,
+  };
+}
 
 export function isFrame(component: Component): component is BikeFrame {
   return component.category === 'quadro';

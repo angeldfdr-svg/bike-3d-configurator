@@ -2,30 +2,52 @@
 
 import { useMemo } from 'react';
 
-import { Crankset } from '@/components/3d/parts/crankset';
-import { Frame } from '@/components/3d/parts/frame';
-import { Groupset } from '@/components/3d/parts/groupset';
-import { Handlebar, Levers } from '@/components/3d/parts/handlebar';
-import { Saddle } from '@/components/3d/parts/saddle';
-import { Wheels } from '@/components/3d/parts/wheels';
-import { createShadowTexture } from '@/components/3d/parts/tires';
+import { Levers } from '@/components/3d/parts/handlebar';
+import { partRegistry } from '@/components/3d/parts/registry';
+import { createShadowTexture } from '@/components/3d/shadow';
 import { catalog } from '@/data/catalog';
+import { findSelection } from '@/lib/catalog';
 import { resolveBikeGeometry } from '@/lib/3d/bike-geometry';
+import {
+  mountedQuantity,
+  resolveCrankVariant,
+  resolveFrameVariant,
+  resolveGroupsetVariant,
+  resolveHandlebarVariant,
+  resolveSaddleVariant,
+  resolveTireVariant,
+  resolveWheelVariant,
+} from '@/lib/3d/part-variants';
 import { useBikeStore } from '@/store/bike-store';
 
 /**
  * The procedural bicycle.
  *
- * Geometry is derived from the current configuration, so a different tyre,
- * crankset or handlebar already changes the silhouette. Phase 5 adds the
- * interchangeable part shapes on top of these anchor points.
+ * Every part is resolved from the current configuration through the variant
+ * resolvers and drawn by the registry, so the bike on screen is always the bike
+ * that was configured — including parts that are simply not there, like the
+ * second chainring of a mono-plate crankset.
  */
 export function BikeModel() {
   const configuration = useBikeStore((state) => state.configuration);
-  const geometry = useMemo(
-    () => resolveBikeGeometry(configuration, catalog),
-    [configuration],
-  );
+
+  const parts = useMemo(() => {
+    const selection = findSelection(catalog, configuration);
+
+    return {
+      geometry: resolveBikeGeometry(configuration, catalog),
+      frame: resolveFrameVariant(selection.frame),
+      wheel: resolveWheelVariant(selection.wheelset),
+      tire: resolveTireVariant(selection.tire),
+      groupset: resolveGroupsetVariant(selection.groupset),
+      crankset: resolveCrankVariant(selection.crankset),
+      handlebar: resolveHandlebarVariant(selection.handlebar),
+      saddle: resolveSaddleVariant(selection.saddle),
+      accessories: selection.accessories.filter(
+        (accessory) => mountedQuantity(accessory) > 0,
+      ),
+    };
+  }, [configuration]);
 
   const shadow = useMemo(() => createShadowTexture(), []);
 
@@ -36,13 +58,14 @@ export function BikeModel() {
         <meshBasicMaterial map={shadow} transparent depthWrite={false} opacity={0.9} />
       </mesh>
 
-      <Wheels geometry={geometry} />
-      <Frame geometry={geometry} />
-      <Groupset geometry={geometry} />
-      <Crankset geometry={geometry} />
-      <Handlebar geometry={geometry} />
-      <Levers geometry={geometry} />
-      <Saddle geometry={geometry} />
+      <partRegistry.rodas geometry={parts.geometry} wheel={parts.wheel} tire={parts.tire} />
+      <partRegistry.quadro geometry={parts.geometry} variant={parts.frame} />
+      <partRegistry.grupo geometry={parts.geometry} variant={parts.groupset} />
+      <partRegistry.pedaleiro geometry={parts.geometry} variant={parts.crankset} />
+      <partRegistry.guiador geometry={parts.geometry} variant={parts.handlebar} />
+      <Levers geometry={parts.geometry} variant={parts.handlebar} />
+      <partRegistry.selim geometry={parts.geometry} variant={parts.saddle} />
+      <partRegistry.extras geometry={parts.geometry} accessories={parts.accessories} />
     </group>
   );
 }
