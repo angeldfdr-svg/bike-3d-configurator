@@ -42,7 +42,7 @@ export function SiteFooter() {
             Projeto de demonstração. Marca fictícia, componentes ilustrativos e sem preços ou
             pesos reais.
           </p>
-          <p className="num">Fase 5 de 11 · dados, estado, interface, cena e peças 3D</p>
+          <p className="num">Fase 6 de 11 · dados, estado, interface, cena, peças, preço e peso</p>
         </div>
       </div>
     </footer>

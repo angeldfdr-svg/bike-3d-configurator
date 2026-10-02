@@ -6,7 +6,7 @@ const phases = [
   { phase: 3, label: 'Estado global (Zustand)', done: true },
   { phase: 4, label: 'Cena 3D (React Three Fiber)', done: true },
   { phase: 5, label: 'Peças 3D intercambiáveis', done: true },
-  { phase: 6, label: 'Preço e peso em tempo real', done: false },
+  { phase: 6, label: 'Preço e peso em tempo real', done: true },
   { phase: 7, label: 'Motor de compatibilidade', done: false },
 ] as const;
 
