@@ -254,6 +254,20 @@ async function main() {
       await page.waitForTimeout(500);
     }
 
+    // The picks above deliberately assembled an incoherent build: a rim brake
+    // groupset on a disc frame, a BSA groupset on a T47 frame, and a saddle
+    // whose rails do not match. Repair the three slots that clash, so the rest
+    // of the checks run against a build that really can be assembled.
+    for (const [category, product] of [
+      [/^Grupo/, /Di2 12/],
+      [/^Pedaleiro/, /Sub-compact 170/],
+      [/^Selim/, /Gravel 145/],
+    ]) {
+      await page.getByRole('button', { name: category }).click();
+      await page.getByRole('button', { name: product }).first().click();
+      await page.waitForTimeout(500);
+    }
+
     const summary = page.getByRole('region', { name: 'Resumo' });
     const summaryText = async () => (await summary.innerText()).replace(/\s+/g, ' ');
 
@@ -274,17 +288,64 @@ async function main() {
       fullText.slice(0, 60),
     );
 
-    // Swapping a groupset must move the total by that groupset's difference.
+    // Swapping a component must move the total. The handlebar is used because
+    // no rule involves it, so the swap cannot disturb the checks below.
     const pricedSummary = await summaryText();
-    await page.getByRole('button', { name: /^Grupo/ }).click();
-    await page.getByRole('button', { name: /Mechanic 11/ }).first().click();
+    await page.getByRole('button', { name: /^Guiador/ }).click();
+    await page.getByRole('button', { name: /Endurance 42/ }).first().click();
     await page.waitForTimeout(700);
     report(
-      (await summaryText()) !== beforeSwap,
+      (await summaryText()) !== pricedSummary,
       'changing a component moves the total',
     );
+    await page.getByRole('button', { name: /Gravel 44/ }).first().click();
+    await page.waitForTimeout(700);
 
     await page.screenshot({ path: `${OUTPUT_DIR}configurator-summary.png` });
+
+    // Phase 7: an incompatible product must be flagged before it is chosen.
+    // The frame is titanium gravel, whose seatpost is 31,6 mm; Race 143 is 27,2.
+    await page.getByRole('button', { name: /^Selim/ }).click();
+    const clashingSaddle = page.getByRole('button', { name: /Race 143/ }).first();
+    const flagged = await clashingSaddle.getAttribute('data-conflict');
+    report(
+      flagged === 'espigao-selim',
+      'a product that clashes with the build is flagged',
+      String(flagged),
+    );
+    await page.screenshot({ path: `${OUTPUT_DIR}configurator-conflict.png` });
+
+    // Choosing it anyway must be reported, never silently accepted.
+    await clashingSaddle.click();
+    await page.waitForTimeout(700);
+    const incompatible = await summaryText();
+    report(
+      /Incompat/i.test(incompatible) && /Diâmetro de espigão incompatível/.test(incompatible),
+      'an incompatible build is reported with the reason',
+      incompatible.slice(0, 140),
+    );
+    report(
+      /Escolhe um selim de carris/.test(incompatible),
+      'the report names the way out',
+      incompatible.slice(0, 140),
+    );
+    report(
+      /conflito/.test(incompatible),
+      'the footer counts the conflicts',
+      incompatible.slice(0, 140),
+    );
+
+    // Fixing the conflict must clear it, and the build must become compatible
+    // again — the only clash left was the one this step introduces.
+    await page.getByRole('button', { name: /Gravel 145/ }).first().click();
+    await page.waitForTimeout(700);
+    const fixed = await summaryText();
+    report(
+      !/Diâmetro de espigão incompatível/.test(fixed) &&
+        /compatíveis entre si/.test(fixed),
+      'fixing the clash clears the report',
+      fixed.slice(0, 140),
+    );
 
     // Mobile layout.
     const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
