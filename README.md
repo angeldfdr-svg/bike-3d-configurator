@@ -7,8 +7,8 @@ pedaleiro, guiador, selim, pneus e extras, e vê a bicicleta mudar em 3D enquant
 o peso, as especificações e a compatibilidade são recalculados em tempo real.
 
 O projeto está a ser construído por fases, com verificação no fim de cada fase. Este
-repositório contém a **Fase 5**: modelo de dados, catálogo, estado global, cena 3D
-interativa com peças intercambiáveis e testes.
+repositório contém a **Fase 6**: modelo de dados, catálogo, estado global, cena 3D
+interativa com peças intercambiáveis, preço e peso em tempo real e testes.
 
 ---
 
@@ -16,21 +16,22 @@ interativa com peças intercambiáveis e testes.
 
 | | |
 | --- | --- |
-| Fase | **5 de 11** — dados, estado, interface, cena 3D e peças intercambiáveis |
+| Fase | **6 de 11** — dados, estado, interface, cena 3D, peças, preço e peso |
 | Build | `next build --webpack` ✅ (5 rotas estáticas) |
 | Typecheck | `tsc --noEmit` ✅ (TypeScript estrito) |
 | Lint | `eslint .` ✅ (0 erros, 0 avisos) |
-| Testes | `vitest run` ✅ (136 testes) |
+| Testes | `vitest run` ✅ (152 testes) |
 | Smoke test | `npm run smoke` ✅ (25 verificações) |
-| Cena 3D | `npm run verify:3d` ✅ (20 verificações em Chromium real) |
+| Cena 3D | `npm run verify:3d` ✅ (25 verificações em Chromium real) |
 
 A bicicleta é visível e interativa em 3D, centrada e enquadrada em quatro vistas, com
-rotação, zoom e rotação automática. **Cada categoria já lista os produtos reais do
-catálogo e a escolha muda a peça desenhada**: um pedaleiro mono-prato perde o prato
-interno, um grupo com travões de aro move os calibradores para o aro, um quadro de
-titânio aparece em metal nu. Ainda **não** existem preço total, peso total nem motor de
-compatibilidade: a interface mostra a estrutura final dessas áreas e identifica em que
-fase cada uma entra — nada é simulado.
+rotação, zoom e rotação automática. **Cada categoria lista os produtos reais do catálogo
+e a escolha muda a peça desenhada**: um pedaleiro mono-prato perde o prato interno, um
+grupo com travões de aro move os calibradores para o aro, um quadro de titânio aparece em
+metal nu. **O preço e o peso totais são calculados a cada escolha**, com o estado
+incompleto declarado e os componentes em falta nomeados. Ainda **não** existe motor de
+compatibilidade nem especificações calculadas: a interface mostra a estrutura final
+dessas áreas e identifica em que fase cada uma entra — nada é simulado.
 
 ---
 
@@ -132,6 +133,7 @@ src/
 ├─ lib/
 │  ├─ catalog.ts            # acessores puros sobre o catálogo + seleção de configuração
 │  ├─ configuration.ts      # helpers puros de configuração
+│  ├─ pricing.ts            # preço e peso da configuração (puro, sem React)
 │  ├─ format.ts             # formatação de preço, peso e comprimento (pt-PT)
 │  ├─ 3d/
 │  │  ├─ bike-geometry.ts   # geometria procedural em metros (pura, sem Three.js)
@@ -247,6 +249,28 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   blocos de pneu são instanciados, e todas as formas repetidas partilham um buffer.
 - Seleção de tamanho de quadro e quantidade de extras integradas no store.
 
+**Fase 6 — preço e peso**
+
+- `src/lib/pricing.ts` soma o preço (cêntimos inteiros) e o peso (gramas inteiras) de
+  cada componente selecionado. Não arredonda nada: cada valor do catálogo já é um
+  inteiro na sua unidade, e a política de arredondamento — se algum dia for necessária —
+  decide-se uma única vez, no motor, nunca dentro de um componente.
+- **Quantidades explícitas**: `slotQuantities` declara quantas unidades uma bicicleta
+  precisa de cada categoria. O par de rodas conta uma vez porque é vendido e pesado ao
+  par, como o catálogo afirma na sua própria linha «Peso do par»; o pneu conta duas
+  vezes porque um produto é o borracha de uma roda. É uma decisão de produto, não um
+  cálculo, e por isso vive como dados testados.
+- **Nada é contado duas vezes**: as sete categorias são percorridas uma vez cada e os
+  extras uma vez cada. O grupo leva a cassete, os desviadores e os travões no seu preço
+  e o par de rodas leva os cubos e os raios; nenhum deles tem categoria própria, pelo que
+  não existe segunda linha que os possa duplicar. Um teste prova que a soma das linhas é
+  igual ao total.
+- **Build incompleto é declarado**: a configuração devolve `complete: false` e a lista
+  dos componentes em falta. O resumo mostra o total parcial claramente assinalado e nomeia
+  o que falta, para que um preço parcial nunca seja confundido com o preço de uma
+  bicicleta.
+- Um id que já não existe no catálogo é tratado como em falta, não como gratuito.
+
 **Fase 4 — cena 3D**
 
 - `Canvas` do React Three Fiber carregado de forma lazy (`next/dynamic` com `ssr: false`),
@@ -267,8 +291,10 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 - A landing page mantém-se leve: o Three.js não entra no bundle inicial de `/`.
 - Verificação real em Chromium headless com WebGL por software (`npm run verify:3d`):
   contexto vivo, pixels desenhados, vistas, rotação, arrasto, viewport móvel, troca de
-  quadro a alterar a cena, pedaleiro mono-prato, grupo com travões de aro, extra montado
-  e `aria-pressed` na seleção — 20 verificações.
+  quadro a alterar a cena, pedaleiro mono-prato, grupo com travões de aro, extra montado,
+  `aria-pressed` na seleção, build vazio sem preço, resumo com preço e peso reais,
+  build completo sem componentes em falta, e total a mover-se ao trocar um componente —
+  25 verificações.
 
 **Fase 3 — estado**
 
@@ -285,8 +311,8 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   browser, memória em SSR/testes, API no futuro — sem alterar o store.
 - O store guarda ids, nunca produtos: a configuração é pequena, serializável para
   URL ou base de dados, e continua válida quando o catálogo muda.
-- 136 testes no total (catálogo, helpers de configuração, serialização, store, geometria
-  3D, variantes visuais, instâncias e formatação).
+- 152 testes no total (catálogo, helpers de configuração, serialização, store, geometria
+  3D, variantes visuais, instâncias, preço e peso, e formatação).
 
 **Fase 2 — dados**
 
@@ -314,7 +340,7 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 | 3 | Zustand: seleção, configuração, loading, câmara, persistência | ✅ concluída |
 | 4 | Cena 3D (React Three Fiber, Drei, Suspense, fallback de WebGL, vistas de câmara) | ✅ concluída |
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
-| 6 | Preço e peso em tempo real (funções puras + testes) | pendente |
+| 6 | Preço e peso em tempo real (funções puras + testes) | ✅ concluída |
 | 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | pendente |
 | 8 | Responsividade do configurador (desktop split, mobile empilhado) | pendente |
 | 9 | Microanimações, transições, estados vazios/erro/carregamento | pendente |

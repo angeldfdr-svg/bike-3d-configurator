@@ -3,7 +3,7 @@
 Estado vivo do projeto. Actualizado no fim de cada fase; a fonte de verdade para
 "o que está feito, o que falta e o que decidir a seguir".
 
-- **Fase actual:** 5 de 11 — concluída e verificada
+- **Fase actual:** 6 de 11 — concluída e verificada
 - **Branch:** `main` (repositório local, sem remoto configurado)
 - **Última verificação completa:** typecheck, lint, testes, build, smoke e verificação
   da cena 3D em Chromium real — todos verdes
@@ -38,8 +38,8 @@ existe aparece identificado como fase futura.
 | 3 | Zustand: selecção, configuração, câmara, persistência | ✅ concluída |
 | 4 | Cena 3D (R3F, Drei, Suspense, fallback WebGL, vistas de câmara) | ✅ concluída |
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
-| 6 | Preço e peso em tempo real (funções puras + testes) | ⏳ próxima |
-| 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | pendente |
+| 6 | Preço e peso em tempo real (funções puras + testes) | ✅ concluída |
+| 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | ⏳ próxima |
 | 8 | Responsividade do configurador (desktop split, mobile empilhado) | pendente |
 | 9 | Microanimações, transições, estados vazios/erro/carregamento | pendente |
 | 10 | Testes de domínio e interface, performance 3D | pendente |
@@ -47,9 +47,63 @@ existe aparece identificado como fase futura.
 
 ---
 
-## 3. Fase 5 — o que foi feito
+## 3. Fase 6 — o que foi feito
 
-### 3.1 Variantes visuais (`src/lib/3d/part-variants.ts`)
+### 3.1 Motor de preço e peso (`src/lib/pricing.ts`)
+
+`costBuild(source, configuration)` devolve uma linha por categoria escolhida, uma linha
+por extra montado e os dois totais. As decisões que o motor toma explicitamente:
+
+| Decisão | Valor | Justificação |
+| --- | --- | --- |
+| Unidade de preço | cêntimos inteiros | o catálogo já guarda cêntimos; somar inteiros não pode perder precisão |
+| Unidade de peso | gramas inteiras | idem, em gramas |
+| Arredondamento | nenhum | toda a soma é exacta; se um catálogo passar a ter fracções, a política decide-se aqui uma vez |
+| Rodas | 1 unidade | o catálogo diz «Peso do par» na própria ficha do produto |
+| Pneus | 2 unidades | um produto é a borracha de uma roda; a ficha diz apenas «Peso» |
+| Restantes categorias | 1 unidade | uma bicicleta tem um quadro, um grupo, um pedaleiro, um guiador e um selim |
+| Extras | a quantidade escolhida | 1 ou 2, limitado pelo picker e clampado no motor |
+| Categoria em falta | listada em `missing` | um build incompleto diz qual é o componente que falta |
+| Id desconhecido | tratado como em falta | não é silenciosamente gratuito |
+
+A garantia de que nada é contado duas vezes é estrutural: as sete categorias são
+percorridas uma vez cada e os extras uma vez cada. O grupo leva a cassete, os
+desviadores e os travões no seu preço e o par de rodas leva os cubos e os raios; nenhum
+deles tem categoria própria, pelo que não existe segunda linha que os possa duplicar.
+Um teste compara a soma das linhas com o total.
+
+### 3.2 Painel de resumo
+
+`summary-panel.tsx` passou a ser cliente e a chamar o motor. Mostra o preço e o peso
+totais; quando o build está incompleto mostra o total parcial com cor esbatida, a
+etiqueta «Incompleto» e a lista dos componentes que faltam. «Especificações» e
+«Compatibilidade» continuam por preencher — são a Fase 7.
+
+### 3.3 Valor de referência
+
+Build completo usado na verificação em browser, conferido linha a linha contra o
+catálogo:
+
+```
+Quadro    Ti Gravel      215000 c  1480 g
+Rodas     Alloy 24        69000 c  1810 g
+Grupo     Di2 12         329000 c  2480 g
+Pedaleiro DUB 172,5       35900 c   760 g
+Guiador   Gravel 44       11900 c   340 g
+Selim     Endurance 148    7900 c   230 g
+Pneus     Gravel 40 (x2)  16800 c   760 g
+Extras    Cycle Computer  24900 c    85 g
+                                  ---------
+TOTAL                     710400 c  7945 g  ->  7104,00 € · 7,9 kg
+```
+
+O browser mostrou exactamente estes dois valores.
+
+---
+
+## 4. Fase 5 — o que foi feito
+
+### 4.1 Variantes visuais (`src/lib/3d/part-variants.ts`)
 
 Funções puras que traduzem os atributos do catálogo no que a cena desenha:
 
@@ -64,38 +118,39 @@ Funções puras que traduzem os atributos do catálogo no que a cena desenha:
 | Selim | corrida (nariz curto) vs endurance, largura da casca, material dos carris |
 | Extras | computador, luzes, bidões e bolsa, limitados pela capacidade de cada encaixe |
 
-### 3.2 Colocação de instâncias (`src/lib/3d/instances.ts`)
+### 4.2 Colocação de instâncias (`src/lib/3d/instances.ts`)
 
 Tuplas puras para peças repetidas: anéis, raios radiais, carretos de cassete e montagens
 em tubos. A cena converte-as em matrizes de instância, pelo que uma roda com 28 raios
 custa uma *draw call*.
 
-### 3.3 Caches (`geometry-cache.ts`, `material-cache.ts`)
+### 4.3 Caches (`geometry-cache.ts`, `material-cache.ts`)
 
 Um buffer por forma e um material por acabamento. `<primitive>` nunca é descartado pelo
 R3F (confirmado no código-fonte do reconciler), por isso o cache é seguro.
 
-### 3.4 Registry
+### 4.4 Registry
 
 `parts/registry.ts` mapeia categoria → componente. `parts/glb-models.ts` é o ponto de
 extensão tipado para GLB: está vazio de propósito, e um teste garante que assim continua,
 para não existir um *loader* sem uso.
 
-### 3.5 Seleção de produtos
+### 4.5 Seleção de produtos
 
 `category-panel.tsx` passou a listar os produtos reais com `product-picker.tsx`, ligado
 às ações do store já testadas na Fase 3. Inclui seleção de tamanho de quadro e
-quantidade de extras. Preço e peso por produto são factos do catálogo; os totais do
-conjunto são a Fase 6.
+quantidade de extras. Preço e peso por produto são factos do catálogo.
 
-### 3.6 Seleção no catálogo
+### 4.6 Seleção no catálogo
 
 `findSelection(source, configuration)` em `src/lib/catalog.ts` resolve os ids da
-configuração em produtos tipados. A Fase 6 vai reutilizá-la para preço e peso.
+configuração em produtos tipados. A Fase 6 reutilizou-a directamente.
 
-## 4. Verificações da Fase 5
+---
 
-### 3.1 Geometria procedural (`src/lib/3d/bike-geometry.ts`)
+## 5. Fase 4 — o que foi feito
+
+### 5.1 Geometria procedural (`src/lib/3d/bike-geometry.ts`)
 
 Funções puras, sem Three.js. Recebem a configuração e o catálogo e devolvem todas as
 âncoras em metros:
@@ -116,7 +171,7 @@ direcção, o que punha a coroa do garfo a 49 cm do chão (deveria ser ~71 cm). 
 quase vertical; o ângulo da direcção pertence ao eixo da direcção. Passou a existir
 `FORK_LENGTH` (0,373 m) com `FORK_RAKE_ANGLE` (7°).
 
-### 3.2 Enquadramento (`src/lib/3d/camera-views.ts`)
+### 5.2 Enquadramento (`src/lib/3d/camera-views.ts`)
 
 `resolveCameraPreset(view, geometry)` devolve posição e alvo para as quatro vistas,
 com a distância calculada a partir da FOV vertical (35°), do *aspect* do palco (16:10)
@@ -127,45 +182,42 @@ nunca é cortada.
 A vista superior é inclinada (52° de elevação, 30° de azimute) porque olhar exactamente
 de cima deixa o vetor *up* paralelo à direcção da vista, o que é indefinido.
 
-### 3.3 Cena (`src/components/3d/`)
+### 5.3 Cena (`src/components/3d/`)
 
 | Ficheiro | Papel |
 | --- | --- |
 | `stage-canvas.tsx` | entrada pública; lazy, fallbacks, deteção de WebGL, descrição acessível |
 | `bike-scene.tsx` | `Canvas`, luzes, `Suspense`, câmara inicial |
-| `bike-model.tsx` | monta as peças a partir da geometria + sombra em canvas |
+| `bike-model.tsx` | monta as peças a partir das variantes + sombra em canvas |
 | `camera-rig.tsx` | vistas, rotação automática e `OrbitControls` num único `useFrame` |
 | `scene-boundary.tsx` | error boundary da cena |
 | `webgl-support.ts` | deteção via `useSyncExternalStore` (sem *hydration mismatch*) |
-| `materials.ts` | paleta de materiais partilhada |
+| `geometry-cache.ts` / `material-cache.ts` | buffers e materiais partilhados |
+| `instanced-parts.tsx` | peças repetidas numa só *draw call* |
+| `shadow.ts` | sombra de contacto gerada em canvas |
 | `tube.tsx` | cilindro entre dois pontos |
-| `parts/frame.tsx` | triângulo principal, escoras, espigão, forquilha |
-| `parts/wheels.tsx` | aro, raios, cubo |
-| `parts/tires.tsx` | pneu, parede lateral, cassete, textura de sombra |
-| `parts/groupset.tsx` | cassete, desviador, corrente, travões |
-| `parts/crankset.tsx` | pratos, braços, pedais |
-| `parts/handlebar.tsx` | avanço, partes de cima, drops, manetes |
-| `parts/saddle.tsx` | selim e carris |
+| `parts/registry.ts` | categoria → componente que a desenha |
+| `parts/glb-models.ts` | ponto de extensão tipado para modelos GLB |
 
 A cena lê `configuration` e `camera` do store e nunca escreve no store.
 
-### 3.4 Interface
+### 5.4 Interface
 
 - `stage-panel.tsx` passou a alojar o canvas real (mira, badges, título, nota honesta).
 - `camera-controls.tsx` ligado ao store: as quatro vistas e o botão `Rodar` funcionam.
 
 ---
 
-## 4. Verificações da Fase 4
+## 6. Verificações
 
 | Verificação | Resultado |
 | --- | --- |
 | `npx tsc --noEmit` | ✅ 0 erros |
 | `npx eslint .` | ✅ 0 erros, 0 avisos |
-| `npx vitest run` | ✅ **136 testes** (29 catálogo + 20 configuração + 23 store + 23 geometria + 35 peças + 6 formatação) |
+| `npx vitest run` | ✅ **152 testes** (29 catálogo + 20 configuração + 23 store + 23 geometria + 35 peças + 16 preço/peso + 6 formatação) |
 | `npx next build --webpack` | ✅ 5 rotas estáticas |
 | `npm run smoke` | ✅ 25 verificações |
-| `npm run verify:3d` | ✅ 20 verificações em Chromium real |
+| `npm run verify:3d` | ✅ 25 verificações em Chromium real |
 
 `verify:3d` (`scripts/verify-3d.mjs`) arranca o servidor de produção, abre
 `/configurator` em Chromium headless com WebGL por software (SwiftShader) e verifica:
@@ -173,8 +225,9 @@ contexto WebGL vivo, *drawing buffer* alocado, pixels desenhados, vistas predefi
 (`aria-pressed`), mudança de enquadramento entre vistas, rotação automática ligada e
 desligada, arrasto com o ponteiro, **seleção de quadro a alterar a cena**, pedaleiro
 mono-prato, grupo com travões de aro, extra montado, `aria-pressed` no produto
-selecionado, viewport móvel e ausência de erros de consola. As capturas ficam em
-`.verify/`.
+selecionado, **build vazio sem preço**, **resumo com preço e peso reais**, **build
+completo sem componentes em falta**, **total a mover-se ao trocar um componente**,
+viewport móvel e ausência de erros de consola. As capturas ficam em `.verify/`.
 
 ### Performance medida
 
@@ -201,7 +254,7 @@ representativo de GPU real.
 
 ---
 
-## 5. Decisões registadas
+## 7. Decisões registadas
 
 1. **Geometria procedural primeiro, GLB depois.** Nenhum asset 3D foi descarregado da
    internet: a bicicleta é construída por código. Isto mantém o repositório leve, evita
@@ -223,12 +276,17 @@ representativo de GPU real.
    reutilize os mesmos atributos nas regras de compatibilidade.
 9. **Sem loader de GLB sem uso.** O ponto de extensão existe e está tipado, mas nenhum
    produto declara modelo; um teste garante que não há código morto a caminho.
-10. **Preço e peso por produto no seletor**, mas totais do conjunto só na Fase 6: um valor
-    do catálogo não é um cálculo.
+10. **Preço e peso no motor, nunca no componente.** O componente escolhe a forma de
+    apresentar; quem soma é `src/lib/pricing.ts`. Formatar é `src/lib/format.ts`.
+11. **Quantidades como dados.** Quantas unidades uma bicicleta precisa é uma decisão de
+    produto declarada em `slotQuantities`, não um `* 2` enterrado num componente.
+12. **Build incompleto é declarado, não escondido.** Um preço parcial aparece sempre
+    acompanhado da lista do que falta, para que nunca seja confundido com o preço de uma
+    bicicleta.
 
 ---
 
-## 6. Problemas conhecidos
+## 8. Problemas conhecidos
 
 - **Turbopack inviável neste sandbox** (2 vCPU / 2 GB RAM): os builds excedem 600 s.
   Usar `npx next build --webpack`. O script `npm run build` mantém o Turbopack.
@@ -244,29 +302,32 @@ representativo de GPU real.
 - **O selim continua a ser uma esfera escalada** com um nariz, o mais fraco do modelo.
 - **A planta da bicicleta é fixa**: todas as molduras partilham a mesma distância entre
   eixos e os mesmos ângulos de tubo. Um quadro *gravel* deveria ter mais alcance e mais
-  folga; a Fase 6 ou 7 pode introduzir geometria por tipo de quadro.
+  folga; a Fase 7 ou 8 pode introduzir geometria por tipo de quadro.
 - **O navegador headless usa WebGL por software**: as capturas são representativas da
   geometria, não da performance em GPU real.
+- **O espigão do selim não tem categoria própria**, pelo que o seu peso não entra no
+  total. O catálogo tem o diâmetro em vários produtos, mas não o produto em si.
 
 ---
 
-## 7. Próximo passo — Fase 6
+## 9. Próximo passo — Fase 7
 
-Preço e peso em tempo real:
+Motor de compatibilidade:
 
-1. Funções puras de preço e peso sobre `findSelection`, sem dupla contagem de peças
-   incluídas no grupo.
-2. Política de quantidades e arredondamento explícita.
-3. Formatação pt-PT já existe em `src/lib/format.ts`.
-4. Estado incompleto: uma configuração sem quadro não tem preço, e isso tem de ser dito.
-5. Testes de soma, quantidades, estado incompleto e unidades.
+1. Regras declaradas como dados em `src/lib/compatibility.ts`, sobre os atributos já
+   existentes no catálogo (`bottomBracket`, `freehub`, `maxTireWidth`, `brakeSystem`,
+   `axle`, `seatpostDiameter`, `speeds`).
+2. Uma configuração incompatível nunca passa em silêncio: bloqueia ou avisa, com a razão
+   em pt-PT e o caminho para a resolver.
+3. Especificações em destaque no resumo (quadro, grupo, rodas, pneus).
+4. Testes por regra, incluindo os pares compatíveis e incompatíveis reais do catálogo.
 
 **Critério de saída:** typecheck, lint, testes, build, smoke e `verify:3d` verdes, com o
-painel de resumo a mostrar valores reais.
+resumo a mostrar as especificações e o estado de compatibilidade reais.
 
 ---
 
-## 8. Comandos úteis
+## 10. Comandos úteis
 
 ```bash
 npm run dev          # desenvolvimento

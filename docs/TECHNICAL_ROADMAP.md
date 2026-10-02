@@ -10,7 +10,7 @@ Incrementos pequenos, TypeScript estrito, domínio independente da UI, ausência
 | 3 — Estado | Zustand: seleção, configuração inicial, loading, câmara, configuração guardada; ações tipadas; seletores granulares | Testes de seleção, reset e configuração inicial; sem lógica de negócio nos componentes visuais |
 | 4 — Cena 3D ✅ | React Three Fiber, Three.js, Drei, Canvas lazy, Suspense, fallback de WebGL, OrbitControls e vistas predefinidas | Bicicleta procedural centrada; zoom/orbit e vistas frontal/lateral/traseira/superior; fallback acessível |
 | 5 — Peças ✅ | Frame, Wheels, Groupset, Crankset, Handlebar, Saddle, Tires e extras separados; registry para GLB futuros | Todas as seleções com representação visual adequada; geometria reutilizada; transformações e escala consistentes |
-| 6 — Totais | Funções puras de preço/peso, políticas de quantidades e arredondamento, formatadores PT | Testes de soma, quantidades, estado incompleto e unidades; sem dupla contagem de peças incluídas no grupo |
+| 6 — Totais ✅ | Funções puras de preço/peso, políticas de quantidades e arredondamento, formatadores PT | Testes de soma, quantidades, estado incompleto e unidades; sem dupla contagem de peças incluídas no grupo |
 | 7 — Compatibilidade | Pipeline modular de regras, severidade e mensagens; compatibilidade de cassete/freehub, velocidades, BB, pneus, eixos, travagem, guiador/potência, espigão | Testes por regra e combinações; configurações inválidas explicitamente assinaladas e bloqueadas em ações relevantes |
 | 8 — Responsividade | Configurador desktop split; mobile 3D → componentes → resumo; controlos touch | Validação tablet/mobile, scroll, foco e ausência de overflow |
 | 9 — Acabamento | Microanimações, transições de seleção, estados vazios/loading/erro; motion só se necessário | Reduced motion, teclado, contraste e feedback de ações |
@@ -30,6 +30,14 @@ Incrementos pequenos, TypeScript estrito, domínio independente da UI, ausência
 2. `chore: scaffold strict Next.js application`
 3. `feat: add premium landing page and configurator shell`
 4. `test: verify phase one and document handoff`
+
+## Fase 6: sequência de commits
+1. `feat: add the price and weight engine`
+2. `test: cover quantities, totals and incomplete builds`
+3. `feat: show live price and weight in the summary`
+4. `chore: verify the summary in a real browser`
+5. `feat: mark phase six complete in the interface`
+6. `docs: record phase six results`
 
 ## Fase 5: sequência de commits
 1. `feat: derive visual variants from the catalog`
