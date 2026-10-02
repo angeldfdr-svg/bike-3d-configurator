@@ -1,11 +1,12 @@
 'use client';
 
-import { Check } from 'lucide-react';
+import { AlertTriangle, Check } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { formatLength, formatList, formatPrice, formatWeight } from '@/lib/format';
 import { catalog } from '@/data/catalog';
+import { conflictsWithBuild } from '@/lib/compatibility';
 import type {
   Accessory,
   BikeFrame,
@@ -37,6 +38,11 @@ type Slot = {
   readonly selectedId: (configuration: BikeConfiguration) => string | null;
   readonly select: (id: string) => void;
 };
+
+/** Stable id for the element that describes a product's clash. */
+function conflictId(productId: string): string {
+  return `conflito-${productId}`;
+}
 
 /** Products of a single slot, with the current selection highlighted. */
 export function ProductList({ categoryId }: { categoryId: string }) {
@@ -101,18 +107,29 @@ export function ProductList({ categoryId }: { categoryId: string }) {
     <ul className="mt-3 grid gap-2">
       {slot.products.map((product) => {
         const selected = product.id === selectedId;
+        // A selected product is flagged too: if it is what breaks the build,
+        // the picker has to say so rather than hide behind the check mark.
+        const conflicts = conflictsWithBuild(catalog, configuration, product);
+        const conflict = conflicts[0];
 
         return (
           <li key={product.id}>
             <button
               type="button"
               aria-pressed={selected}
+              // The clash is described from outside the button: folding it into
+              // the markup would put another product's name inside this
+              // button's accessible name.
+              aria-describedby={conflict ? conflictId(product.id) : undefined}
+              data-conflict={conflict ? conflict.rule : undefined}
               onClick={() => slot.select(product.id)}
               className={cn(
                 'w-full rounded-xs border px-3 py-3 text-left transition-colors duration-200',
                 selected
                   ? 'border-lime-400/50 bg-lime-400/10'
-                  : 'border-line hover:border-line-strong hover:bg-ink-850/60',
+                  : conflict
+                    ? 'border-amber-400/30 hover:border-amber-400/50 hover:bg-ink-850/60'
+                    : 'border-line hover:border-line-strong hover:bg-ink-850/60',
               )}
             >
               <span className="flex items-start justify-between gap-3">
@@ -137,6 +154,20 @@ export function ProductList({ categoryId }: { categoryId: string }) {
                 <span>{formatWeight(product.weight)}</span>
               </span>
             </button>
+
+            {conflict ? (
+              <p
+                id={conflictId(product.id)}
+                className="mt-1.5 flex items-start gap-1.5 px-3 text-[0.6875rem] leading-relaxed text-amber-300"
+              >
+                <AlertTriangle className="mt-px size-3 shrink-0" aria-hidden="true" />
+                <span>
+                  <span className="font-semibold">{conflict.title}</span>
+                  {' — '}
+                  {conflict.resolution}
+                </span>
+              </p>
+            ) : null}
           </li>
         );
       })}
