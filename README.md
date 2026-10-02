@@ -7,8 +7,9 @@ pedaleiro, guiador, selim, pneus e extras, e vê a bicicleta mudar em 3D enquant
 o peso, as especificações e a compatibilidade são recalculados em tempo real.
 
 O projeto está a ser construído por fases, com verificação no fim de cada fase. Este
-repositório contém a **Fase 6**: modelo de dados, catálogo, estado global, cena 3D
-interativa com peças intercambiáveis, preço e peso em tempo real e testes.
+repositório contém a **Fase 7**: modelo de dados, catálogo, estado global, cena 3D
+interativa com peças intercambiáveis, preço e peso em tempo real, motor de
+compatibilidade e testes.
 
 ---
 
@@ -16,13 +17,13 @@ interativa com peças intercambiáveis, preço e peso em tempo real e testes.
 
 | | |
 | --- | --- |
-| Fase | **6 de 11** — dados, estado, interface, cena 3D, peças, preço e peso |
+| Fase | **7 de 11** — dados, estado, interface, cena 3D, peças, preço, peso e compatibilidade |
 | Build | `next build --webpack` ✅ (5 rotas estáticas) |
 | Typecheck | `tsc --noEmit` ✅ (TypeScript estrito) |
 | Lint | `eslint .` ✅ (0 erros, 0 avisos) |
-| Testes | `vitest run` ✅ (152 testes) |
+| Testes | `vitest run` ✅ (191 testes) |
 | Smoke test | `npm run smoke` ✅ (25 verificações) |
-| Cena 3D | `npm run verify:3d` ✅ (25 verificações em Chromium real) |
+| Cena 3D | `npm run verify:3d` ✅ (30 verificações em Chromium real) |
 
 A bicicleta é visível e interativa em 3D, centrada e enquadrada em quatro vistas, com
 rotação, zoom e rotação automática. **Cada categoria lista os produtos reais do catálogo
@@ -134,6 +135,7 @@ src/
 │  ├─ catalog.ts            # acessores puros sobre o catálogo + seleção de configuração
 │  ├─ configuration.ts      # helpers puros de configuração
 │  ├─ pricing.ts            # preço e peso da configuração (puro, sem React)
+│  ├─ compatibility.ts      # regras de compatibilidade (puro, sem React)
 │  ├─ format.ts             # formatação de preço, peso e comprimento (pt-PT)
 │  ├─ 3d/
 │  │  ├─ bike-geometry.ts   # geometria procedural em metros (pura, sem Three.js)
@@ -271,6 +273,29 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   bicicleta.
 - Um id que já não existe no catálogo é tratado como em falta, não como gratuito.
 
+**Fase 7 — compatibilidade**
+
+- `src/lib/compatibility.ts` declara **nove regras** sobre os atributos que o catálogo já
+  tinha: movimento pedaleiro (quadro/grupo/pedaleiro), núcleo de cassete (rodas/grupo),
+  sistema de travagem (quadro/rodas/grupo), largura máxima de pneu (quadro/pneu),
+  tamanho de roda (rodas/pneu), número de velocidades (grupo/pedaleiro), diâmetro de
+  espigão (quadro/selim), padrão de eixo (quadro/rodas) e pneu tubeless em aro não
+  preparado.
+- **Duas severidades.** `erro` impede a bicicleta de ser montada; `aviso` é permitido mas
+  dito em voz alta — um pneu tubeless num aro que não é tubeless ready monta-se com
+  câmara, e isso não pode bloquear ninguém.
+- **Cada conflito traz a razão e a saída**, com os valores reais dos dois produtos e os
+  nomes das alternativas que existem no catálogo: «Escolhe um selim de carris 31,6 mm —
+  Gravel 145.»
+- **Assinalado antes de escolher.** `conflictsWithBuild` corre as regras sobre uma
+  configuração candidata, por isso o selector e o resumo nunca podem discordar sobre o
+  que é compatível. O aviso vive **fora** do botão e é ligado por `aria-describedby`:
+  metê-lo dentro dobraria o nome de outro produto no nome acessível deste botão.
+- Um conflito só dispara quando os dois produtos estão escolhidos. Um build incompleto
+  não tem conflitos — está incompleto, e isso é assunto do motor de preço.
+- As medidas nas mensagens passam por `formatLength`, para que uma mensagem em português
+  nunca mostre `31.6 mm`.
+
 **Fase 4 — cena 3D**
 
 - `Canvas` do React Three Fiber carregado de forma lazy (`next/dynamic` com `ssr: false`),
@@ -293,8 +318,9 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   contexto vivo, pixels desenhados, vistas, rotação, arrasto, viewport móvel, troca de
   quadro a alterar a cena, pedaleiro mono-prato, grupo com travões de aro, extra montado,
   `aria-pressed` na seleção, build vazio sem preço, resumo com preço e peso reais,
-  build completo sem componentes em falta, e total a mover-se ao trocar um componente —
-  25 verificações.
+  build completo sem componentes em falta, total a mover-se ao trocar um componente,
+  produto incompatível assinalado antes de escolher, conflito reportado com a razão e a
+  saída, e conflito resolvido a limpar o relatório — 30 verificações.
 
 **Fase 3 — estado**
 
@@ -311,8 +337,8 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   browser, memória em SSR/testes, API no futuro — sem alterar o store.
 - O store guarda ids, nunca produtos: a configuração é pequena, serializável para
   URL ou base de dados, e continua válida quando o catálogo muda.
-- 152 testes no total (catálogo, helpers de configuração, serialização, store, geometria
-  3D, variantes visuais, instâncias, preço e peso, e formatação).
+- 191 testes no total (catálogo, helpers de configuração, serialização, store, geometria
+  3D, variantes visuais, instâncias, preço e peso, compatibilidade e formatação).
 
 **Fase 2 — dados**
 
@@ -342,7 +368,7 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
 | 6 | Preço e peso em tempo real (funções puras + testes) | ✅ concluída |
 | 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | pendente |
-| 8 | Responsividade do configurador (desktop split, mobile empilhado) | pendente |
+| 8 | Responsividade do configurator (desktop split, mobile empilhado) | ⏳ próxima |
 | 9 | Microanimações, transições, estados vazios/erro/carregamento | pendente |
 | 10 | Testes de domínio e interface, performance 3D | pendente |
 | 11 | Limpeza, revisão final, preparação para deploy | pendente |

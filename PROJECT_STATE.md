@@ -3,7 +3,7 @@
 Estado vivo do projeto. Actualizado no fim de cada fase; a fonte de verdade para
 "o que está feito, o que falta e o que decidir a seguir".
 
-- **Fase actual:** 6 de 11 — concluída e verificada
+- **Fase actual:** 7 de 11 — concluída e verificada
 - **Branch:** `main` (repositório local, sem remoto configurado)
 - **Última verificação completa:** typecheck, lint, testes, build, smoke e verificação
   da cena 3D em Chromium real — todos verdes
@@ -23,9 +23,13 @@ Construção por fases (1–11), com paragem e verificação no fim de cada fase
 Zustand 5 · Zod 4 · Three.js 0.186 · React Three Fiber 9 · Drei 10 · Vitest 3 ·
 Playwright (verificação) · Lucide · Manrope auto-alojada.
 
-**Decisões de produto fixas:** marca fictícia `VELOCE`; produtos, preços e pesos
-ilustrativos; interface em português de Portugal; nada é simulado — o que ainda não
-existe aparece identificado como fase futura.
+**Decisões de produto fixas:** interface em português de Portugal; nada é simulado — o
+que ainda não existe aparece identificado como fase futura.
+
+**Requisito novo do utilizador (2026-10-02), a cumprir quando for conveniente:**
+*tudo o que estiver no site deve ser real e ter quase todos os produtos que existem no
+mercado; pode implementar-se qualquer ferramenta necessária para isso.* Isto substitui a
+decisão anterior de produtos ilustrativos. Ver «Objectivo: catálogo real» abaixo.
 
 ---
 
@@ -39,15 +43,72 @@ existe aparece identificado como fase futura.
 | 4 | Cena 3D (R3F, Drei, Suspense, fallback WebGL, vistas de câmara) | ✅ concluída |
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
 | 6 | Preço e peso em tempo real (funções puras + testes) | ✅ concluída |
-| 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | ⏳ próxima |
-| 8 | Responsividade do configurador (desktop split, mobile empilhado) | pendente |
+| 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | ✅ concluída |
+| 8 | Responsividade do configurador (desktop split, mobile empilhado) | ⏳ próxima |
 | 9 | Microanimações, transições, estados vazios/erro/carregamento | pendente |
 | 10 | Testes de domínio e interface, performance 3D | pendente |
 | 11 | Limpeza, revisão final, preparação para deploy | pendente |
 
 ---
 
-## 3. Fase 6 — o que foi feito
+## 3. Fase 7 — o que foi feito
+
+### 3.1 Nove regras (`src/lib/compatibility.ts`)
+
+| Regra | O que compara | Severidade |
+| --- | --- | --- |
+| `movimento-pedaleiro` | `frame.bottomBracket` vs `groupset.bottomBracket` e `crankset.bottomBracket` | erro |
+| `nucleo-cassete` | `wheelset.freehub` vs `groupset.freehub` | erro |
+| `travagem` | família de travão do quadro e das rodas vs a do grupo | erro |
+| `largura-pneu` | `tire.width` vs `frame.maxTireWidth` | erro |
+| `tamanho-roda` | `wheelset.wheelSize` vs `tire.wheelSize` | erro |
+| `velocidades` | `groupset.speeds` vs `crankset.speeds` | erro |
+| `espigao-selim` | `frame.seatpostDiameter` vs `saddle.seatpostDiameter` | erro |
+| `eixos` | eixos do quadro vs das rodas, à frente e atrás | erro |
+| `tubeless` | pneu tubeless em aro não preparado | aviso |
+
+Duas severidades, e a diferença é deliberada: `erro` impede a bicicleta de ser montada;
+`aviso` é permitido mas dito em voz alta. Um pneu tubeless num aro que não é tubeless
+ready monta-se com câmara interna, e bloquear isso seria falso.
+
+As famílias de travão são normalizadas: `disco-hidraulico` e `disco-mecanico` partilham a
+fixação, por isso são a mesma família. Um grupo hidráulico num quadro de disco mecânico
+funciona.
+
+### 3.2 Cada conflito traz a razão e a saída
+
+A mensagem usa os valores reais dos dois produtos e nomeia as alternativas que existem no
+catálogo:
+
+> Diâmetro de espigão incompatível
+> O quadro Ti Gravel é de espigão 31,6 mm e o selim Race 143 é de carris 27,2 mm.
+> Escolhe um selim de carris 31,6 mm — Gravel 145.
+
+As medidas passam por `formatLength`, para que uma mensagem em português nunca mostre
+`31.6 mm`.
+
+### 3.3 Assinalado antes de escolher
+
+`conflictsWithBuild` corre as regras sobre uma **configuração candidata**, em vez de
+comparar relatórios. Por isso o selector e o resumo não podem discordar sobre o que é
+compatível: ambos leem a mesma função.
+
+### 3.4 O aviso vive fora do botão
+
+**Defeito encontrado e corrigido durante a fase.** O aviso de conflito estava dentro do
+`<button>` do produto, pelo que o nome acessível do botão «Race 143» ficava a conter
+«Gravel 145» — o texto da resolução desse produto. A verificação em browser apanhou-o:
+um selector por nome acessível clicava no botão errado. Passou a estar fora do botão,
+ligado por `aria-describedby`. Um utilizador de leitor de ecrã continua a ouvir a razão,
+mas o nome do botão continua a ser só o nome do produto.
+
+### 3.5 Resumo
+
+`summary-panel.tsx` passou a mostrar o estado de compatibilidade com todos os erros e
+avisos, e as especificações em destaque (quadro, grupo, rodas, pneus, tamanho). O badge do
+cabeçalho passou a ser `Compatível` / `Incompatível`.
+
+## 4. Fase 6 — o que foi feito
 
 ### 3.1 Motor de preço e peso (`src/lib/pricing.ts`)
 
@@ -214,10 +275,10 @@ A cena lê `configuration` e `camera` do store e nunca escreve no store.
 | --- | --- |
 | `npx tsc --noEmit` | ✅ 0 erros |
 | `npx eslint .` | ✅ 0 erros, 0 avisos |
-| `npx vitest run` | ✅ **152 testes** (29 catálogo + 20 configuração + 23 store + 23 geometria + 35 peças + 16 preço/peso + 6 formatação) |
+| `npx vitest run` | ✅ **191 testes** (29 catálogo + 20 configuração + 23 store + 23 geometria + 35 peças + 16 preço/peso + 39 compatibilidade + 6 formatação) |
 | `npx next build --webpack` | ✅ 5 rotas estáticas |
 | `npm run smoke` | ✅ 25 verificações |
-| `npm run verify:3d` | ✅ 25 verificações em Chromium real |
+| `npm run verify:3d` | ✅ 30 verificações em Chromium real |
 
 `verify:3d` (`scripts/verify-3d.mjs`) arranca o servidor de produção, abre
 `/configurator` em Chromium headless com WebGL por software (SwiftShader) e verifica:
@@ -276,11 +337,16 @@ representativo de GPU real.
    reutilize os mesmos atributos nas regras de compatibilidade.
 9. **Sem loader de GLB sem uso.** O ponto de extensão existe e está tipado, mas nenhum
    produto declara modelo; um teste garante que não há código morto a caminho.
-10. **Preço e peso no motor, nunca no componente.** O componente escolhe a forma de
-    apresentar; quem soma é `src/lib/pricing.ts`. Formatar é `src/lib/format.ts`.
+10. **Preço, peso e compatibilidade no motor, nunca no componente.** O componente escolhe
+    a forma de apresentar; quem calcula são `src/lib/pricing.ts` e
+    `src/lib/compatibility.ts`. Formatar é `src/lib/format.ts`.
 11. **Quantidades como dados.** Quantas unidades uma bicicleta precisa é uma decisão de
     produto declarada em `slotQuantities`, não um `* 2` enterrado num componente.
-12. **Build incompleto é declarado, não escondido.** Um preço parcial aparece sempre
+12. **Conflito é assinalado antes de ser escolhido.** As regras correm sobre uma
+    configuração candidata, para que o selector e o resumo nunca possam discordar.
+13. **O aviso de conflito vive fora do botão.** Metê-lo dentro dobraria o nome de outro
+    produto no nome acessível deste botão; `aria-describedby` liga os dois sem os misturar.
+14. **Build incompleto é declarado, não escondido.** Um preço parcial aparece sempre
     acompanhado da lista do que falta, para que nunca seja confundido com o preço de uma
     bicicleta.
 
@@ -307,27 +373,52 @@ representativo de GPU real.
   geometria, não da performance em GPU real.
 - **O espigão do selim não tem categoria própria**, pelo que o seu peso não entra no
   total. O catálogo tem o diâmetro em vários produtos, mas não o produto em si.
+- **Nenhuma roda do catálogo é de aro**, por isso a regra de travagem de aro só dispara
+  contra o quadro e o grupo. Quando chegarem produtos reais, a regra já cobre o caso.
+- **A potência (avanço) não é categoria**, pelo que a regra «guiador compatível com a
+  potência» que o roadmap documentou não pode ser implementada ainda.
 
 ---
 
-## 9. Próximo passo — Fase 7
+## 9. Próximo passo — Fase 8
 
-Motor de compatibilidade:
+Responsividade do configurador:
 
-1. Regras declaradas como dados em `src/lib/compatibility.ts`, sobre os atributos já
-   existentes no catálogo (`bottomBracket`, `freehub`, `maxTireWidth`, `brakeSystem`,
-   `axle`, `seatpostDiameter`, `speeds`).
-2. Uma configuração incompatível nunca passa em silêncio: bloqueia ou avisa, com a razão
-   em pt-PT e o caminho para a resolver.
-3. Especificações em destaque no resumo (quadro, grupo, rodas, pneus).
-4. Testes por regra, incluindo os pares compatíveis e incompatíveis reais do catálogo.
+1. Desktop em duas colunas (palco 3D fixo, componentes e resumo com deslocamento
+   próprio); tablet e telemóvel empilhados na ordem 3D → componentes → resumo.
+2. Controlos confortáveis em ecrã de toque, sem overflow horizontal.
+3. Verificação em viewports reais, com foco, contraste e ordem de leitura.
 
-**Critério de saída:** typecheck, lint, testes, build, smoke e `verify:3d` verdes, com o
-resumo a mostrar as especificações e o estado de compatibilidade reais.
+**Critério de saída:** typecheck, lint, testes, build, smoke e `verify:3d` verdes nos
+viewport de desktop, tablet e telemóvel, sem overflow nem sobreposição.
 
 ---
 
-## 10. Comandos úteis
+## 10. Objectivo: catálogo real
+
+Pedido explícito do utilizador: **tudo o que estiver no site deve ser real e cobrir
+quase todos os produtos que existem no mercado**, com liberdade para implementar
+qualquer ferramenta necessária. Enquanto não chegar, o catálogo actual é ilustrativo e
+está identificado como tal — nada é apresentado como real sem o ser.
+
+O que muda quando o catálogo real entrar:
+
+| Área | O que precisa de acontecer |
+| --- | --- |
+| Volume | 31 produtos passam a centenas ou milhares. A listagem tem de ser paginada, pesquisável e filtrável, não uma lista infinita. |
+| Fonte | Os dados deixam de ser ficheiros `.ts` e passam a vir de uma API e de uma base de dados. `src/lib/catalog.ts` já toma a fonte como argumento, por isso a transição é trocar a origem, não reescrever os consumidores. |
+| Validação | O schema Zod já existe em `src/lib/validation/catalog-schema.ts`; passa a validar o payload da API em vez de os ficheiros locais. |
+| Precisão | Preço e peso reais vêm com data de atualização e fonte. O motor de preço tem de continuar a somar inteiros nas unidades declaradas. |
+| Compatibilidade | As nove regras actuais leem atributos estruturados; produtos reais trazem variações (vários tamanhos de quadro, vários acabamentos) que as regras têm de respeitar. |
+| Imagens | `ComponentBase.image` já existe e a interface já desenha um substituto. Faltam os assets reais. |
+| Marca | `VELOCE` é fictícia. Com produtos reais, a marca da loja e a marca dos produtos são coisas distintas. |
+
+Ferramentas que o objectivo provavelmente vai exigir, e que não existem ainda:
+ingestão/ETL de catálogo, normalização de atributos entre fabricantes, cache e
+paginação, e painel de administração. Nada disto deve ser inventado antes de ser
+preciso.
+
+## 11. Comandos úteis
 
 ```bash
 npm run dev          # desenvolvimento

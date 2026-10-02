@@ -11,7 +11,7 @@ Incrementos pequenos, TypeScript estrito, domínio independente da UI, ausência
 | 4 — Cena 3D ✅ | React Three Fiber, Three.js, Drei, Canvas lazy, Suspense, fallback de WebGL, OrbitControls e vistas predefinidas | Bicicleta procedural centrada; zoom/orbit e vistas frontal/lateral/traseira/superior; fallback acessível |
 | 5 — Peças ✅ | Frame, Wheels, Groupset, Crankset, Handlebar, Saddle, Tires e extras separados; registry para GLB futuros | Todas as seleções com representação visual adequada; geometria reutilizada; transformações e escala consistentes |
 | 6 — Totais ✅ | Funções puras de preço/peso, políticas de quantidades e arredondamento, formatadores PT | Testes de soma, quantidades, estado incompleto e unidades; sem dupla contagem de peças incluídas no grupo |
-| 7 — Compatibilidade | Pipeline modular de regras, severidade e mensagens; compatibilidade de cassete/freehub, velocidades, BB, pneus, eixos, travagem, guiador/potência, espigão | Testes por regra e combinações; configurações inválidas explicitamente assinaladas e bloqueadas em ações relevantes |
+| 7 — Compatibilidade ✅ | Pipeline modular de regras, severidade e mensagens; compatibilidade de cassete/freehub, velocidades, BB, pneus, eixos, travagem, guiador/potência, espigão | Testes por regra e combinações; configurações inválidas explicitamente assinaladas e bloqueadas em ações relevantes |
 | 8 — Responsividade | Configurador desktop split; mobile 3D → componentes → resumo; controlos touch | Validação tablet/mobile, scroll, foco e ausência de overflow |
 | 9 — Acabamento | Microanimações, transições de seleção, estados vazios/loading/erro; motion só se necessário | Reduced motion, teclado, contraste e feedback de ações |
 | 10 — Qualidade | Suite domínio + integração + navegador, perfil de render, lazy GLB, limites de DPR e efeitos | Build/TS/lint/testes verdes; medição de desempenho documentada sem métricas inventadas |
@@ -30,6 +30,15 @@ Incrementos pequenos, TypeScript estrito, domínio independente da UI, ausência
 2. `chore: scaffold strict Next.js application`
 3. `feat: add premium landing page and configurator shell`
 4. `test: verify phase one and document handoff`
+
+## Fase 7: sequência de commits
+1. `feat: add the compatibility rules engine`
+2. `test: cover every rule with real catalog pairs`
+3. `feat: flag products that clash with the build`
+4. `feat: report compatibility and specifications in the summary`
+5. `chore: verify conflicts in a real browser`
+6. `feat: mark phase seven complete in the interface`
+7. `docs: record phase seven results and the real catalog objective`
 
 ## Fase 6: sequência de commits
 1. `feat: add the price and weight engine`
@@ -61,3 +70,11 @@ Incrementos pequenos, TypeScript estrito, domínio independente da UI, ausência
 
 ## Paragem obrigatória
 Após cada fase, atualizar PROJECT_STATE com resultados reais e o próximo bloco. Não iniciar a fase seguinte sem continuação do utilizador.
+
+## Objectivo: catálogo real
+
+Pedido do utilizador: tudo o que estiver no site deve ser real e cobrir quase todos os
+produtos do mercado, com liberdade para implementar qualquer ferramenta necessária. As
+fases 1–7 constroem a arquitectura que esse objectivo precisa; o catálogo real e a sua
+ingestão entram depois, com a sua própria fase, sem reescrever os consumidores — a
+camada de dados já toma a fonte como argumento.
