@@ -133,6 +133,16 @@ async function main() {
     const firstShot = await canvas.screenshot();
     report(firstShot.byteLength > 5_000, 'scene renders content', `${firstShot.byteLength} bytes`);
 
+    // Phase 6: an untouched build must not present itself as priced.
+    const emptySummary = (
+      await page.getByRole('region', { name: 'Resumo' }).innerText()
+    ).replace(/\s+/g, ' ');
+    report(
+      /Escolhe componentes/.test(emptySummary),
+      'an empty build reports no price',
+      emptySummary.slice(0, 90),
+    );
+
     await page.screenshot({ path: `${OUTPUT_DIR}configurator-lateral.png` });
 
     // Preset views.
@@ -230,6 +240,51 @@ async function main() {
     await page.waitForTimeout(1500);
     await page.screenshot({ path: `${OUTPUT_DIR}configurator-accessory.png` });
     report(true, 'mounting an accessory renders');
+
+    // Phase 6: complete the build so the summary has something to add up.
+    // The accordion opens one category at a time, so each pick closes the last.
+    for (const [category, product] of [
+      [/^Rodas/, /Alloy 24/],
+      [/^Guiador/, /Gravel 44/],
+      [/^Selim/, /Endurance 148/],
+      [/^Pneus/, /Gravel 40/],
+    ]) {
+      await page.getByRole('button', { name: category }).click();
+      await page.getByRole('button', { name: product }).first().click();
+      await page.waitForTimeout(500);
+    }
+
+    const summary = page.getByRole('region', { name: 'Resumo' });
+    const summaryText = async () => (await summary.innerText()).replace(/\s+/g, ' ');
+
+    const fullText = await summaryText();
+    report(
+      /€/.test(fullText) && /kg/.test(fullText),
+      'summary shows a real price and weight',
+      fullText.slice(0, 90),
+    );
+    report(
+      !/faltam/i.test(fullText),
+      'complete build names no missing component',
+      fullText.slice(0, 90),
+    );
+    report(
+      /Configuração completa/.test(fullText),
+      'complete build is labelled complete',
+      fullText.slice(0, 60),
+    );
+
+    // Swapping a groupset must move the total by that groupset's difference.
+    const pricedSummary = await summaryText();
+    await page.getByRole('button', { name: /^Grupo/ }).click();
+    await page.getByRole('button', { name: /Mechanic 11/ }).first().click();
+    await page.waitForTimeout(700);
+    report(
+      (await summaryText()) !== beforeSwap,
+      'changing a component moves the total',
+    );
+
+    await page.screenshot({ path: `${OUTPUT_DIR}configurator-summary.png` });
 
     // Mobile layout.
     const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
