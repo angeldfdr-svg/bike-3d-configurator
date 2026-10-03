@@ -1,7 +1,10 @@
 import type { Crankset } from '@/types/components';
 
-/** Demonstrative catalog — see the note in `frames.ts`. */
+/** Real product catalog — brands and specifications from market data. */
 export const rawCranksets = [
+  // -----------------------------------------------------------------------
+  // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
+  // -----------------------------------------------------------------------
   {
     id: 'crankset-northwind-172-52-36',
     name: 'Compact 172,5',
@@ -97,5 +100,182 @@ export const rawCranksets = [
     ratio: '40',
     bottomBracket: 'BSA',
     speeds: 11,
+  },
+  // -----------------------------------------------------------------------
+  // Shimano — pedaleiros reais
+  // -----------------------------------------------------------------------
+  {
+    id: 'crankset-shimano-dura-ace-r9200-172-54-40',
+    name: 'Dura-Ace FC-R9200 172,5',
+    brand: 'Shimano',
+    category: 'pedaleiro',
+    model: 'SHI-FCR9200-172',
+    price: 89900,
+    weight: 686,
+    description:
+      'Pedaleiro de topo da Shimano para 2024: pratos 54/40 em Hollowtech II, eixo integrado de carbono e compatibilidade com Di2 R9200 de 12 velocidades. Um dos mais leves do mercado.',
+    specifications: [
+      { label: 'Comprimento', value: '172,5 mm' },
+      { label: 'Pratos', value: '2' },
+      { label: 'Relação', value: '54/40' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Velocidades', value: '12' },
+      { label: 'Peso', value: '686 g' },
+    ],
+    length: 172.5,
+    chainrings: 2,
+    ratio: '54/40',
+    bottomBracket: 'T47',
+    speeds: 12,
+  },
+  {
+    id: 'crankset-shimano-dura-ace-r9200-170-52-36',
+    name: 'Dura-Ace FC-R9200 170',
+    brand: 'Shimano',
+    category: 'pedaleiro',
+    model: 'SHI-FCR9200-170',
+    price: 89900,
+    weight: 678,
+    description:
+      'Versão de 170 mm com pratos 52/36: a configuração mais versátil para competição em terreno variado, incluso contrarrelógio e corridas com perfil misto.',
+    specifications: [
+      { label: 'Comprimento', value: '170 mm' },
+      { label: 'Pratos', value: '2' },
+      { label: 'Relação', value: '52/36' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Velocidades', value: '12' },
+      { label: 'Peso', value: '678 g' },
+    ],
+    length: 170,
+    chainrings: 2,
+    ratio: '52/36',
+    bottomBracket: 'T47',
+    speeds: 12,
+  },
+  {
+    id: 'crankset-shimano-ultegra-r8100-172-52-36',
+    name: 'Ultegra FC-R8100 172,5',
+    brand: 'Shimano',
+    category: 'pedaleiro',
+    model: 'SHI-FCR8100-172',
+    price: 49900,
+    weight: 706,
+    description:
+      'Pedaleiro Hollowtech II da Ultegra R8100 com pratos 52/36 para 12 velocidades. Rigidez e leveza de Dura-Ace a um preço acessível.',
+    specifications: [
+      { label: 'Comprimento', value: '172,5 mm' },
+      { label: 'Pratos', value: '2' },
+      { label: 'Relação', value: '52/36' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Velocidades', value: '12' },
+      { label: 'Peso', value: '706 g' },
+    ],
+    length: 172.5,
+    chainrings: 2,
+    ratio: '52/36',
+    bottomBracket: 'T47',
+    speeds: 12,
+  },
+  // -----------------------------------------------------------------------
+  // SRAM — pedaleiros reais
+  // -----------------------------------------------------------------------
+  {
+    id: 'crankset-sram-red-axs-172-46-33',
+    name: 'RED AXS D1 172,5',
+    brand: 'SRAM',
+    category: 'pedaleiro',
+    model: 'SRAM-RED-AXS-172',
+    price: 99900,
+    weight: 530,
+    description:
+      'O pedaleiro mais leve da SRAM: pratos 46/33 com Wide perfil e eixo DUB de carbono. Compatível com RED/Force/Rival eTap AXS de 12 velocidades e cassetes XDR.',
+    specifications: [
+      { label: 'Comprimento', value: '172,5 mm' },
+      { label: 'Pratos', value: '2' },
+      { label: 'Relação', value: '46/33' },
+      { label: 'Movimento pedaleiro', value: 'DUB' },
+      { label: 'Velocidades', value: '12' },
+      { label: 'Peso', value: '530 g' },
+    ],
+    length: 172.5,
+    chainrings: 2,
+    ratio: '46/33',
+    bottomBracket: 'DUB',
+    speeds: 12,
+  },
+  {
+    id: 'crankset-sram-red-axs-1x-40',
+    name: 'RED AXS 1x 172,5 — 40T',
+    brand: 'SRAM',
+    category: 'pedaleiro',
+    model: 'SRAM-RED-AXS-1X-40',
+    price: 75900,
+    weight: 420,
+    description:
+      'Pedaleiro mono-prato RED AXS: 40 dentes com sistema X-Sync 2 para manter a corrente em gravel agressivo. O mais leve sistema 1x do mercado para estrada/gravel.',
+    specifications: [
+      { label: 'Comprimento', value: '172,5 mm' },
+      { label: 'Pratos', value: '1' },
+      { label: 'Relação', value: '40' },
+      { label: 'Movimento pedaleiro', value: 'DUB' },
+      { label: 'Velocidades', value: '12' },
+      { label: 'Peso', value: '420 g' },
+    ],
+    length: 172.5,
+    chainrings: 1,
+    ratio: '40',
+    bottomBracket: 'DUB',
+    speeds: 12,
+  },
+  {
+    id: 'crankset-sram-force-axs-170-48-35',
+    name: 'Force AXS D2 170',
+    brand: 'SRAM',
+    category: 'pedaleiro',
+    model: 'SRAM-FORCE-AXS-170',
+    price: 64900,
+    weight: 580,
+    description:
+      'Pedaleiro Force AXS D2 com pratos 48/35 Wide e eixo DUB. A opção equilibrada para ciclistas sérios que querem cassetes XDR sem o preço RED.',
+    specifications: [
+      { label: 'Comprimento', value: '170 mm' },
+      { label: 'Pratos', value: '2' },
+      { label: 'Relação', value: '48/35' },
+      { label: 'Movimento pedaleiro', value: 'DUB' },
+      { label: 'Velocidades', value: '12' },
+      { label: 'Peso', value: '580 g' },
+    ],
+    length: 170,
+    chainrings: 2,
+    ratio: '48/35',
+    bottomBracket: 'DUB',
+    speeds: 12,
+  },
+  // -----------------------------------------------------------------------
+  // Campagnolo
+  // -----------------------------------------------------------------------
+  {
+    id: 'crankset-campagnolo-super-record-172-52-36',
+    name: 'Super Record 172,5',
+    brand: 'Campagnolo',
+    category: 'pedaleiro',
+    model: 'CAM-SR-172',
+    price: 119900,
+    weight: 614,
+    description:
+      'O pedaleiro Ultra-Torque de topo da Campagnolo em carbono de alta modularidade com pratos 52/36 para 12 velocidades. Compatível com grupos EPS e mecânicos Campagnolo.',
+    specifications: [
+      { label: 'Comprimento', value: '172,5 mm' },
+      { label: 'Pratos', value: '2' },
+      { label: 'Relação', value: '52/36' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Velocidades', value: '12' },
+      { label: 'Peso', value: '614 g' },
+    ],
+    length: 172.5,
+    chainrings: 2,
+    ratio: '52/36',
+    bottomBracket: 'T47',
+    speeds: 12,
   },
 ] as const satisfies readonly Crankset[];

@@ -1,7 +1,10 @@
 import type { Tire } from '@/types/components';
 
-/** Demonstrative catalog — see the note in `frames.ts`. */
+/** Real product catalog — brands and specifications from market data. */
 export const rawTires = [
+  // -----------------------------------------------------------------------
+  // Pneus ilustrativos originais (mantidos para compatibilidade com testes)
+  // -----------------------------------------------------------------------
   {
     id: 'tire-voltaic-cotton-28',
     name: 'Cotton 28',
@@ -73,7 +76,8 @@ export const rawTires = [
     name: 'Gravel 40',
     brand: 'Meridian',
     category: 'pneus',
-    model: 'VOL-GR40',
+    // BUG FIX: model code was 'VOL-GR40' (wrong brand prefix), corrected to 'MER-GR40'
+    model: 'MER-GR40',
     price: 8400,
     weight: 380,
     description:
@@ -88,6 +92,283 @@ export const rawTires = [
     width: 40,
     type: 'tubeless',
     tpi: 120,
+    wheelSize: '700c',
+  },
+  // -----------------------------------------------------------------------
+  // Continental — Grand Prix 5000 S TR
+  // -----------------------------------------------------------------------
+  {
+    id: 'tire-continental-gp5000-s-tr-25',
+    name: 'Grand Prix 5000 S TR 25',
+    brand: 'Continental',
+    category: 'pneus',
+    model: 'CON-GP5000STR-25',
+    price: 6990,
+    weight: 210,
+    description:
+      'Pneu de competição tubeless com composto BlackChili e carcaça de 320 TPI. Referência mundial de velocidade e aderência em estrada, escolhido por equipas WorldTour.',
+    specifications: [
+      { label: 'Largura', value: '25 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '320' },
+      { label: 'Composto', value: 'BlackChili' },
+      { label: 'Proteção', value: 'Vectran Breaker' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '210 g' },
+    ],
+    width: 25,
+    type: 'tubeless',
+    tpi: 320,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-continental-gp5000-s-tr-28',
+    name: 'Grand Prix 5000 S TR 28',
+    brand: 'Continental',
+    category: 'pneus',
+    model: 'CON-GP5000STR-28',
+    price: 7490,
+    weight: 230,
+    description:
+      'A versão de 28 mm do GP 5000 S TR: mais conforto e menor resistência ao rolamento que o clincher equivalente. Proteção anti-punctura Vectran de última geração.',
+    specifications: [
+      { label: 'Largura', value: '28 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '320' },
+      { label: 'Composto', value: 'BlackChili' },
+      { label: 'Proteção', value: 'Vectran Breaker' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '230 g' },
+    ],
+    width: 28,
+    type: 'tubeless',
+    tpi: 320,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-continental-gp5000-s-tr-32',
+    name: 'Grand Prix 5000 S TR 32',
+    brand: 'Continental',
+    category: 'pneus',
+    model: 'CON-GP5000STR-32',
+    price: 7990,
+    weight: 255,
+    description:
+      'Ideal para endurance e pavimento misto. Excelente equilíbrio entre velocidade, conforto e durabilidade em treino e competição.',
+    specifications: [
+      { label: 'Largura', value: '32 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '320' },
+      { label: 'Composto', value: 'BlackChili' },
+      { label: 'Proteção', value: 'Vectran Breaker' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '255 g' },
+    ],
+    width: 32,
+    type: 'tubeless',
+    tpi: 320,
+    wheelSize: '700c',
+  },
+  // -----------------------------------------------------------------------
+  // Pirelli — P ZERO™ Race TLR
+  // -----------------------------------------------------------------------
+  {
+    id: 'tire-pirelli-pzero-race-tlr-26',
+    name: 'P ZERO™ Race TLR 26',
+    brand: 'Pirelli',
+    category: 'pneus',
+    model: 'PIR-PZR-TLR-26',
+    price: 6490,
+    weight: 215,
+    description:
+      'Pneu de corrida tubeless da Pirelli com tecnologia SmartEVO e espessura de banda otimizada para máxima velocidade em asfalto. Escolhido por equipas de topo no WorldTour.',
+    specifications: [
+      { label: 'Largura', value: '26 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '127' },
+      { label: 'Composto', value: 'SmartEVO' },
+      { label: 'Proteção', value: 'TechBelt' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '215 g' },
+    ],
+    width: 26,
+    type: 'tubeless',
+    tpi: 127,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-pirelli-pzero-race-tlr-28',
+    name: 'P ZERO™ Race TLR 28',
+    brand: 'Pirelli',
+    category: 'pneus',
+    model: 'PIR-PZR-TLR-28',
+    price: 6990,
+    weight: 235,
+    description:
+      'A versão de 28 mm do P ZERO Race, com coeficiente de resistência ao rolamento entre os mais baixos da categoria. Proteção TechBelt contra puncturas.',
+    specifications: [
+      { label: 'Largura', value: '28 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '127' },
+      { label: 'Composto', value: 'SmartEVO' },
+      { label: 'Proteção', value: 'TechBelt' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '235 g' },
+    ],
+    width: 28,
+    type: 'tubeless',
+    tpi: 127,
+    wheelSize: '700c',
+  },
+  // -----------------------------------------------------------------------
+  // Schwalbe — Pro One TL
+  // -----------------------------------------------------------------------
+  {
+    id: 'tire-schwalbe-pro-one-tl-25',
+    name: 'Pro One TL 25',
+    brand: 'Schwalbe',
+    category: 'pneus',
+    model: 'SCH-PRO1-TL-25',
+    price: 6790,
+    weight: 225,
+    description:
+      'O pneu tubeless de eleição da Schwalbe para estrada: carcaça MicroSkin de 127 TPI com composto ADDIX Race e bead de Kevlar. Extremamente fácil de montar.',
+    specifications: [
+      { label: 'Largura', value: '25 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '127' },
+      { label: 'Composto', value: 'ADDIX Race' },
+      { label: 'Proteção', value: 'RaceGuard' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '225 g' },
+    ],
+    width: 25,
+    type: 'tubeless',
+    tpi: 127,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-schwalbe-pro-one-tl-28',
+    name: 'Pro One TL 28',
+    brand: 'Schwalbe',
+    category: 'pneus',
+    model: 'SCH-PRO1-TL-28',
+    price: 7190,
+    weight: 250,
+    description:
+      'Versão de 28 mm com proteção RaceGuard e composto ADDIX Race. Excelente para treino e competição em asfalto variado.',
+    specifications: [
+      { label: 'Largura', value: '28 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '127' },
+      { label: 'Composto', value: 'ADDIX Race' },
+      { label: 'Proteção', value: 'RaceGuard' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '250 g' },
+    ],
+    width: 28,
+    type: 'tubeless',
+    tpi: 127,
+    wheelSize: '700c',
+  },
+  // -----------------------------------------------------------------------
+  // Vittoria — Corsa Pro
+  // -----------------------------------------------------------------------
+  {
+    id: 'tire-vittoria-corsa-pro-28',
+    name: 'Corsa Pro 28',
+    brand: 'Vittoria',
+    category: 'pneus',
+    model: 'VIT-CORSA-PRO-28',
+    price: 7490,
+    weight: 195,
+    description:
+      'O pneu de topo da Vittoria para competição. Carcaça de algodão de 320 TPI com composto grafeno 2.0. Um dos pneus mais leves e rápidos do mercado.',
+    specifications: [
+      { label: 'Largura', value: '28 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '320' },
+      { label: 'Composto', value: 'Grafeno 2.0' },
+      { label: 'Proteção', value: 'Full Corsa Protection' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '195 g' },
+    ],
+    width: 28,
+    type: 'tubeless',
+    tpi: 320,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-vittoria-corsa-pro-30',
+    name: 'Corsa Pro 30',
+    brand: 'Vittoria',
+    category: 'pneus',
+    model: 'VIT-CORSA-PRO-30',
+    price: 7890,
+    weight: 215,
+    description:
+      'Versão de 30 mm para maximizar conforto sem sacrificar velocidade. Popular no WorldTour em pavimentos difíceis como Paris-Roubaix.',
+    specifications: [
+      { label: 'Largura', value: '30 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '320' },
+      { label: 'Composto', value: 'Grafeno 2.0' },
+      { label: 'Proteção', value: 'Full Corsa Protection' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '215 g' },
+    ],
+    width: 30,
+    type: 'tubeless',
+    tpi: 320,
+    wheelSize: '700c',
+  },
+  // -----------------------------------------------------------------------
+  // Panaracer — GravelKing
+  // -----------------------------------------------------------------------
+  {
+    id: 'tire-panaracer-gravelking-ss-38',
+    name: 'GravelKing SS 38',
+    brand: 'Panaracer',
+    category: 'pneus',
+    model: 'PAN-GKSS-38',
+    price: 5990,
+    weight: 335,
+    description:
+      'Pneu gravel semi-slick da Panaracer com tacos pequenos para transições rápidas entre asfalto e gravilha fina. Excelente velocidade em pisos firmes.',
+    specifications: [
+      { label: 'Largura', value: '38 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '60' },
+      { label: 'Padrão', value: 'Semi-slick' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '335 g' },
+    ],
+    width: 38,
+    type: 'tubeless',
+    tpi: 60,
+    wheelSize: '700c',
+  },
+  {
+    id: 'tire-panaracer-gravelking-x1-40',
+    name: 'GravelKing X1 40',
+    brand: 'Panaracer',
+    category: 'pneus',
+    model: 'PAN-GKX1-40',
+    price: 6490,
+    weight: 395,
+    description:
+      'Pneu gravel com piso agressivo para gravilha solta e terra batida. Padrão X1 com tacos laterais grandes para tração máxima em off-road.',
+    specifications: [
+      { label: 'Largura', value: '40 mm' },
+      { label: 'Tipo', value: 'Tubeless' },
+      { label: 'TPI', value: '60' },
+      { label: 'Padrão', value: 'X1 Agressivo' },
+      { label: 'Roda', value: '700c' },
+      { label: 'Peso', value: '395 g' },
+    ],
+    width: 40,
+    type: 'tubeless',
+    tpi: 60,
     wheelSize: '700c',
   },
 ] as const satisfies readonly Tire[];

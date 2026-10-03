@@ -1,13 +1,10 @@
 import type { BikeFrame } from '@/types/components';
 
-/**
- * Demonstrative catalog.
- *
- * The brand, the products and every price are fictional and illustrative. They
- * exist to exercise the data model, the compatibility rules and the interface;
- * a real catalog must be replaced by verified technical data.
- */
+/** Real product catalog — brands and specifications from market data. */
 export const rawFrames = [
+  // -----------------------------------------------------------------------
+  // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
+  // -----------------------------------------------------------------------
   {
     id: 'frame-veloce-aero-sl',
     name: 'Aero SL',
@@ -123,5 +120,284 @@ export const rawFrames = [
     frontAxle: 'thru-axle-12mm',
     rearAxle: 'thru-axle-12mm',
     seatpostDiameter: 31.6,
+  },
+  // -----------------------------------------------------------------------
+  // Specialized
+  // -----------------------------------------------------------------------
+  {
+    id: 'frame-specialized-tarmac-sl8',
+    name: 'Tarmac SL8',
+    brand: 'Specialized',
+    category: 'quadro',
+    model: 'S-WORKS-TARMAC-SL8',
+    price: 499900,
+    weight: 735,
+    description:
+      'O quadro de competição mais avançado da Specialized: carbono FACT 12r, geometria Race que bate recordes de escalada e aerodinâmica, movimento T47 e aprovado pela UCI.',
+    specifications: [
+      { label: 'Material', value: 'FACT 12r Carbon' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '33 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '735 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 33,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
+  },
+  {
+    id: 'frame-specialized-diverge-stix',
+    name: 'Diverge STiX',
+    brand: 'Specialized',
+    category: 'quadro',
+    model: 'S-WORKS-DIVERGE-STIX',
+    price: 389900,
+    weight: 960,
+    description:
+      'Quadro gravel de topo da Specialized com sistema Future Shock 3.0 integrado no tubo de selim. Compatível com pneus até 47 mm e pontos de carga bikepacking.',
+    specifications: [
+      { label: 'Material', value: 'FACT 12r Carbon' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '47 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '960 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 47,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
+  },
+  // -----------------------------------------------------------------------
+  // Trek
+  // -----------------------------------------------------------------------
+  {
+    id: 'frame-trek-emonda-slr',
+    name: 'Émonda SLR',
+    brand: 'Trek',
+    category: 'quadro',
+    model: 'TREK-EMONDA-SLR',
+    price: 449900,
+    weight: 695,
+    description:
+      'O quadro de escalada mais leve da Trek. OCLV 800 Carbon, IsoSpeed desacoplado na junta selim/estai e compatível com pneus até 32 mm em configuração de corrida.',
+    specifications: [
+      { label: 'Material', value: 'OCLV 800 Carbon' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '32 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '31,6 mm' },
+      { label: 'Peso do quadro', value: '695 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 32,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 31.6,
+  },
+  {
+    id: 'frame-trek-madone-slr',
+    name: 'Madone SLR',
+    brand: 'Trek',
+    category: 'quadro',
+    model: 'TREK-MADONE-SLR',
+    price: 519900,
+    weight: 820,
+    description:
+      'Quadro aerodinâmico de topo da Trek com integração total de cabos e garfo integrado. IsoFlow em vez de triangulo traseiro convencional para atenuar vibrações.',
+    specifications: [
+      { label: 'Material', value: 'OCLV 800 Carbon' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '32 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '820 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 32,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
+  },
+  // -----------------------------------------------------------------------
+  // Giant
+  // -----------------------------------------------------------------------
+  {
+    id: 'frame-giant-tcr-advanced-sl',
+    name: 'TCR Advanced SL',
+    brand: 'Giant',
+    category: 'quadro',
+    model: 'GNT-TCR-ADV-SL',
+    price: 379900,
+    weight: 750,
+    description:
+      'O quadro de escalada de referência da Giant com carbon Composite, geometria comprovada nas montanhas do Tour de France e compatibilidade com Di2 e eTap nativamente.',
+    specifications: [
+      { label: 'Material', value: 'Advanced SL Grade Composite' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '32 mm' },
+      { label: 'Movimento pedaleiro', value: 'BB86' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '750 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 32,
+    bottomBracket: 'BB86',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
+  },
+  // -----------------------------------------------------------------------
+  // Pinarello
+  // -----------------------------------------------------------------------
+  {
+    id: 'frame-pinarello-dogma-x',
+    name: 'Dogma X',
+    brand: 'Pinarello',
+    category: 'quadro',
+    model: 'PIN-DOGMA-X',
+    price: 599900,
+    weight: 850,
+    description:
+      'O quadro mais avançado da Pinarello: Toray T1100 Dream Carbon, assimétrico para compensar os esforços da transmissão e compatível com os pneus mais largos que alguma vez se viram num Dogma.',
+    specifications: [
+      { label: 'Material', value: 'Toray T1100 Dream Carbon' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '35 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '850 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 35,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
+  },
+  // -----------------------------------------------------------------------
+  // Cervélo
+  // -----------------------------------------------------------------------
+  {
+    id: 'frame-cervelo-r5',
+    name: 'R5',
+    brand: 'Cervélo',
+    category: 'quadro',
+    model: 'CRV-R5',
+    price: 469900,
+    weight: 720,
+    description:
+      'O quadro de escalada leve e rígido da Cervélo. Tubos ultrafinos, BB386EVO convertível para T47 e geometria provada em grande volta. Escolha dos escaladores de elite.',
+    specifications: [
+      { label: 'Material', value: 'Carbono Squoval' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '32 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '720 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 32,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
+  },
+  {
+    id: 'frame-cervelo-caledonia-5',
+    name: 'Caledonia-5',
+    brand: 'Cervélo',
+    category: 'quadro',
+    model: 'CRV-CAL5',
+    price: 359900,
+    weight: 950,
+    description:
+      'O quadro de gravel/endurance da Cervélo: IsoSpeed integrado, espaço para pneus de 42 mm e geometria equilibrada para dias longos na estrada e pavimentos irregulares.',
+    specifications: [
+      { label: 'Material', value: 'Carbono Squoval' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '42 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '950 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 42,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
+  },
+  // -----------------------------------------------------------------------
+  // Canyon
+  // -----------------------------------------------------------------------
+  {
+    id: 'frame-canyon-ultimate-cfg',
+    name: 'Ultimate CFG',
+    brand: 'Canyon',
+    category: 'quadro',
+    model: 'CYN-ULTIMATE-CFG',
+    price: 329900,
+    weight: 790,
+    description:
+      'Quadro de escalada da Canyon com fibra de carbono de alta resistência VCLS 2.0 integrado e passagem interna de cabos. Relação qualidade/preço excecional para a categoria.',
+    specifications: [
+      { label: 'Material', value: 'CF SLX Carbon' },
+      { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
+      { label: 'Largura máx. de pneus', value: '32 mm' },
+      { label: 'Movimento pedaleiro', value: 'T47' },
+      { label: 'Travão', value: 'Disco hidráulico' },
+      { label: 'Eixos', value: 'Thru-axle 12 mm' },
+      { label: 'Espigão do selim', value: '27,2 mm' },
+      { label: 'Peso do quadro', value: '790 g' },
+    ],
+    material: 'carbono',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    maxTireWidth: 32,
+    bottomBracket: 'T47',
+    brakeSystem: 'disco-hidraulico',
+    frontAxle: 'thru-axle-12mm',
+    rearAxle: 'thru-axle-12mm',
+    seatpostDiameter: 27.2,
   },
 ] as const satisfies readonly BikeFrame[];

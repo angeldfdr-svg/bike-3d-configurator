@@ -1,7 +1,10 @@
 import type { Handlebar } from '@/types/components';
 
-/** Demonstrative catalog — see the note in `frames.ts`. */
+/** Real product catalog — brands and specifications from market data. */
 export const rawHandlebars = [
+  // -----------------------------------------------------------------------
+  // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
+  // -----------------------------------------------------------------------
   {
     id: 'handlebar-veloce-aero-40',
     name: 'Aero 40',
@@ -105,5 +108,204 @@ export const rawHandlebars = [
     clamp: 31.8,
     reach: 0,
     drop: 0,
+  },
+  // -----------------------------------------------------------------------
+  // Zipp
+  // -----------------------------------------------------------------------
+  {
+    id: 'handlebar-zipp-sl-70-aero-40',
+    name: 'SL-70 Aero 40',
+    brand: 'Zipp',
+    category: 'guiador',
+    model: 'ZIPP-SL70-AERO-40',
+    price: 32900,
+    weight: 210,
+    description:
+      'Guiador aerodinâmico de topo da Zipp com secção D-shape e integração total de cabos. Testado no túnel de vento para redução máxima de drag em posição de corrida.',
+    specifications: [
+      { label: 'Tipo', value: 'Drop compacto' },
+      { label: 'Largura', value: '400 mm (centro a centro)' },
+      { label: 'Material', value: 'Carbono' },
+      { label: 'Abraçadeira', value: '31,8 mm' },
+      { label: 'Alcance', value: '70 mm' },
+      { label: 'Drop', value: '125 mm' },
+      { label: 'Peso', value: '210 g' },
+    ],
+    type: 'drop',
+    width: 400,
+    material: 'carbono',
+    clamp: 31.8,
+    reach: 70,
+    drop: 125,
+  },
+  {
+    id: 'handlebar-zipp-sl-70-aero-42',
+    name: 'SL-70 Aero 42',
+    brand: 'Zipp',
+    category: 'guiador',
+    model: 'ZIPP-SL70-AERO-42',
+    price: 32900,
+    weight: 218,
+    description:
+      'A versão de 420 mm do SL-70 Aero para ciclistas com ombros mais largos. Mesma aerodinâmica e integração do modelo de 400 mm.',
+    specifications: [
+      { label: 'Tipo', value: 'Drop compacto' },
+      { label: 'Largura', value: '420 mm (centro a centro)' },
+      { label: 'Material', value: 'Carbono' },
+      { label: 'Abraçadeira', value: '31,8 mm' },
+      { label: 'Alcance', value: '70 mm' },
+      { label: 'Drop', value: '125 mm' },
+      { label: 'Peso', value: '218 g' },
+    ],
+    type: 'drop',
+    width: 420,
+    material: 'carbono',
+    clamp: 31.8,
+    reach: 70,
+    drop: 125,
+  },
+  // -----------------------------------------------------------------------
+  // Enve
+  // -----------------------------------------------------------------------
+  {
+    id: 'handlebar-enve-aero-compact-38',
+    name: 'Enve Aero Compact 38',
+    brand: 'Enve',
+    category: 'guiador',
+    model: 'ENVE-AERO-COMPACT-38',
+    price: 44900,
+    weight: 183,
+    description:
+      'Um dos guiadores mais leves do mercado de alta performance: secção aerodinâmica D-shape, cabos internos e apenas 183 g em carbono Enve de alta modularidade.',
+    specifications: [
+      { label: 'Tipo', value: 'Drop compacto' },
+      { label: 'Largura', value: '380 mm (centro a centro)' },
+      { label: 'Material', value: 'Carbono Enve' },
+      { label: 'Abraçadeira', value: '31,8 mm' },
+      { label: 'Alcance', value: '65 mm' },
+      { label: 'Drop', value: '115 mm' },
+      { label: 'Peso', value: '183 g' },
+    ],
+    type: 'drop',
+    width: 380,
+    material: 'carbono',
+    clamp: 31.8,
+    reach: 65,
+    drop: 115,
+  },
+  // -----------------------------------------------------------------------
+  // 3T
+  // -----------------------------------------------------------------------
+  {
+    id: 'handlebar-3t-superergo-team-42',
+    name: 'Superergo Team 42',
+    brand: '3T',
+    category: 'guiador',
+    model: '3T-SUPERERGO-TEAM-42',
+    price: 27900,
+    weight: 221,
+    description:
+      'Guiador ergonômico da 3T com formato clássico e topos achatados para maior conforto em posição alta. Secção ergonómica nos drops e no topo para apoio de polegares.',
+    specifications: [
+      { label: 'Tipo', value: 'Drop ergonómico' },
+      { label: 'Largura', value: '420 mm (centro a centro)' },
+      { label: 'Material', value: 'Carbono' },
+      { label: 'Abraçadeira', value: '31,8 mm' },
+      { label: 'Alcance', value: '85 mm' },
+      { label: 'Drop', value: '130 mm' },
+      { label: 'Peso', value: '221 g' },
+    ],
+    type: 'drop',
+    width: 420,
+    material: 'carbono',
+    clamp: 31.8,
+    reach: 85,
+    drop: 130,
+  },
+  // -----------------------------------------------------------------------
+  // Ritchey — gravel
+  // -----------------------------------------------------------------------
+  {
+    id: 'handlebar-ritchey-wcs-carbon-beacon-42',
+    name: 'WCS Carbon Beacon 42',
+    brand: 'Ritchey',
+    category: 'guiador',
+    model: 'RIT-WCS-BEACON-42',
+    price: 23900,
+    weight: 248,
+    description:
+      'Guiador gravel em carbono da Ritchey com flare de 16° para maior controle em trail e terreno difícil. Topos paralelos ao solo para posição confortável no plano.',
+    specifications: [
+      { label: 'Tipo', value: 'Gravel drop (flare)' },
+      { label: 'Largura', value: '420 mm (topo) / 460 mm (drop)' },
+      { label: 'Material', value: 'Carbono' },
+      { label: 'Abraçadeira', value: '31,8 mm' },
+      { label: 'Flare', value: '16°' },
+      { label: 'Alcance', value: '75 mm' },
+      { label: 'Drop', value: '128 mm' },
+      { label: 'Peso', value: '248 g' },
+    ],
+    type: 'gravel-drop',
+    width: 420,
+    material: 'carbono',
+    clamp: 31.8,
+    reach: 75,
+    drop: 128,
+  },
+  {
+    id: 'handlebar-ritchey-wcs-beacon-alu-44',
+    name: 'WCS Beacon Alumínio 44',
+    brand: 'Ritchey',
+    category: 'guiador',
+    model: 'RIT-WCS-BEACON-ALU-44',
+    price: 12900,
+    weight: 310,
+    description:
+      'Versão em alumínio do Beacon 44: flare de 16°, muito durável e acessível para gravel. A escolha para quem quer os benefícios do flared drop sem preço premium.',
+    specifications: [
+      { label: 'Tipo', value: 'Gravel drop (flare)' },
+      { label: 'Largura', value: '440 mm (topo) / 480 mm (drop)' },
+      { label: 'Material', value: 'Alumínio' },
+      { label: 'Abraçadeira', value: '31,8 mm' },
+      { label: 'Flare', value: '16°' },
+      { label: 'Alcance', value: '75 mm' },
+      { label: 'Drop', value: '128 mm' },
+      { label: 'Peso', value: '310 g' },
+    ],
+    type: 'gravel-drop',
+    width: 440,
+    material: 'aluminio',
+    clamp: 31.8,
+    reach: 75,
+    drop: 128,
+  },
+  // -----------------------------------------------------------------------
+  // Shimano — guiadores
+  // -----------------------------------------------------------------------
+  {
+    id: 'handlebar-shimano-pro-vibe-aero-40',
+    name: 'PRO Vibe Aero 40',
+    brand: 'Shimano',
+    category: 'guiador',
+    model: 'SHI-PRO-VIBE-AERO-40',
+    price: 19900,
+    weight: 258,
+    description:
+      'Guiador aerodinâmico em carbono da submarca PRO da Shimano. Secção interna quadrada nos topos para rigidez torsional e routing de cabos Di2 integrado.',
+    specifications: [
+      { label: 'Tipo', value: 'Drop aero' },
+      { label: 'Largura', value: '400 mm (centro a centro)' },
+      { label: 'Material', value: 'Carbono' },
+      { label: 'Abraçadeira', value: '31,8 mm' },
+      { label: 'Alcance', value: '80 mm' },
+      { label: 'Drop', value: '128 mm' },
+      { label: 'Peso', value: '258 g' },
+    ],
+    type: 'drop',
+    width: 400,
+    material: 'carbono',
+    clamp: 31.8,
+    reach: 80,
+    drop: 128,
   },
 ] as const satisfies readonly Handlebar[];

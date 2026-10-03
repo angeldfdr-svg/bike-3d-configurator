@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
+import { AuthButton } from '@/components/auth/auth-button';
 import { BrandMark } from '@/components/layout/brand-mark';
 import { LinkButton } from '@/components/ui/link-button';
 import { navigation, site } from '@/config/site';
@@ -38,6 +39,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <AuthButton />
           <LinkButton href="/configurator" size="sm" className="hidden sm:inline-flex">
             {site.heroCta}
           </LinkButton>
