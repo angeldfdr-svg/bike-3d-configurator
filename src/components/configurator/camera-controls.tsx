@@ -23,7 +23,7 @@ export function CameraControls() {
       aria-labelledby="camera-title"
       className="rounded-lg border border-line bg-ink-900/50 px-5 py-4"
     >
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <Move3d className="size-4 text-fog-500" aria-hidden="true" />
         <h2
           id="camera-title"
@@ -32,7 +32,11 @@ export function CameraControls() {
           Câmara
         </h2>
 
-        <div className="ml-auto flex flex-wrap gap-1.5" role="group" aria-label="Vistas predefinidas">
+        <div
+          className="flex w-full flex-wrap gap-1.5 sm:ml-auto sm:w-auto"
+          role="group"
+          aria-label="Vistas predefinidas"
+        >
           {cameraViews.map((preset) => {
             const active = view === preset.id;
 
@@ -43,7 +47,9 @@ export function CameraControls() {
                 aria-pressed={active}
                 onClick={() => setCameraView(preset.id)}
                 className={cn(
-                  'rounded-xs border px-2.5 py-1.5 text-xs font-medium transition-colors duration-200',
+                  // A finger needs a real target; the desktop bar stays compact
+                  // because the label, not the padding, sets the width.
+                  'inline-flex min-h-11 items-center rounded-xs border px-3 text-xs font-medium transition-colors duration-200',
                   active
                     ? 'border-lime-400/50 bg-lime-400/12 text-lime-300'
                     : 'border-line text-fog-400 hover:border-line-strong hover:text-fog-100',
@@ -59,7 +65,7 @@ export function CameraControls() {
             aria-pressed={autoRotate}
             onClick={toggleAutoRotate}
             className={cn(
-              'inline-flex items-center gap-1.5 rounded-xs border px-2.5 py-1.5 text-xs font-medium transition-colors duration-200',
+              'inline-flex min-h-11 items-center gap-1.5 rounded-xs border px-3 text-xs font-medium transition-colors duration-200',
               autoRotate
                 ? 'border-lime-400/50 bg-lime-400/12 text-lime-300'
                 : 'border-line text-fog-400 hover:border-line-strong hover:text-fog-100',

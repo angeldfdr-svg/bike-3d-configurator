@@ -15,7 +15,7 @@ export function StagePanel() {
       aria-labelledby="stage-title"
       className="relative overflow-hidden rounded-lg border border-line bg-ink-950"
     >
-      <div className="relative aspect-[16/10] w-full">
+      <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
         <StageCanvas />
 
         <div
@@ -46,8 +46,9 @@ export function StagePanel() {
               Cena 3D
             </h2>
             <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-fog-400">
-              Arraste para rodar, use a roda do rato para aproximar. Cada
-              componente escolhido muda a peça desenhada na cena.
+              Arraste com um dedo ou com o ponteiro para rodar, aproxime com dois
+              dedos ou com a roda. Cada componente escolhido muda a peça
+              desenhada na cena.
             </p>
           </div>
           <p className="num text-[0.6875rem] tracking-[0.16em] text-fog-500 uppercase">

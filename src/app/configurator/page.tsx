@@ -21,7 +21,7 @@ export default function ConfiguratorPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="inline-flex size-9 items-center justify-center rounded-md border border-line text-fog-300 transition-colors duration-200 hover:border-line-strong hover:text-fog-50"
+              className="inline-flex size-11 items-center justify-center rounded-md border border-line text-fog-300 transition-colors duration-200 hover:border-line-strong hover:text-fog-50"
               aria-label="Voltar à página inicial"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />

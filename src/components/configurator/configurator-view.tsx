@@ -5,10 +5,13 @@ import { StagePanel } from '@/components/configurator/stage-panel';
 import { SummaryPanel } from '@/components/configurator/summary-panel';
 
 /**
- * Two-pane configurator shell.
+ * Configurator shell.
  *
- * Desktop: 3D stage and camera on the left, components and summary on the right.
- * Mobile: 3D -> components -> summary, in that reading order.
+ * Desktop: the 3D stage and the camera on the left, the components and the
+ * summary on the right, with the project state spanning both columns below.
+ * Tablet and phone: one column, in the reading order 3D -> components ->
+ * summary -> project state. The roadmap is deliberately last: it is progress
+ * information, not part of building a bike.
  */
 export function ConfiguratorView() {
   return (
@@ -17,12 +20,15 @@ export function ConfiguratorView() {
         <div className="order-1 flex min-w-0 flex-col gap-4">
           <StagePanel />
           <CameraControls />
-          <RoadmapPanel />
         </div>
 
         <div className="order-2 flex min-w-0 flex-col gap-6 lg:sticky lg:top-24">
           <CategoryPanel />
           <SummaryPanel />
+        </div>
+
+        <div className="order-3 min-w-0 lg:col-span-2">
+          <RoadmapPanel />
         </div>
       </div>
     </div>
