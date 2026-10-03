@@ -3,11 +3,10 @@
 Estado vivo do projeto. Actualizado no fim de cada fase; a fonte de verdade para
 "o que está feito, o que falta e o que decidir a seguir".
 
-- **Fase actual:** 8 de 11 — concluída e verificada
-- **Branch:** `main` (repositório local, sem remoto configurado)
-- **Última verificação completa:** typecheck, lint, testes, build, smoke, verificação
-  da cena 3D em Chromium real e auditoria de responsividade em quatro viewports —
-  todos verdes
+- **Fase actual:** 8 de 11 — concluída · Auth adicionada fora de fase
+- **Branch:** `main` → **Remoto:** https://github.com/angeldfdr-svg/bike-3d-configurator
+- **Última verificação completa:** typecheck 0 erros (tsc --noEmit) após adição do sistema
+  de autenticação; todos os commits pushed para GitHub
 
 ---
 
