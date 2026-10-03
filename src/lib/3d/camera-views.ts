@@ -18,7 +18,23 @@ export type CameraPreset = {
 /** Half of the vertical field of view of the stage camera, in radians. */
 const VERTICAL_HALF_FOV = ((35 / 2) * Math.PI) / 180;
 /** Aspect ratio the stage is designed around (16:10). */
-const STAGE_ASPECT = 16 / 10;
+export const DESIGNED_STAGE_ASPECT = 16 / 10;
+
+/**
+ * The aspect ratio the framing is computed for.
+ *
+ * The stage is a responsive element, so the ratio that matters is the one the
+ * canvas actually has, not the one it was designed around. Anything absurd
+ * (a zero height during layout, say) falls back to the designed ratio so the
+ * framing can never divide by zero or invert.
+ */
+export function stageAspect(width: number, height: number): number {
+  if (!Number.isFinite(width) || !Number.isFinite(height) || height <= 0 || width <= 0) {
+    return DESIGNED_STAGE_ASPECT;
+  }
+
+  return width / height;
+}
 /** Empty margin left around the bike. */
 const FIT_PADDING = 1.2;
 /** Extra room the tilted top view needs. */
@@ -27,9 +43,13 @@ const TOP_ELEVATION = (52 * Math.PI) / 180;
 const TOP_AZIMUTH = (30 * Math.PI) / 180;
 
 /** Distance at which a box of that size fills the stage. */
-function fitDistance(horizontalExtent: number, verticalExtent: number): number {
+function fitDistance(
+  horizontalExtent: number,
+  verticalExtent: number,
+  aspect: number,
+): number {
   const forHeight = verticalExtent / 2 / Math.tan(VERTICAL_HALF_FOV);
-  const forWidth = horizontalExtent / 2 / Math.tan(VERTICAL_HALF_FOV) / STAGE_ASPECT;
+  const forWidth = horizontalExtent / 2 / Math.tan(VERTICAL_HALF_FOV) / aspect;
 
   return Math.max(forHeight, forWidth) * FIT_PADDING;
 }
@@ -40,15 +60,19 @@ function fitDistance(horizontalExtent: number, verticalExtent: number): number {
  * The tilted top view compresses the bike length into the vertical axis, so it
  * is checked against a stricter requirement.
  */
-export function framingFits(view: CameraView, geometry: BikeGeometry): boolean {
-  const preset = resolveCameraPreset(view, geometry);
+export function framingFits(
+  view: CameraView,
+  geometry: BikeGeometry,
+  aspect: number = DESIGNED_STAGE_ASPECT,
+): boolean {
+  const preset = resolveCameraPreset(view, geometry, aspect);
   const distance = Math.hypot(
     preset.position[0] - preset.target[0],
     preset.position[1] - preset.target[1],
     preset.position[2] - preset.target[2],
   );
   const verticalHalf = Math.tan(VERTICAL_HALF_FOV) * distance;
-  const horizontalHalf = verticalHalf * STAGE_ASPECT;
+  const horizontalHalf = verticalHalf * aspect;
   const length = geometry.wheelbase + geometry.wheelRadius * 2;
 
   // What actually spans the screen at each view: from the front the bike is as
@@ -64,14 +88,15 @@ export function framingFits(view: CameraView, geometry: BikeGeometry): boolean {
 export function resolveCameraPreset(
   view: CameraView,
   geometry: BikeGeometry,
+  aspect: number = DESIGNED_STAGE_ASPECT,
 ): CameraPreset {
   const height = bikeHeight(geometry);
   const length = geometry.wheelbase + geometry.wheelRadius * 2;
   const target = bikeCenter(geometry);
   const [tx, ty, tz] = target;
 
-  const sideDistance = fitDistance(length, height);
-  const frontDistance = fitDistance(geometry.handlebarWidth, height);
+  const sideDistance = fitDistance(length, height, aspect);
+  const frontDistance = fitDistance(geometry.handlebarWidth, height, aspect);
 
   switch (view) {
     case 'frontal':

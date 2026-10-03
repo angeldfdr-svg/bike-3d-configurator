@@ -6,7 +6,7 @@ import type { ElementRef, RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 import { Vector3 } from 'three';
 
-import { resolveCameraPreset } from '@/lib/3d/camera-views';
+import { resolveCameraPreset, stageAspect } from '@/lib/3d/camera-views';
 import type { BikeGeometry } from '@/lib/3d/bike-geometry';
 import { useBikeStore } from '@/store/bike-store';
 
@@ -35,6 +35,10 @@ export function CameraRig({
   const view = useBikeStore((state) => state.camera.view);
   const autoRotate = useBikeStore((state) => state.camera.autoRotate);
   const camera = useThree((state) => state.camera);
+  // The canvas keeps its own measured size, so the framing follows the real
+  // shape of the stage instead of the one it was designed around.
+  const size = useThree((state) => state.size);
+  const aspect = stageAspect(size.width, size.height);
 
   const animating = useRef(true);
   const orbitAngle = useRef(0);
@@ -49,11 +53,11 @@ export function CameraRig({
     }
 
     animating.current = true;
-  }, [view, geometry, camera, controlsRef]);
+  }, [view, geometry, camera, controlsRef, aspect]);
 
   useFrame((_, delta) => {
     const controls = controlsRef.current ?? undefined;
-    const preset = resolveCameraPreset(view, geometry);
+    const preset = resolveCameraPreset(view, geometry, aspect);
     const target = new Vector3(preset.target[0], preset.target[1], preset.target[2]);
     const desired = new Vector3(preset.position[0], preset.position[1], preset.position[2]);
 
