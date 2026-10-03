@@ -430,6 +430,17 @@ representativo de GPU real.
 
 - **Turbopack inviável neste sandbox** (2 vCPU / 2 GB RAM): os builds excedem 600 s.
   Usar `npx next build --webpack`. O script `npm run build` mantém o Turbopack.
+- **`node_modules`, `.next` e os processos não sobrevivem entre turnos.** Não é um
+  defeito do projeto: o snapshot do workspace exclui por desenho as pastas geradas
+  (`node_modules`, `.next`, `.cache`, `dist`, `build`, `out`, `target`) e os processos,
+  com tecto de ~128 MB / 10 000 ficheiros. Medido: `node_modules` tem **842 MB e
+  33 457 ficheiros** — 6,6x acima do tamanho e 3,3x acima da contagem, dominado pelo
+  Next (200 MB), `@next` (184 MB), `@img` (46 MB) e `lucide-react` (44 MB). Nenhuma
+  configuração do projeto o guarda, e nenhuma deve: são dependências regeneráveis.
+  A recuperação é `npm run restore` (`npm ci && npx next build --webpack`, ~70 s)
+  seguido de `npm start`. Consequência inevitável: **o preview ao vivo tem de ser
+  reiniciado em cada turno**, porque o servidor é um processo e os processos também
+  não persistem.
 - **`.git/config` não persiste** no snapshot do workspace: ao reiniciar o ambiente é
   preciso repetir `git config user.name` / `user.email`.
 - **Sem remoto GitHub**: `git push` requer repositório e credenciais do utilizador.

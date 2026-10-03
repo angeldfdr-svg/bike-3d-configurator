@@ -16,7 +16,8 @@
     "smoke": "node scripts/smoke.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:3d": "node scripts/verify-3d.mjs"
+    "verify:3d": "node scripts/verify-3d.mjs",
+    "restore": "npm ci && npx next build --webpack"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
