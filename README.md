@@ -7,9 +7,10 @@ pedaleiro, guiador, selim, pneus e extras, e vê a bicicleta mudar em 3D enquant
 o peso, as especificações e a compatibilidade são recalculados em tempo real.
 
 O projeto está a ser construído por fases, com verificação no fim de cada fase. Este
-repositório contém a **Fase 7**: modelo de dados, catálogo, estado global, cena 3D
+repositório contém a **Fase 8**: modelo de dados, catálogo, estado global, cena 3D
 interativa com peças intercambiáveis, preço e peso em tempo real, motor de
-compatibilidade e testes.
+compatibilidade e um configurador responsivo, verificável em telemóvel, tablet e
+desktop.
 
 ---
 
@@ -17,16 +18,18 @@ compatibilidade e testes.
 
 | | |
 | --- | --- |
-| Fase | **7 de 11** — dados, estado, interface, cena 3D, peças, preço, peso e compatibilidade |
+| Fase | **8 de 11** — dados, estado, interface, cena 3D, peças, preço, peso, compatibilidade e responsividade |
 | Build | `next build --webpack` ✅ (5 rotas estáticas) |
 | Typecheck | `tsc --noEmit` ✅ (TypeScript estrito) |
 | Lint | `eslint .` ✅ (0 erros, 0 avisos) |
-| Testes | `vitest run` ✅ (191 testes) |
+| Testes | `vitest run` ✅ (194 testes) |
 | Smoke test | `npm run smoke` ✅ (25 verificações) |
 | Cena 3D | `npm run verify:3d` ✅ (30 verificações em Chromium real) |
+| Responsividade | 4 viewports ✅ (overflow, ordem de leitura, alvos de toque, enquadramento) |
 
 A bicicleta é visível e interativa em 3D, centrada e enquadrada em quatro vistas, com
-rotação, zoom e rotação automática. **Cada categoria lista os produtos reais do catálogo
+rotação, zoom e rotação automática. O enquadramento foi medido por píxeis em quatro
+viewports, não assumido. **Cada categoria lista os produtos reais do catálogo
 e a escolha muda a peça desenhada**: um pedaleiro mono-prato perde o prato interno, um
 grupo com travões de aro move os calibradores para o aro, um quadro de titânio aparece em
 metal nu. **O preço e o peso totais são calculados a cada escolha**, com o estado
@@ -296,6 +299,28 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 - As medidas nas mensagens passam por `formatLength`, para que uma mensagem em português
   nunca mostre `31.6 mm`.
 
+**Fase 8 — responsividade**
+
+- **Ordem de leitura estável em qualquer largura**: 3D → componentes → resumo → roadmap.
+  O roadmap passou a ser um bloco próprio a spanar as duas colunas, em vez de viver na
+  coluna esquerda, onde se metia entre o palco e os componentes nos layouts empilhados.
+- **O palco adapta a forma**: `aspect-[4/3] sm:aspect-[16/10]`, para que o telemóvel não
+  receba uma bicicleta dentro de uma letterbox.
+- **O enquadramento segue o aspecto real do canvas.** `stageAspect(width, height)` traduz
+  o tamanho medido no rácio que a matemática do enquadramento precisa, com recurso ao
+  aspecto de desenho (16:10) quando a medição é degenerada. A distância da câmara deixa de
+  assumir a forma para que foi calculada.
+- **Alvos de toque de 44 px** nos botões de vista e de rotação, e um link «voltar» que o
+  flex deixava a 28 px de largura no telemóvel.
+- **Defeito pré-existente corrigido**: a transição de vista parava quando a *posição* da
+  câmara chegava, ignorando o *alvo* do `OrbitControls` — e a câmara aponta para o alvo.
+  Na vista lateral, que é a vista por omissão, o enquadramento ficava deslocado até ao
+  clique seguinte. A condição passou a exigir que os dois cheguem, numa função pura
+  testada (`presetSettled`).
+- **Verificado em quatro viewports** (390, 834, 1280 e 1680 px): zero overflow horizontal,
+  ordem de leitura correcta, nenhum alvo de toque abaixo de 44 px e a bicicleta inteira
+  dentro do canvas, medida pela cor das paredes dos pneus.
+
 **Fase 4 — cena 3D**
 
 - `Canvas` do React Three Fiber carregado de forma lazy (`next/dynamic` com `ssr: false`),
@@ -337,7 +362,7 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   browser, memória em SSR/testes, API no futuro — sem alterar o store.
 - O store guarda ids, nunca produtos: a configuração é pequena, serializável para
   URL ou base de dados, e continua válida quando o catálogo muda.
-- 191 testes no total (catálogo, helpers de configuração, serialização, store, geometria
+- 194 testes no total (catálogo, helpers de configuração, serialização, store, geometria
   3D, variantes visuais, instâncias, preço e peso, compatibilidade e formatação).
 
 **Fase 2 — dados**
@@ -367,8 +392,8 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 | 4 | Cena 3D (React Three Fiber, Drei, Suspense, fallback de WebGL, vistas de câmara) | ✅ concluída |
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
 | 6 | Preço e peso em tempo real (funções puras + testes) | ✅ concluída |
-| 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | pendente |
-| 8 | Responsividade do configurator (desktop split, mobile empilhado) | ⏳ próxima |
+| 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | ✅ concluída |
+| 8 | Responsividade do configurador (desktop split, mobile empilhado) | ✅ concluída |
 | 9 | Microanimações, transições, estados vazios/erro/carregamento | pendente |
 | 10 | Testes de domínio e interface, performance 3D | pendente |
 | 11 | Limpeza, revisão final, preparação para deploy | pendente |

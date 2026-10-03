@@ -3,10 +3,11 @@
 Estado vivo do projeto. Actualizado no fim de cada fase; a fonte de verdade para
 "o que está feito, o que falta e o que decidir a seguir".
 
-- **Fase actual:** 7 de 11 — concluída e verificada
+- **Fase actual:** 8 de 11 — concluída e verificada
 - **Branch:** `main` (repositório local, sem remoto configurado)
-- **Última verificação completa:** typecheck, lint, testes, build, smoke e verificação
-  da cena 3D em Chromium real — todos verdes
+- **Última verificação completa:** typecheck, lint, testes, build, smoke, verificação
+  da cena 3D em Chromium real e auditoria de responsividade em quatro viewports —
+  todos verdes
 
 ---
 
@@ -44,16 +45,78 @@ decisão anterior de produtos ilustrativos. Ver «Objectivo: catálogo real» ab
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
 | 6 | Preço e peso em tempo real (funções puras + testes) | ✅ concluída |
 | 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | ✅ concluída |
-| 8 | Responsividade do configurador (desktop split, mobile empilhado) | ⏳ próxima |
+| 8 | Responsividade do configurador (desktop split, mobile empilhado) | ✅ concluída |
 | 9 | Microanimações, transições, estados vazios/erro/carregamento | pendente |
 | 10 | Testes de domínio e interface, performance 3D | pendente |
 | 11 | Limpeza, revisão final, preparação para deploy | pendente |
 
 ---
 
-## 3. Fase 7 — o que foi feito
+## 3. Fase 8 — o que foi feito
 
-### 3.1 Nove regras (`src/lib/compatibility.ts`)
+### 3.1 Ordem de leitura em qualquer largura
+
+O roadmap vivia dentro da coluna esquerda, pelo que nos layouts empilhados se metia
+entre o palco 3D e os componentes que o visitador ali vai escolher. Passou a ser um
+bloco próprio (`order-3 lg:col-span-2`), o que dá a ordem **3D → componentes → resumo
+→ roadmap** nos quatro viewports verificados. O roadmap é informação de progresso, não
+parte de montar uma bicicleta, por isso fica no fim.
+
+### 3.2 Palco e controlos dimensionados para toque
+
+- O palco passa a `aspect-[4/3] sm:aspect-[16/10]`: no telemóvel o canvas ganha altura
+  (348×261 em vez de 348×218) sem que a bicicleta encolha.
+- Os botões de vista e de rotação passam a `min-h-11` (44 px), e o grupo de vistas é
+  largo no telemóvel (`w-full sm:ml-auto sm:w-auto`) para não ficar apertado contra a
+  etiqueta.
+- O link «voltar» do cabeçalho do configurador era 36×36, e o flex comprimia-o para
+  28×44 no telemóvel; passou a `size-11 shrink-0`.
+
+A nota de instruções do palco passou a descrever o gesto de toque, não o do rato.
+
+### 3.3 O enquadramento segue o aspecto real do canvas
+
+O enquadramento era calculado contra um 16:10 fixo, enquanto o palco é um elemento
+responsável. `camera-views.ts` passou a exportar `DESIGNED_STAGE_ASPECT` e
+`stageAspect(width, height)`, e `fitDistance`, `framingFits` e `resolveCameraPreset`
+recebem o aspecto como argumento. O `camera-rig.tsx` lê `useThree(s => s.size)` e passa
+o aspecto medido, pelo que um canvas 4:3 ou 16:10 é enquadrado para a caixa em que
+realmente está.
+
+### 3.4 Defeito pré-existente encontrado e corrigido: a transição de vista parava a meio
+
+**Achado da fase.** Com o enquadramento dependente do aspecto, a medição por píxeis
+mostrou a bicicleta deslocada para cima e cortada no topo no desktop. A causa não era
+o `aspect`: era a transição de vista.
+
+`animating.current` passava a falso assim que a **posição** da câmara chegava ao
+destino. O **alvo** do `OrbitControls` continuava onde a cena o tinha deixado (Y = 0,094
+em vez de 0,477), e a câmara aponta para o alvo dos controlos. Na vista lateral — a
+vista por omissão, em que a câmara já começa no destino — a transição terminava no
+primeiro frame e o enquadramento ficava errado até ao clique seguinte.
+
+A condição passou a exigir que os dois cheguem, extraída para a função pura
+`presetSettled(cameraDistance, targetDistance)` em `camera-views.ts`, com três testes.
+Depois da correcção, a medição por píxeel dá a bicicleta inteira e centrada nos quatro
+viewports, com margens de 30 a 79 px.
+
+### 3.5 Como o enquadramento foi medido
+
+Duas armadilhas de medição, registadas para não se repetirem:
+
+1. **As marcas de mira do DOM são verde-lima** e ficam a 16 px das bordas do canvas.
+   Medir «verde» no canvas apanha-as e devolve sempre um *bounding box* de margens
+   iguais, independentemente do enquadramento.
+2. **`page.screenshot({ clip })` usa coordenadas da página** enquanto `boundingBox()` é
+   relativo ao *viewport*; clicar nos botões de vista revolve a página nos layouts
+   empilhados e a região capturada deixa de ser o canvas.
+
+A medição fiável é a cor das paredes dos pneus (castanho/tijolo), que nenhuma
+sobreposição usa.
+
+## 4. Fase 7 — o que foi feito
+
+### 4.1 Nove regras (`src/lib/compatibility.ts`)
 
 | Regra | O que compara | Severidade |
 | --- | --- | --- |
@@ -75,7 +138,7 @@ As famílias de travão são normalizadas: `disco-hidraulico` e `disco-mecanico`
 fixação, por isso são a mesma família. Um grupo hidráulico num quadro de disco mecânico
 funciona.
 
-### 3.2 Cada conflito traz a razão e a saída
+### 4.2 Cada conflito traz a razão e a saída
 
 A mensagem usa os valores reais dos dois produtos e nomeia as alternativas que existem no
 catálogo:
@@ -87,13 +150,13 @@ catálogo:
 As medidas passam por `formatLength`, para que uma mensagem em português nunca mostre
 `31.6 mm`.
 
-### 3.3 Assinalado antes de escolher
+### 4.3 Assinalado antes de escolher
 
 `conflictsWithBuild` corre as regras sobre uma **configuração candidata**, em vez de
 comparar relatórios. Por isso o selector e o resumo não podem discordar sobre o que é
 compatível: ambos leem a mesma função.
 
-### 3.4 O aviso vive fora do botão
+### 4.4 O aviso vive fora do botão
 
 **Defeito encontrado e corrigido durante a fase.** O aviso de conflito estava dentro do
 `<button>` do produto, pelo que o nome acessível do botão «Race 143» ficava a conter
@@ -102,15 +165,15 @@ um selector por nome acessível clicava no botão errado. Passou a estar fora do
 ligado por `aria-describedby`. Um utilizador de leitor de ecrã continua a ouvir a razão,
 mas o nome do botão continua a ser só o nome do produto.
 
-### 3.5 Resumo
+### 4.5 Resumo
 
 `summary-panel.tsx` passou a mostrar o estado de compatibilidade com todos os erros e
 avisos, e as especificações em destaque (quadro, grupo, rodas, pneus, tamanho). O badge do
 cabeçalho passou a ser `Compatível` / `Incompatível`.
 
-## 4. Fase 6 — o que foi feito
+## 5. Fase 6 — o que foi feito
 
-### 3.1 Motor de preço e peso (`src/lib/pricing.ts`)
+### 5.1 Motor de preço e peso (`src/lib/pricing.ts`)
 
 `costBuild(source, configuration)` devolve uma linha por categoria escolhida, uma linha
 por extra montado e os dois totais. As decisões que o motor toma explicitamente:
@@ -133,14 +196,14 @@ desviadores e os travões no seu preço e o par de rodas leva os cubos e os raio
 deles tem categoria própria, pelo que não existe segunda linha que os possa duplicar.
 Um teste compara a soma das linhas com o total.
 
-### 3.2 Painel de resumo
+### 5.2 Painel de resumo
 
 `summary-panel.tsx` passou a ser cliente e a chamar o motor. Mostra o preço e o peso
 totais; quando o build está incompleto mostra o total parcial com cor esbatida, a
 etiqueta «Incompleto» e a lista dos componentes que faltam. «Especificações» e
 «Compatibilidade» continuam por preencher — são a Fase 7.
 
-### 3.3 Valor de referência
+### 5.3 Valor de referência
 
 Build completo usado na verificação em browser, conferido linha a linha contra o
 catálogo:
@@ -162,9 +225,9 @@ O browser mostrou exactamente estes dois valores.
 
 ---
 
-## 4. Fase 5 — o que foi feito
+## 6. Fase 5 — o que foi feito
 
-### 4.1 Variantes visuais (`src/lib/3d/part-variants.ts`)
+### 6.1 Variantes visuais (`src/lib/3d/part-variants.ts`)
 
 Funções puras que traduzem os atributos do catálogo no que a cena desenha:
 
@@ -179,39 +242,39 @@ Funções puras que traduzem os atributos do catálogo no que a cena desenha:
 | Selim | corrida (nariz curto) vs endurance, largura da casca, material dos carris |
 | Extras | computador, luzes, bidões e bolsa, limitados pela capacidade de cada encaixe |
 
-### 4.2 Colocação de instâncias (`src/lib/3d/instances.ts`)
+### 6.2 Colocação de instâncias (`src/lib/3d/instances.ts`)
 
 Tuplas puras para peças repetidas: anéis, raios radiais, carretos de cassete e montagens
 em tubos. A cena converte-as em matrizes de instância, pelo que uma roda com 28 raios
 custa uma *draw call*.
 
-### 4.3 Caches (`geometry-cache.ts`, `material-cache.ts`)
+### 6.3 Caches (`geometry-cache.ts`, `material-cache.ts`)
 
 Um buffer por forma e um material por acabamento. `<primitive>` nunca é descartado pelo
 R3F (confirmado no código-fonte do reconciler), por isso o cache é seguro.
 
-### 4.4 Registry
+### 6.4 Registry
 
 `parts/registry.ts` mapeia categoria → componente. `parts/glb-models.ts` é o ponto de
 extensão tipado para GLB: está vazio de propósito, e um teste garante que assim continua,
 para não existir um *loader* sem uso.
 
-### 4.5 Seleção de produtos
+### 6.5 Seleção de produtos
 
 `category-panel.tsx` passou a listar os produtos reais com `product-picker.tsx`, ligado
 às ações do store já testadas na Fase 3. Inclui seleção de tamanho de quadro e
 quantidade de extras. Preço e peso por produto são factos do catálogo.
 
-### 4.6 Seleção no catálogo
+### 6.6 Seleção no catálogo
 
 `findSelection(source, configuration)` em `src/lib/catalog.ts` resolve os ids da
 configuração em produtos tipados. A Fase 6 reutilizou-a directamente.
 
 ---
 
-## 5. Fase 4 — o que foi feito
+## 7. Fase 4 — o que foi feito
 
-### 5.1 Geometria procedural (`src/lib/3d/bike-geometry.ts`)
+### 7.1 Geometria procedural (`src/lib/3d/bike-geometry.ts`)
 
 Funções puras, sem Three.js. Recebem a configuração e o catálogo e devolvem todas as
 âncoras em metros:
@@ -232,7 +295,7 @@ direcção, o que punha a coroa do garfo a 49 cm do chão (deveria ser ~71 cm). 
 quase vertical; o ângulo da direcção pertence ao eixo da direcção. Passou a existir
 `FORK_LENGTH` (0,373 m) com `FORK_RAKE_ANGLE` (7°).
 
-### 5.2 Enquadramento (`src/lib/3d/camera-views.ts`)
+### 7.2 Enquadramento (`src/lib/3d/camera-views.ts`)
 
 `resolveCameraPreset(view, geometry)` devolve posição e alvo para as quatro vistas,
 com a distância calculada a partir da FOV vertical (35°), do *aspect* do palco (16:10)
@@ -243,7 +306,7 @@ nunca é cortada.
 A vista superior é inclinada (52° de elevação, 30° de azimute) porque olhar exactamente
 de cima deixa o vetor *up* paralelo à direcção da vista, o que é indefinido.
 
-### 5.3 Cena (`src/components/3d/`)
+### 7.3 Cena (`src/components/3d/`)
 
 | Ficheiro | Papel |
 | --- | --- |
@@ -262,23 +325,24 @@ de cima deixa o vetor *up* paralelo à direcção da vista, o que é indefinido.
 
 A cena lê `configuration` e `camera` do store e nunca escreve no store.
 
-### 5.4 Interface
+### 7.4 Interface
 
 - `stage-panel.tsx` passou a alojar o canvas real (mira, badges, título, nota honesta).
 - `camera-controls.tsx` ligado ao store: as quatro vistas e o botão `Rodar` funcionam.
 
 ---
 
-## 6. Verificações
+## 8. Verificações
 
 | Verificação | Resultado |
 | --- | --- |
 | `npx tsc --noEmit` | ✅ 0 erros |
 | `npx eslint .` | ✅ 0 erros, 0 avisos |
-| `npx vitest run` | ✅ **191 testes** (29 catálogo + 20 configuração + 23 store + 23 geometria + 35 peças + 16 preço/peso + 39 compatibilidade + 6 formatação) |
+| `npx vitest run` | ✅ **194 testes** (29 catálogo + 20 configuração + 23 store + 26 geometria + 35 peças + 16 preço/peso + 39 compatibilidade + 6 formatação) |
 | `npx next build --webpack` | ✅ 5 rotas estáticas |
 | `npm run smoke` | ✅ 25 verificações |
 | `npm run verify:3d` | ✅ 30 verificações em Chromium real |
+| Auditoria de responsividade (4 viewports) | ✅ overflow 0 px, ordem 3D → componentes → resumo → roadmap, alvos de toque ≥ 44 px, bicicleta inteira no canvas |
 
 `verify:3d` (`scripts/verify-3d.mjs`) arranca o servidor de produção, abre
 `/configurator` em Chromium headless com WebGL por software (SwiftShader) e verifica:
@@ -290,7 +354,7 @@ selecionado, **build vazio sem preço**, **resumo com preço e peso reais**, **b
 completo sem componentes em falta**, **total a mover-se ao trocar um componente**,
 viewport móvel e ausência de erros de consola. As capturas ficam em `.verify/`.
 
-### Performance medida
+### 8.1 Performance medida
 
 Lido de `renderer.info` numa sessão de perfis temporária (sonda removida depois):
 
@@ -306,7 +370,7 @@ Os números confirmam os caches: 25 geometrias e 3 programas para uma bicicleta 
 métrica: a mesma cena deu 12 fps e 60 fps em corridas diferentes, por isso não é
 representativo de GPU real.
 
-### Bundle
+### 8.2 Bundle
 
 - `/` carrega 599 KB em 8 chunks; `/configurator` carrega 606 KB em 9 chunks.
 - Os ~700 KB do Three.js **não** estão em nenhum dos dois: entram apenas quando o palco
@@ -315,7 +379,7 @@ representativo de GPU real.
 
 ---
 
-## 7. Decisões registadas
+## 9. Decisões registadas
 
 1. **Geometria procedural primeiro, GLB depois.** Nenhum asset 3D foi descarregado da
    internet: a bicicleta é construída por código. Isto mantém o repositório leve, evita
@@ -349,10 +413,20 @@ representativo de GPU real.
 14. **Build incompleto é declarado, não escondido.** Um preço parcial aparece sempre
     acompanhado da lista do que falta, para que nunca seja confundido com o preço de uma
     bicicleta.
+15. **O enquadramento recebe o aspecto, não assume um.** A distância da câmara é
+    calculada para a caixa em que o canvas realmente está; `stageAspect` é a fronteira
+    que traduz um tamanho medido no rácio que a matemática precisa, com recurso ao
+    aspecto de desenho quando a medição é degenerada.
+16. **Uma transição de vista acaba quando os dois chegam.** Posição da câmara e alvo
+    do `OrbitControls` são coisas distintas, e a câmara aponta para o segundo. Parar
+    só na primeira deixava o enquadramento errado até ao clique seguinte; a condição
+    vive numa função pura testada, fora do `useFrame`.
+17. **Roadmap no fim da leitura.** Informação de progresso não é parte de montar uma
+    bicicleta, por isso fica depois do resumo em vez de entre o palco e os componentes.
 
 ---
 
-## 8. Problemas conhecidos
+## 10. Problemas conhecidos
 
 - **Turbopack inviável neste sandbox** (2 vCPU / 2 GB RAM): os builds excedem 600 s.
   Usar `npx next build --webpack`. O script `npm run build` mantém o Turbopack.
@@ -380,21 +454,22 @@ representativo de GPU real.
 
 ---
 
-## 9. Próximo passo — Fase 8
+## 11. Próximo passo — Fase 9
 
-Responsividade do configurador:
+Microanimações, transições e estados:
 
-1. Desktop em duas colunas (palco 3D fixo, componentes e resumo com deslocamento
-   próprio); tablet e telemóvel empilhados na ordem 3D → componentes → resumo.
-2. Controlos confortáveis em ecrã de toque, sem overflow horizontal.
-3. Verificação em viewports reais, com foco, contraste e ordem de leitura.
+1. Transições de vista mais polidas, com respeito por `prefers-reduced-motion`.
+2. Estados vazios, de carregamento e de erro em cada painel.
+3. Confirmação visual ao montar um extra e ao mudar de tamanho de quadro.
+4. Revisão do `frameloop`: passar para `demand` + `invalidate()` se a Fase 10 medir
+   consumo excessivo em telemóvel.
 
-**Critério de saída:** typecheck, lint, testes, build, smoke e `verify:3d` verdes nos
-viewport de desktop, tablet e telemóvel, sem overflow nem sobreposição.
+**Critério de saída:** typecheck, lint, testes, build, smoke e `verify:3d` verdes, com
+as animações desligáveis e nenhum painel a poder ficar vazio sem explicação.
 
 ---
 
-## 10. Objectivo: catálogo real
+## 12. Objectivo: catálogo real
 
 Pedido explícito do utilizador: **tudo o que estiver no site deve ser real e cobrir
 quase todos os produtos que existem no mercado**, com liberdade para implementar
@@ -418,7 +493,7 @@ ingestão/ETL de catálogo, normalização de atributos entre fabricantes, cache
 paginação, e painel de administração. Nada disto deve ser inventado antes de ser
 preciso.
 
-## 11. Comandos úteis
+## 13. Comandos úteis
 
 ```bash
 npm run dev          # desenvolvimento
