@@ -21,7 +21,7 @@ export default function ConfiguratorPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="inline-flex size-11 items-center justify-center rounded-md border border-line text-fog-300 transition-colors duration-200 hover:border-line-strong hover:text-fog-50"
+              className="inline-flex size-11 shrink-0 items-center justify-center rounded-md border border-line text-fog-300 transition-colors duration-200 hover:border-line-strong hover:text-fog-50"
               aria-label="Voltar à página inicial"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
@@ -38,7 +38,7 @@ export default function ConfiguratorPage() {
           </div>
 
           <Badge variant="neutral" className="num shrink-0 self-start lg:self-auto">
-            Fase 7 de 11
+            Fase 8 de 11
           </Badge>
         </div>
       </div>

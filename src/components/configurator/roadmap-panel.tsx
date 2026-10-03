@@ -8,6 +8,7 @@ const phases = [
   { phase: 5, label: 'Peças 3D intercambiáveis', done: true },
   { phase: 6, label: 'Preço e peso em tempo real', done: true },
   { phase: 7, label: 'Motor de compatibilidade', done: true },
+  { phase: 8, label: 'Responsividade e toque', done: true },
 ] as const;
 
 /** Transparent progress view of the build plan inside the configurator. */
