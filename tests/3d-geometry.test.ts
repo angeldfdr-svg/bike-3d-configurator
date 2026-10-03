@@ -8,7 +8,12 @@ import {
   frameAnchors,
   resolveBikeGeometry,
 } from '@/lib/3d/bike-geometry';
-import { framingFits, resolveCameraPreset } from '@/lib/3d/camera-views';
+import {
+  framingFits,
+  presetSettled,
+  resolveCameraPreset,
+  SETTLE_DISTANCE,
+} from '@/lib/3d/camera-views';
 import { emptyConfiguration } from '@/lib/configuration';
 import type { BikeConfiguration } from '@/types/configuration';
 
@@ -251,5 +256,27 @@ describe('resolveCameraPreset', () => {
     const side = resolveCameraPreset('lateral', geometry);
 
     expect(front.position[0]).toBeLessThan(side.position[2]);
+  });
+});
+
+describe('presetSettled', () => {
+  it('waits for the orbit target even when the camera is already home', () => {
+    // The camera can be parked exactly on its preset while the orbit target is
+    // still wherever the scene left it. Stopping on the camera alone froze the
+    // framing off centre, because the camera then aimed at the stale target.
+    expect(presetSettled(0, 0.4)).toBe(false);
+    expect(presetSettled(0.4, 0)).toBe(false);
+    expect(presetSettled(0, 0)).toBe(true);
+  });
+
+  it('treats a missing target as nothing to wait for', () => {
+    expect(presetSettled(0, null)).toBe(true);
+    expect(presetSettled(0.5, null)).toBe(false);
+  });
+
+  it('needs both inside the tolerance', () => {
+    expect(presetSettled(SETTLE_DISTANCE, 0)).toBe(false);
+    expect(presetSettled(0, SETTLE_DISTANCE)).toBe(false);
+    expect(presetSettled(SETTLE_DISTANCE - 1e-6, SETTLE_DISTANCE - 1e-6)).toBe(true);
   });
 });

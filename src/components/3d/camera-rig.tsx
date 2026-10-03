@@ -6,7 +6,7 @@ import type { ElementRef, RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 import { Vector3 } from 'three';
 
-import { resolveCameraPreset, stageAspect } from '@/lib/3d/camera-views';
+import { presetSettled, resolveCameraPreset, stageAspect } from '@/lib/3d/camera-views';
 import type { BikeGeometry } from '@/lib/3d/bike-geometry';
 import { useBikeStore } from '@/store/bike-store';
 
@@ -16,7 +16,6 @@ type Controls = ElementRef<typeof OrbitControls>;
 const AUTO_ROTATE_SPEED = 0.45;
 /** Settling speed for preset transitions. */
 const SETTLE = 0.0015;
-const SETTLE_DISTANCE = 0.004;
 
 /**
  * Camera behaviour.
@@ -76,7 +75,15 @@ export function CameraRig({
       camera.position.lerp(desired, step);
       controls?.target.lerp(target, step);
 
-      if (camera.position.distanceTo(desired) < SETTLE_DISTANCE) {
+      // Both have to arrive. The camera can already be sitting on its preset
+      // while the orbit target is still wherever the scene put it, which used
+      // to leave the bike framed off centre until the next click.
+      const settled = presetSettled(
+        camera.position.distanceTo(desired),
+        controls === undefined ? null : controls.target.distanceTo(target),
+      );
+
+      if (settled) {
         animating.current = false;
       }
     }

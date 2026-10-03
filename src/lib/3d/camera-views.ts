@@ -85,6 +85,30 @@ export function framingFits(
   return horizontalHalf >= horizontalExtent / 2 && verticalHalf >= verticalExtent / 2;
 }
 
+/** Distance below which a preset transition counts as arrived. */
+export const SETTLE_DISTANCE = 0.004;
+
+/**
+ * Whether a preset transition has finished.
+ *
+ * Both the camera position and the orbit target have to arrive. The camera can
+ * already be sitting exactly on its preset while the orbit target is still
+ * wherever the scene left it; stopping on the camera alone used to freeze the
+ * framing off centre until the next click, because the camera then aimed at the
+ * stale target.
+ *
+ * A null target distance means there are no orbit controls to wait for.
+ */
+export function presetSettled(
+  cameraDistance: number,
+  targetDistance: number | null,
+  tolerance: number = SETTLE_DISTANCE,
+): boolean {
+  if (cameraDistance >= tolerance) return false;
+
+  return targetDistance === null || targetDistance < tolerance;
+}
+
 export function resolveCameraPreset(
   view: CameraView,
   geometry: BikeGeometry,
