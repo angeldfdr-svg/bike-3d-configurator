@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { catalog } from '@/data/catalog';
 import { findSelection } from '@/lib/catalog';
 import { useBikeStore } from '@/store/bike-store';
@@ -11,10 +11,11 @@ export type Bike2DViewerProps = {
   readonly className?: string;
 };
 
+type ZoomView = 'lateral' | 'cockpit' | 'transmissao' | 'rodas';
+
 export function Bike2DViewer({ className }: Bike2DViewerProps) {
   const configuration = useBikeStore((state) => state.configuration);
-  const cameraView = useBikeStore((state) => state.camera.view);
-  const setCameraView = useBikeStore((state) => state.setCameraView);
+  const [zoomTarget, setZoomTarget] = useState<ZoomView>('lateral');
   const [hoveredPart, setHoveredPart] = useState<string | null>(null);
 
   const selection = useMemo(() => findSelection(catalog, configuration), [configuration]);
@@ -123,22 +124,20 @@ export function Bike2DViewer({ className }: Bike2DViewerProps) {
   const isElectronic = groupset?.shifting === 'eletronico';
   const isSingleRing = crankset?.chainrings === 1;
 
-  // Viewport scale based on view
+  // Viewport scale based on selected 2D zoom view
   const viewBox = useMemo(() => {
-    switch (cameraView) {
+    switch (zoomTarget) {
       case 'cockpit':
         return '520 80 440 320';
       case 'transmissao':
         return '200 240 450 320';
-      case 'frontal':
+      case 'rodas':
         return '600 200 380 340';
-      case 'diagonal':
-        return '80 60 880 500';
       case 'lateral':
       default:
         return '0 20 1000 560';
     }
-  }, [cameraView]);
+  }, [zoomTarget]);
 
   return (
     <div className={`relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-ink-950 via-ink-900 to-ink-950 ${className ?? ''}`}>
@@ -571,7 +570,7 @@ export function Bike2DViewer({ className }: Bike2DViewerProps) {
             y1="410"
             x2="520"
             y2="465"
-            stroke={crankset?.material === 'carbono' ? '#14181a' : '#9aa3a8'}
+            stroke={crankset?.description?.toLowerCase().includes('carbon') ? '#14181a' : '#9aa3a8'}
             strokeWidth="11"
             strokeLinecap="round"
           />
@@ -670,9 +669,9 @@ export function Bike2DViewer({ className }: Bike2DViewerProps) {
         <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-line bg-ink-950/80 p-1.5 backdrop-blur-md">
           <button
             type="button"
-            onClick={() => setCameraView('lateral')}
+            onClick={() => setZoomTarget('lateral')}
             className={`rounded-xs px-2.5 py-1 text-[0.6875rem] font-medium transition-colors ${
-              cameraView === 'lateral'
+              zoomTarget === 'lateral'
                 ? 'bg-lime-400/15 text-lime-300 border border-lime-400/40'
                 : 'text-fog-400 hover:text-fog-100'
             }`}
@@ -681,9 +680,9 @@ export function Bike2DViewer({ className }: Bike2DViewerProps) {
           </button>
           <button
             type="button"
-            onClick={() => setCameraView('cockpit')}
+            onClick={() => setZoomTarget('cockpit')}
             className={`rounded-xs px-2.5 py-1 text-[0.6875rem] font-medium transition-colors ${
-              cameraView === 'cockpit'
+              zoomTarget === 'cockpit'
                 ? 'bg-lime-400/15 text-lime-300 border border-lime-400/40'
                 : 'text-fog-400 hover:text-fog-100'
             }`}
@@ -692,9 +691,9 @@ export function Bike2DViewer({ className }: Bike2DViewerProps) {
           </button>
           <button
             type="button"
-            onClick={() => setCameraView('transmissao')}
+            onClick={() => setZoomTarget('transmissao')}
             className={`rounded-xs px-2.5 py-1 text-[0.6875rem] font-medium transition-colors ${
-              cameraView === 'transmissao'
+              zoomTarget === 'transmissao'
                 ? 'bg-lime-400/15 text-lime-300 border border-lime-400/40'
                 : 'text-fog-400 hover:text-fog-100'
             }`}
@@ -703,9 +702,9 @@ export function Bike2DViewer({ className }: Bike2DViewerProps) {
           </button>
           <button
             type="button"
-            onClick={() => setCameraView('frontal')}
+            onClick={() => setZoomTarget('rodas')}
             className={`rounded-xs px-2.5 py-1 text-[0.6875rem] font-medium transition-colors ${
-              cameraView === 'frontal'
+              zoomTarget === 'rodas'
                 ? 'bg-lime-400/15 text-lime-300 border border-lime-400/40'
                 : 'text-fog-400 hover:text-fog-100'
             }`}
