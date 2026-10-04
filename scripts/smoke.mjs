@@ -12,11 +12,12 @@ import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { createConnection } from 'node:net';
 import { setTimeout as delay } from 'node:timers/promises';
+import { fileURLToPath } from 'node:url';
 
 const PORT = Number(process.env.SMOKE_PORT ?? 3100);
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 const STARTUP_TIMEOUT_MS = 60_000;
-const nextBin = new URL('../node_modules/next/dist/bin/next', import.meta.url).pathname;
+const nextBin = fileURLToPath(new URL('../node_modules/next/dist/bin/next', import.meta.url));
 
 const failures = [];
 let passed = 0;
@@ -83,7 +84,7 @@ async function main() {
   console.log(`\nSmoke test against ${BASE_URL}\n`);
 
   const server = spawn(process.execPath, [nextBin, 'start', '-p', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname,
+    cwd: fileURLToPath(new URL('..', import.meta.url)),
     stdio: ['ignore', 'pipe', 'pipe'],
     env: { ...process.env, NODE_ENV: 'production' },
   });

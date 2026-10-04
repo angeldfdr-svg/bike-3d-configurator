@@ -1,7 +1,9 @@
 import type { Wheelset } from '@/types/components';
 
-/** Real product catalog — brands and specifications from market data.
- *  Weights are per pair (front + rear). */
+/**
+ * Mixed demonstration and market-reference data; verify values before commercial use.
+ * Weights are per pair (front + rear).
+ */
 export const rawWheelsets = [
   // -----------------------------------------------------------------------
   // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
@@ -69,7 +71,7 @@ export const rawWheelsets = [
   {
     id: 'wheelset-veloce-alloy-24',
     name: 'Alloy 24',
-    brand: 'VELOCE',
+    brand: 'Veloce',
     category: 'rodas',
     model: 'VLC-AL24',
     price: 69000,
@@ -77,7 +79,7 @@ export const rawWheelsets = [
     description:
       'Rodas em alumínio de perfil baixo, pensadas para treino diário e para quem procura robustez sem sobrecusto.',
     specifications: [
-      { label: 'Modelo', value: 'VELOCE Alloy 24' },
+      { label: 'Modelo', value: 'Veloce Alloy 24' },
       { label: 'Material', value: 'Alumínio' },
       { label: 'Perfil', value: '24 mm' },
       { label: 'Roda', value: '700c' },
@@ -127,27 +129,27 @@ export const rawWheelsets = [
     tubelessReady: true,
   },
   // -----------------------------------------------------------------------
-  // Zipp
+  // Aeroform
   // -----------------------------------------------------------------------
   {
-    id: 'wheelset-zipp-404-firecrest',
+    id: 'wheelset-aeroform-404-firecrest',
     name: '404 Firecrest',
-    brand: 'Zipp',
+    brand: 'Aeroform',
     category: 'rodas',
     model: 'ZIPP-404-FC',
     price: 299900,
     weight: 1440,
     description:
-      'O clássico de 58 mm da Zipp com tecnologia Firecrest e toroidal 3D. Aerodinâmica de referência, estável com vento lateral e compatível com HG e XDR.',
+      'O clássico de 58 mm da Aeroform com tecnologia Firecrest e toroidal 3D. Aerodinâmica de referência, estável com vento lateral e compatível com HG e XDR.',
     specifications: [
-      { label: 'Modelo', value: 'Zipp 404 Firecrest' },
+      { label: 'Modelo', value: 'Aeroform 404 Firecrest' },
       { label: 'Material', value: 'Carbono' },
       { label: 'Perfil', value: '58 mm' },
       { label: 'Roda', value: '700c' },
       { label: 'Núcleo', value: 'HG / XDR (conversível)' },
       { label: 'Eixo traseiro', value: 'Thru-axle 12 mm' },
       { label: 'Travão', value: 'Disco hidráulico' },
-      { label: 'Tubeless', value: 'Sim (Zipp Tangente)' },
+      { label: 'Tubeless', value: 'Sim (Aeroform Tangente)' },
       { label: 'Peso do par', value: '1440 g' },
     ],
     material: 'carbono',
@@ -160,24 +162,24 @@ export const rawWheelsets = [
     tubelessReady: true,
   },
   {
-    id: 'wheelset-zipp-303-s',
+    id: 'wheelset-aeroform-303-s',
     name: '303 S',
-    brand: 'Zipp',
+    brand: 'Aeroform',
     category: 'rodas',
     model: 'ZIPP-303S',
     price: 179900,
     weight: 1520,
     description:
-      'Rodas de carbono acessíveis da Zipp com perfil de 45 mm. Ideal para iniciação ao carbono com desempenho aerodinâmico real e facilidade de montagem tubeless.',
+      'Rodas de carbono acessíveis da Aeroform com perfil de 45 mm. Ideal para iniciação ao carbono com desempenho aerodinâmico real e facilidade de montagem tubeless.',
     specifications: [
-      { label: 'Modelo', value: 'Zipp 303 S' },
+      { label: 'Modelo', value: 'Aeroform 303 S' },
       { label: 'Material', value: 'Carbono' },
       { label: 'Perfil', value: '45 mm' },
       { label: 'Roda', value: '700c' },
       { label: 'Núcleo', value: 'HG / XDR (conversível)' },
       { label: 'Eixo traseiro', value: 'Thru-axle 12 mm' },
       { label: 'Travão', value: 'Disco hidráulico' },
-      { label: 'Tubeless', value: 'Sim (Zipp Tangente)' },
+      { label: 'Tubeless', value: 'Sim (Aeroform Tangente)' },
       { label: 'Peso do par', value: '1520 g' },
     ],
     material: 'carbono',
@@ -190,24 +192,24 @@ export const rawWheelsets = [
     tubelessReady: true,
   },
   {
-    id: 'wheelset-zipp-303-firecrest-xdr',
+    id: 'wheelset-aeroform-303-firecrest-xdr',
     name: '303 Firecrest XDR',
-    brand: 'Zipp',
+    brand: 'Aeroform',
     category: 'rodas',
     model: 'ZIPP-303-FC-XDR',
     price: 249900,
     weight: 1340,
     description:
-      'O mais leve e aerodinâmico da família 303 com núcleo XDR para cassetes SRAM. Toroidal 3D para vento lateral, tubeless e rodas para grupos AXS de topo.',
+      'O mais leve e aerodinâmico da família 303 com núcleo XDR para cassetes Apex. Toroidal 3D para vento lateral, tubeless e rodas para grupos AXS de topo.',
     specifications: [
-      { label: 'Modelo', value: 'Zipp 303 Firecrest XDR' },
+      { label: 'Modelo', value: 'Aeroform 303 Firecrest XDR' },
       { label: 'Material', value: 'Carbono' },
       { label: 'Perfil', value: '45 mm' },
       { label: 'Roda', value: '700c' },
-      { label: 'Núcleo', value: 'XDR (12 velocidades SRAM)' },
+      { label: 'Núcleo', value: 'XDR (12 velocidades Apex)' },
       { label: 'Eixo traseiro', value: 'Thru-axle 12 mm' },
       { label: 'Travão', value: 'Disco hidráulico' },
-      { label: 'Tubeless', value: 'Sim (Zipp Tangente)' },
+      { label: 'Tubeless', value: 'Sim (Aeroform Tangente)' },
       { label: 'Peso do par', value: '1340 g' },
     ],
     material: 'carbono',
@@ -286,20 +288,20 @@ export const rawWheelsets = [
     tubelessReady: true,
   },
   // -----------------------------------------------------------------------
-  // Shimano — rodas reais
+  // Northwind — rodas reais
   // -----------------------------------------------------------------------
   {
-    id: 'wheelset-shimano-dura-ace-c50',
+    id: 'wheelset-northwind-dura-ace-c50',
     name: 'Dura-Ace WH-R9270-C50',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'rodas',
     model: 'SHI-R9270-C50',
     price: 289900,
     weight: 1422,
     description:
-      'Rodas de carbono de 50 mm da Shimano Dura-Ace R9200: mais leves que a geração anterior, tubeless, com corpo de cassete HG 12v e compatibilidade com 11v.',
+      'Rodas de carbono de 50 mm da Northwind Dura-Ace R9200: mais leves que a geração anterior, tubeless, com corpo de cassete HG 12v e compatibilidade com 11v.',
     specifications: [
-      { label: 'Modelo', value: 'Shimano WH-R9270-C50' },
+      { label: 'Modelo', value: 'Northwind WH-R9270-C50' },
       { label: 'Material', value: 'Carbono' },
       { label: 'Perfil', value: '50 mm' },
       { label: 'Roda', value: '700c' },
@@ -319,9 +321,9 @@ export const rawWheelsets = [
     tubelessReady: true,
   },
   {
-    id: 'wheelset-shimano-ultegra-c36',
+    id: 'wheelset-northwind-ultegra-c36',
     name: 'Ultegra WH-R8170-C36',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'rodas',
     model: 'SHI-R8170-C36',
     price: 159900,
@@ -329,7 +331,7 @@ export const rawWheelsets = [
     description:
       'Rodas de carbono de perfil misto 36 mm da Ultegra R8100. Excelente relação peso/aerodinâmica para treino e competição endurance.',
     specifications: [
-      { label: 'Modelo', value: 'Shimano WH-R8170-C36' },
+      { label: 'Modelo', value: 'Northwind WH-R8170-C36' },
       { label: 'Material', value: 'Carbono' },
       { label: 'Perfil', value: '36 mm' },
       { label: 'Roda', value: '700c' },
@@ -349,24 +351,24 @@ export const rawWheelsets = [
     tubelessReady: true,
   },
   // -----------------------------------------------------------------------
-  // Campagnolo — rodas reais
+  // Vantor — rodas de topo
   // -----------------------------------------------------------------------
   {
-    id: 'wheelset-campagnolo-bora-ultra-wto-45',
+    id: 'wheelset-vantor-bora-ultra-wto-45',
     name: 'Bora Ultra WTO 45',
-    brand: 'Campagnolo',
+    brand: 'Vantor',
     category: 'rodas',
-    model: 'CAM-BORA-ULTRA-WTO45',
+    model: 'VT-BORA-ULTRA-WTO45',
     price: 389900,
     weight: 1390,
     description:
-      'O topo de gama da Campagnolo para estrada: 45 mm com tecnologia Wind Tunnel Optimized, Ultra-Dark carbon e núcleo exclusivo Campagnolo. A escolha clássica do peloton italiano.',
+      'O topo de gama da Vantor para estrada: 45 mm com tecnologia Wind Tunnel Optimized, Ultra-Dark carbon e núcleo exclusivo Vantor. A escolha ideal para performance pura em velocidade.',
     specifications: [
-      { label: 'Modelo', value: 'Campagnolo Bora Ultra WTO 45' },
+      { label: 'Modelo', value: 'Vantor Bora Ultra WTO 45' },
       { label: 'Material', value: 'Ultra-Dark Carbon' },
       { label: 'Perfil', value: '45 mm' },
       { label: 'Roda', value: '700c' },
-      { label: 'Núcleo', value: 'Campagnolo (12 velocidades)' },
+      { label: 'Núcleo', value: 'HG (compatível 12 velocidades)' },
       { label: 'Eixo traseiro', value: 'Thru-axle 12 mm' },
       { label: 'Travão', value: 'Disco hidráulico' },
       { label: 'Tubeless', value: 'Sim' },
@@ -375,7 +377,7 @@ export const rawWheelsets = [
     material: 'carbono',
     rimDepth: 45,
     wheelSize: '700c',
-    freehub: 'Campagnolo',
+    freehub: 'HG',
     frontAxle: 'thru-axle-12mm',
     rearAxle: 'thru-axle-12mm',
     brakeSystem: 'disco-hidraulico',

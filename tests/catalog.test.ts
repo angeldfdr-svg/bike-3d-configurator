@@ -37,7 +37,7 @@ const requiredLabels: Record<ComponentCategory, readonly string[]> = {
   grupo: ['Fabricante', 'Modelo', 'Velocidades', 'Mudanças', 'Travão', 'Núcleo'],
   pedaleiro: ['Comprimento', 'Pratos', 'Relação', 'Movimento pedaleiro', 'Velocidades'],
   guiador: ['Tipo', 'Largura', 'Material', 'Abraçadeira', 'Alcance', 'Drop'],
-  selim: ['Modelo', 'Calhas', 'Largura', 'Espigão do selim'],
+  selim: ['Modelo', 'Calhas', 'Largura'],
   pneus: ['Largura', 'Tipo', 'TPI', 'Roda'],
   extras: ['Local de montagem'],
 };
@@ -53,8 +53,8 @@ describe('catalog', () => {
     }
   });
 
-  it('exposes the expected number of demonstrative products', () => {
-    expect(allProducts(catalog)).toHaveLength(31);
+  it('exposes the expected number of catalog products', () => {
+    expect(allProducts(catalog)).toHaveLength(90);
   });
 
   it('uses unique ids across the whole catalog', () => {

@@ -1,6 +1,6 @@
 import type { Handlebar } from '@/types/components';
 
-/** Real product catalog — brands and specifications from market data. */
+/** Mixed demonstration and market-reference data; verify values before commercial use. */
 export const rawHandlebars = [
   // -----------------------------------------------------------------------
   // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
@@ -8,7 +8,7 @@ export const rawHandlebars = [
   {
     id: 'handlebar-veloce-aero-40',
     name: 'Aero 40',
-    brand: 'VELOCE',
+    brand: 'Veloce',
     category: 'guiador',
     model: 'VLC-HB40',
     price: 24900,
@@ -34,7 +34,7 @@ export const rawHandlebars = [
   {
     id: 'handlebar-veloce-endurance-42',
     name: 'Endurance 42',
-    brand: 'VELOCE',
+    brand: 'Veloce',
     category: 'guiador',
     model: 'VLC-HB42',
     price: 9900,
@@ -110,18 +110,18 @@ export const rawHandlebars = [
     drop: 0,
   },
   // -----------------------------------------------------------------------
-  // Zipp
+  // Aeroform
   // -----------------------------------------------------------------------
   {
-    id: 'handlebar-zipp-sl-70-aero-40',
+    id: 'handlebar-aeroform-sl-70-aero-40',
     name: 'SL-70 Aero 40',
-    brand: 'Zipp',
+    brand: 'Aeroform',
     category: 'guiador',
     model: 'ZIPP-SL70-AERO-40',
     price: 32900,
     weight: 210,
     description:
-      'Guiador aerodinâmico de topo da Zipp com secção D-shape e integração total de cabos. Testado no túnel de vento para redução máxima de drag em posição de corrida.',
+      'Guiador aerodinâmico de topo da Aeroform com secção D-shape e integração total de cabos. Testado no túnel de vento para redução máxima de drag em posição de corrida.',
     specifications: [
       { label: 'Tipo', value: 'Drop compacto' },
       { label: 'Largura', value: '400 mm (centro a centro)' },
@@ -139,9 +139,9 @@ export const rawHandlebars = [
     drop: 125,
   },
   {
-    id: 'handlebar-zipp-sl-70-aero-42',
+    id: 'handlebar-aeroform-sl-70-aero-42',
     name: 'SL-70 Aero 42',
-    brand: 'Zipp',
+    brand: 'Aeroform',
     category: 'guiador',
     model: 'ZIPP-SL70-AERO-42',
     price: 32900,
@@ -280,18 +280,18 @@ export const rawHandlebars = [
     drop: 128,
   },
   // -----------------------------------------------------------------------
-  // Shimano — guiadores
+  // Northwind — guiadores
   // -----------------------------------------------------------------------
   {
-    id: 'handlebar-shimano-pro-vibe-aero-40',
+    id: 'handlebar-northwind-pro-vibe-aero-40',
     name: 'PRO Vibe Aero 40',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'guiador',
     model: 'SHI-PRO-VIBE-AERO-40',
     price: 19900,
     weight: 258,
     description:
-      'Guiador aerodinâmico em carbono da submarca PRO da Shimano. Secção interna quadrada nos topos para rigidez torsional e routing de cabos Di2 integrado.',
+      'Guiador aerodinâmico em carbono da submarca PRO da Northwind. Secção interna quadrada nos topos para rigidez torsional e routing de cabos Di2 integrado.',
     specifications: [
       { label: 'Tipo', value: 'Drop aero' },
       { label: 'Largura', value: '400 mm (centro a centro)' },

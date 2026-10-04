@@ -64,8 +64,23 @@ export function productsByCategory(
 }
 
 /** Look up a product by id across every category. */
+export const legacyProductIdAliases: Readonly<Record<string, string>> = {
+  'frame-aurelia-aero-sl': 'frame-veloce-aero-sl',
+  'frame-aurelia-endurance': 'frame-veloce-endurance',
+  'wheelset-aurelia-alloy-24': 'wheelset-veloce-alloy-24',
+  'handlebar-aurelia-aero-40': 'handlebar-veloce-aero-40',
+  'handlebar-aurelia-endurance-42': 'handlebar-veloce-endurance-42',
+  'saddle-aurelia-race-143': 'saddle-veloce-race-143',
+  'accessory-aurelia-bottle-cage': 'accessory-veloce-bottle-cage',
+};
+
+export function normalizeProductId(id: string): string {
+  return legacyProductIdAliases[id] ?? id;
+}
+
 export function findProductById(source: Catalog, id: string): Component | undefined {
-  return allProducts(source).find((product) => product.id === id);
+  const normalizedId = normalizeProductId(id);
+  return allProducts(source).find((product) => product.id === normalizedId);
 }
 
 /** Number of products in a category, useful for empty states. */
@@ -103,7 +118,9 @@ export function findSelection(
   const accessories: Accessory[] = [];
 
   for (const selected of configuration.accessories) {
-    const accessory = source.accessories.find((item) => item.id === selected.id);
+    const accessory = source.accessories.find(
+      (item) => item.id === (legacyProductIdAliases[selected.id] ?? selected.id),
+    );
 
     if (accessory !== undefined) accessories.push(accessory);
   }

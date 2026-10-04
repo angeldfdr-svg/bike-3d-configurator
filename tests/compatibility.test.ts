@@ -51,8 +51,8 @@ const COMPACT_172 = 'crankset-northwind-172-52-36'; // 11 v · T47
 const SUB_COMPACT_170 = 'crankset-northwind-170-48-31'; // 12 v · T47
 const MONO_168 = 'crankset-voltaic-168-40'; // 11 v · BSA
 
-const RACE_143 = 'saddle-veloce-race-143'; // carris 27,2
-const GRAVEL_145 = 'saddle-northwind-gravel-145'; // carris 31,6
+const RACE_143 = 'saddle-veloce-race-143';
+const GRAVEL_145 = 'saddle-northwind-gravel-145';
 
 const COTTON_28 = 'tire-voltaic-cotton-28'; // 28 mm · clincher
 const COTTON_32 = 'tire-voltaic-cotton-32'; // 32 mm · tubeless
@@ -285,40 +285,6 @@ describe('velocidades', () => {
   });
 });
 
-describe('espigão do selim', () => {
-  it('rejects a saddle whose rails do not match the frame', () => {
-    const report = evaluateCompatibility(
-      catalog,
-      build({ frameId: TI_GRAVEL, saddleId: RACE_143 }),
-    );
-
-    expect(report.errors[0]?.rule).toBe('espigao-selim');
-    expect(report.errors[0]?.detail).toContain('31,6 mm');
-  });
-
-  it('rejects every saddle against the alloy frame, whose 30,9 mm has no match', () => {
-    for (const saddle of catalog.saddles) {
-      const report = evaluateCompatibility(
-        catalog,
-        build({ frameId: ALLOY_PRO, saddleId: saddle.id }),
-      );
-
-      expect(report.errors.some((issue) => issue.rule === 'espigao-selim'), saddle.id).toBe(
-        true,
-      );
-    }
-  });
-
-  it('accepts matching rail diameters', () => {
-    const report = evaluateCompatibility(
-      catalog,
-      build({ frameId: AERO_SL, saddleId: RACE_143 }),
-    );
-
-    expect(report.errors).toEqual([]);
-  });
-});
-
 describe('eixos', () => {
   it('rejects a thru-axle frame with quick release wheels', () => {
     const mismatched = {
@@ -398,7 +364,7 @@ describe('multiple issues at once', () => {
         wheelsetId: XDR_50, // XDR
         groupsetId: FORCE_XDR_12, // DUB · XDR · 12 v
         cranksetId: MONO_168, // BSA · 11 v
-        saddleId: GRAVEL_145, // 31,6 mm
+        saddleId: GRAVEL_145,
         tireId: GRAVEL_40, // 40 mm
       }),
     );
@@ -407,7 +373,6 @@ describe('multiple issues at once', () => {
 
     expect(rules).toContain('movimento-pedaleiro');
     expect(rules).toContain('largura-pneu');
-    expect(rules).toContain('espigao-selim');
     expect(rules).toContain('velocidades');
     // The XDR wheels and the XDR groupset agree, and both are disc.
     expect(rules).not.toContain('nucleo-cassete');

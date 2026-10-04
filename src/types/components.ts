@@ -139,7 +139,6 @@ export type Saddle = ComponentBase & {
   readonly railMaterial: 'carbono' | 'aco';
   /** Shell width in millimetres. */
   readonly width: number;
-  readonly seatpostDiameter: SeatpostDiameter;
 };
 
 export type Tire = ComponentBase & {

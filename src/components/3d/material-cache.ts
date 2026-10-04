@@ -1,4 +1,4 @@
-import { MeshBasicMaterial, MeshStandardMaterial } from 'three';
+import { MeshBasicMaterial, MeshPhysicalMaterial } from 'three';
 
 import { materialPalette, type MaterialName } from '@/lib/3d/material-palette';
 
@@ -11,19 +11,22 @@ import { materialPalette, type MaterialName } from '@/lib/3d/material-palette';
  * map) create a material locally and say why.
  */
 
-const standard = new Map<MaterialName, MeshStandardMaterial>();
+const standard = new Map<MaterialName, MeshPhysicalMaterial>();
 const basic = new Map<MaterialName, MeshBasicMaterial>();
 
-export function standardMaterial(name: MaterialName): MeshStandardMaterial {
+export function standardMaterial(name: MaterialName): MeshPhysicalMaterial {
   const existing = standard.get(name);
 
   if (existing !== undefined) return existing;
 
   const preset = materialPalette[name];
-  const material = new MeshStandardMaterial({
+  const material = new MeshPhysicalMaterial({
     color: preset.color,
     metalness: preset.metalness,
     roughness: preset.roughness,
+    envMapIntensity: 1.6,
+    clearcoat: preset.clearcoat ?? 0,
+    clearcoatRoughness: preset.clearcoatRoughness ?? 0.2,
   });
 
   standard.set(name, material);

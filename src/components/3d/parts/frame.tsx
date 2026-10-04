@@ -61,6 +61,10 @@ export function Frame({ geometry, variant }: FrameProps) {
       {/* Fork */}
       <Tube from={headTubeBottom} to={frontAxle} radius={0.013} material="carbon" scale={tubeScale} />
 
+      {/* Carbon seat stays and fork crown detail for a cleaner premium silhouette */}
+      <Tube from={headTubeBottom} to={[frontAxle[0] - 0.06, frontAxle[1] + 0.04, 0]} radius={0.0065} material="carbon" />
+      <Tube from={seatCluster} to={[rearAxle[0] + 0.08, rearAxle[1] + 0.05, 0]} radius={0.0065} material="carbon" />
+
       {/* Dropouts */}
       <mesh position={[rearAxle[0], rearAxle[1], 0]} scale={[0.05, 0.05, 0.11]}>
         <primitive object={unitBox()} attach="geometry" />

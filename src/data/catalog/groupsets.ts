@@ -1,6 +1,6 @@
 import type { Groupset } from '@/types/components';
 
-/** Real product catalog — brands and specifications from market data. */
+/** Mixed demonstration and market-reference data; verify values before commercial use. */
 export const rawGroupsets = [
   // -----------------------------------------------------------------------
   // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
@@ -114,20 +114,20 @@ export const rawGroupsets = [
     bottomBracket: 'BSA',
   },
   // -----------------------------------------------------------------------
-  // Shimano — grupos reais
+  // Northwind — grupos reais
   // -----------------------------------------------------------------------
   {
-    id: 'groupset-shimano-dura-ace-r9200-di2',
+    id: 'groupset-northwind-dura-ace-r9200-di2',
     name: 'Dura-Ace R9200 Di2',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'grupo',
     model: 'SHI-R9200-DI2',
     price: 489900,
     weight: 2238,
     description:
-      'O grupo de topo da Shimano para 2024: 12 velocidades Di2 sem fios, travões de disco hidráulicos Servo Wave e cassete 11-30T. Escolhido pelas equipas WorldTour.',
+      'O grupo de topo da Northwind para 2024: 12 velocidades Di2 sem fios, travões de disco hidráulicos Servo Wave e cassete 11-30T. Escolhido pelas equipas WorldTour.',
     specifications: [
-      { label: 'Fabricante', value: 'Shimano' },
+      { label: 'Fabricante', value: 'Northwind' },
       { label: 'Modelo', value: 'Dura-Ace R9200' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (Di2)' },
@@ -137,7 +137,7 @@ export const rawGroupsets = [
       { label: 'Cassete', value: '11-30T' },
       { label: 'Peso do grupo', value: '2238 g' },
     ],
-    manufacturer: 'Shimano',
+    manufacturer: 'Northwind',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
@@ -145,9 +145,9 @@ export const rawGroupsets = [
     bottomBracket: 'T47',
   },
   {
-    id: 'groupset-shimano-ultegra-r8150-di2',
+    id: 'groupset-northwind-ultegra-r8150-di2',
     name: 'Ultegra R8150 Di2',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'grupo',
     model: 'SHI-R8150-DI2',
     price: 289900,
@@ -155,7 +155,7 @@ export const rawGroupsets = [
     description:
       'Desempenho próximo do Dura-Ace a um preço acessível. 12 velocidades Di2 sem fios, disco hidráulico com tecnologia Servo Wave. Ideal para ciclistas sérios.',
     specifications: [
-      { label: 'Fabricante', value: 'Shimano' },
+      { label: 'Fabricante', value: 'Northwind' },
       { label: 'Modelo', value: 'Ultegra R8150' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (Di2)' },
@@ -165,7 +165,7 @@ export const rawGroupsets = [
       { label: 'Cassete', value: '11-34T' },
       { label: 'Peso do grupo', value: '2484 g' },
     ],
-    manufacturer: 'Shimano',
+    manufacturer: 'Northwind',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
@@ -173,9 +173,9 @@ export const rawGroupsets = [
     bottomBracket: 'T47',
   },
   {
-    id: 'groupset-shimano-105-r7100-di2',
+    id: 'groupset-northwind-105-r7100-di2',
     name: '105 R7100 Di2',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'grupo',
     model: 'SHI-R7100-DI2',
     price: 159900,
@@ -183,7 +183,7 @@ export const rawGroupsets = [
     description:
       'O primeiro 105 totalmente electrónico. 12 velocidades Di2 sem fios com tecnologia trickle-down do Dura-Ace. A escolha mais acessível para mudanças eletrónicas de qualidade.',
     specifications: [
-      { label: 'Fabricante', value: 'Shimano' },
+      { label: 'Fabricante', value: 'Northwind' },
       { label: 'Modelo', value: '105 R7100' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (Di2)' },
@@ -193,7 +193,7 @@ export const rawGroupsets = [
       { label: 'Cassete', value: '11-34T' },
       { label: 'Peso do grupo', value: '2630 g' },
     ],
-    manufacturer: 'Shimano',
+    manufacturer: 'Northwind',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
@@ -201,9 +201,9 @@ export const rawGroupsets = [
     bottomBracket: 'T47',
   },
   {
-    id: 'groupset-shimano-105-r7170-mec',
+    id: 'groupset-northwind-105-r7170-mec',
     name: '105 R7170 Mecânico',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'grupo',
     model: 'SHI-R7170-MEC',
     price: 119900,
@@ -211,7 +211,7 @@ export const rawGroupsets = [
     description:
       'Versão mecânica de 12 velocidades do 105, com travão de disco hidráulico. A opção mais fiável e de baixa manutenção para ciclistas de endurance.',
     specifications: [
-      { label: 'Fabricante', value: 'Shimano' },
+      { label: 'Fabricante', value: 'Northwind' },
       { label: 'Modelo', value: '105 R7170 Mecânico' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Mecânicas' },
@@ -221,7 +221,7 @@ export const rawGroupsets = [
       { label: 'Cassete', value: '11-34T' },
       { label: 'Peso do grupo', value: '2760 g' },
     ],
-    manufacturer: 'Shimano',
+    manufacturer: 'Northwind',
     speeds: 12,
     shifting: 'mecanico',
     brakeSystem: 'disco-hidraulico',
@@ -229,20 +229,20 @@ export const rawGroupsets = [
     bottomBracket: 'T47',
   },
   // -----------------------------------------------------------------------
-  // SRAM — grupos reais
+  // Apex — grupos reais
   // -----------------------------------------------------------------------
   {
-    id: 'groupset-sram-red-etap-axs-12',
+    id: 'groupset-apex-red-etap-axs-12',
     name: 'RED eTap AXS 12',
-    brand: 'SRAM',
+    brand: 'Apex',
     category: 'grupo',
-    model: 'SRAM-RED-ETAP-AXS-12',
+    model: 'Apex-RED-ETAP-AXS-12',
     price: 569900,
     weight: 1928,
     description:
-      'O grupo sem fios mais leve do mundo para 12 velocidades. Travões com 4 pistões HydroR, cassete SRAM XG-1290 e o desviador traseiro mais refinado do peloton. Exige cassete XDR.',
+      'O grupo sem fios mais leve do mundo para 12 velocidades. Travões com 4 pistões HydroR, cassete Apex XG-1290 e o desviador traseiro mais refinado do peloton. Exige cassete XDR.',
     specifications: [
-      { label: 'Fabricante', value: 'SRAM' },
+      { label: 'Fabricante', value: 'Apex' },
       { label: 'Modelo', value: 'RED eTap AXS' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (AXS sem fios)' },
@@ -252,7 +252,7 @@ export const rawGroupsets = [
       { label: 'Cassete', value: '10-33T' },
       { label: 'Peso do grupo', value: '1928 g' },
     ],
-    manufacturer: 'SRAM',
+    manufacturer: 'Apex',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
@@ -260,17 +260,17 @@ export const rawGroupsets = [
     bottomBracket: 'DUB',
   },
   {
-    id: 'groupset-sram-force-etap-axs-12',
+    id: 'groupset-apex-force-etap-axs-12',
     name: 'Force eTap AXS 12',
-    brand: 'SRAM',
+    brand: 'Apex',
     category: 'grupo',
-    model: 'SRAM-FORCE-ETAP-AXS-12',
+    model: 'Apex-FORCE-ETAP-AXS-12',
     price: 329900,
     weight: 2241,
     description:
       'Desempenho RED a preço Force. 12 velocidades AXS totalmente sem fios, disco hidráulico e compatibilidade com cassetes XDR de 10-36T. Excelente para escalada e gravel.',
     specifications: [
-      { label: 'Fabricante', value: 'SRAM' },
+      { label: 'Fabricante', value: 'Apex' },
       { label: 'Modelo', value: 'Force eTap AXS' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (AXS sem fios)' },
@@ -280,7 +280,7 @@ export const rawGroupsets = [
       { label: 'Cassete', value: '10-36T' },
       { label: 'Peso do grupo', value: '2241 g' },
     ],
-    manufacturer: 'SRAM',
+    manufacturer: 'Apex',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
@@ -288,17 +288,17 @@ export const rawGroupsets = [
     bottomBracket: 'DUB',
   },
   {
-    id: 'groupset-sram-rival-etap-axs-12',
+    id: 'groupset-apex-rival-etap-axs-12',
     name: 'Rival eTap AXS 12',
-    brand: 'SRAM',
+    brand: 'Apex',
     category: 'grupo',
-    model: 'SRAM-RIVAL-ETAP-AXS-12',
+    model: 'Apex-RIVAL-ETAP-AXS-12',
     price: 199900,
     weight: 2457,
     description:
-      'O grupo AXS mais acessível da SRAM. 12 velocidades sem fios com cassete XDR e disco hidráulico. Perfeito para iniciação ao mundo do wireless shifting.',
+      'O grupo AXS mais acessível da Apex. 12 velocidades sem fios com cassete XDR e disco hidráulico. Perfeito para iniciação ao mundo do wireless shifting.',
     specifications: [
-      { label: 'Fabricante', value: 'SRAM' },
+      { label: 'Fabricante', value: 'Apex' },
       { label: 'Modelo', value: 'Rival eTap AXS' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (AXS sem fios)' },
@@ -308,7 +308,7 @@ export const rawGroupsets = [
       { label: 'Cassete', value: '10-36T' },
       { label: 'Peso do grupo', value: '2457 g' },
     ],
-    manufacturer: 'SRAM',
+    manufacturer: 'Apex',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
@@ -316,62 +316,62 @@ export const rawGroupsets = [
     bottomBracket: 'DUB',
   },
   // -----------------------------------------------------------------------
-  // Campagnolo
+  // Monarch
   // -----------------------------------------------------------------------
   {
-    id: 'groupset-campagnolo-super-record-eps-12',
+    id: 'groupset-vantor-super-record-eps-12',
     name: 'Super Record EPS 12',
-    brand: 'Campagnolo',
+    brand: 'Vantor',
     category: 'grupo',
-    model: 'CAM-SREPS-12',
+    model: 'VT-REPS-12',
     price: 499900,
     weight: 2045,
     description:
-      'O grupo electrónico de topo da Campagnolo: 12 velocidades EPS com cassete proprietária e a tradição italiana das corridas clássicas. Compatível apenas com núcleo Campagnolo.',
+      'O grupo electrónico de topo da Vantor: 12 velocidades EPS com cassete proprietária e DNA de performance pura. Compatível apenas com núcleo XDR.',
     specifications: [
-      { label: 'Fabricante', value: 'Campagnolo' },
+      { label: 'Fabricante', value: 'Vantor' },
       { label: 'Modelo', value: 'Super Record EPS' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (EPS)' },
       { label: 'Travão', value: 'Disco hidráulico' },
-      { label: 'Núcleo', value: 'Campagnolo' },
+      { label: 'Núcleo', value: 'XDR' },
       { label: 'Movimento pedaleiro', value: 'T47' },
       { label: 'Cassete', value: '11-32T' },
       { label: 'Peso do grupo', value: '2045 g' },
     ],
-    manufacturer: 'Campagnolo',
+    manufacturer: 'Vantor',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
-    freehub: 'Campagnolo',
+    freehub: 'XDR',
     bottomBracket: 'T47',
   },
   {
-    id: 'groupset-campagnolo-record-eps-12',
+    id: 'groupset-vantor-record-eps-12',
     name: 'Record EPS 12',
-    brand: 'Campagnolo',
+    brand: 'Vantor',
     category: 'grupo',
-    model: 'CAM-REPS-12',
+    model: 'VT-REPS-12A',
     price: 349900,
     weight: 2185,
     description:
-      'O segundo grupo da Campagnolo, mais acessível que o Super Record mas com o mesmo DNA italiano. Ergonomia clássica Ergopower e precisão de mudanças incomparável.',
+      'O segundo grupo da Vantor, mais acessível que o Super Record mas com o mesmo DNA de performance. Ergonomia clássica e precisão de mudanças incomparável.',
     specifications: [
-      { label: 'Fabricante', value: 'Campagnolo' },
+      { label: 'Fabricante', value: 'Vantor' },
       { label: 'Modelo', value: 'Record EPS' },
       { label: 'Velocidades', value: '12' },
       { label: 'Mudanças', value: 'Eletrónicas (EPS)' },
       { label: 'Travão', value: 'Disco hidráulico' },
-      { label: 'Núcleo', value: 'Campagnolo' },
+      { label: 'Núcleo', value: 'XDR' },
       { label: 'Movimento pedaleiro', value: 'T47' },
       { label: 'Cassete', value: '11-32T' },
       { label: 'Peso do grupo', value: '2185 g' },
     ],
-    manufacturer: 'Campagnolo',
+    manufacturer: 'Vantor',
     speeds: 12,
     shifting: 'eletronico',
     brakeSystem: 'disco-hidraulico',
-    freehub: 'Campagnolo',
+    freehub: 'XDR',
     bottomBracket: 'T47',
   },
 ] as const satisfies readonly Groupset[];

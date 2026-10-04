@@ -101,7 +101,11 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       />
 
       {error && (
-        <p role="alert" className="rounded-md bg-red-950/60 border border-red-800/60 px-3.5 py-2.5 text-[0.8125rem] text-red-300">
+        <p
+          key={error}
+          role="alert"
+          className="animate-shake rounded-md border border-red-800/60 bg-red-950/60 px-3.5 py-2.5 text-[0.8125rem] text-red-300"
+        >
           {error}
         </p>
       )}
@@ -177,7 +181,11 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       />
 
       {error && (
-        <p role="alert" className="rounded-md bg-red-950/60 border border-red-800/60 px-3.5 py-2.5 text-[0.8125rem] text-red-300">
+        <p
+          key={error}
+          role="alert"
+          className="animate-shake rounded-md border border-red-800/60 bg-red-950/60 px-3.5 py-2.5 text-[0.8125rem] text-red-300"
+        >
           {error}
         </p>
       )}

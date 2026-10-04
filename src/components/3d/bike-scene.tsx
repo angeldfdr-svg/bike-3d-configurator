@@ -37,20 +37,37 @@ export function BikeScene() {
   return (
     <Canvas
       dpr={[1, 1.75]}
-      shadows={false}
+      shadows
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       camera={{
         position: [initialCamera.position[0], initialCamera.position[1], initialCamera.position[2]],
-        fov: 35,
+        fov: 31,
         near: 0.1,
-        far: 50,
+        far: 60,
       }}
     >
+      <color attach="background" args={['#070b10']} />
+      <fog attach="fog" args={['#070b10', 4.8, 16]} />
+
       <Suspense fallback={null}>
-        <hemisphereLight args={['#cfd8c4', '#0a0b09', 0.55]} />
-        <directionalLight position={[2.4, 3.6, 2.2]} intensity={2.1} />
-        <directionalLight position={[-2.8, 1.6, -2.4]} intensity={0.7} color="#bfe35c" />
-        <directionalLight position={[0, 1.2, -3.2]} intensity={0.5} />
+        <ambientLight intensity={0.7} color="#edf3ff" />
+        <hemisphereLight args={['#f5f2ea', '#091118', 0.9]} />
+        <directionalLight
+          position={[3.8, 5.2, 2.8]}
+          intensity={2.4}
+          color="#fffaf0"
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-bias={-0.00008}
+        />
+        <directionalLight position={[-4.5, 2.2, -2.6]} intensity={1.2} color="#bde4ff" />
+        <directionalLight position={[0.5, 1.6, -4.8]} intensity={1.1} color="#d7e7ff" />
+
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.018, 0]} receiveShadow>
+          <circleGeometry args={[4.5, 64]} />
+          <meshStandardMaterial color="#111820" roughness={0.96} metalness={0.08} />
+        </mesh>
 
         <BikeModel />
         <CameraRig geometry={geometry} controlsRef={controlsRef} />

@@ -4,7 +4,7 @@
  */
 
 export const site = {
-  brand: 'VELOCE',
+  brand: 'AURELIA',
   productName: 'Bike Configurator 3D',
   locale: 'pt-PT',
   heroTitle: 'BUILD YOUR BIKE',

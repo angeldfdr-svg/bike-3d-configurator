@@ -119,7 +119,6 @@ export const saddleSchema = z.object({
   category: z.literal('selim'),
   railMaterial: z.enum(['carbono', 'aco']),
   width: millimetres,
-  seatpostDiameter: seatpostDiameterSchema,
 });
 
 export const tireSchema = z.object({

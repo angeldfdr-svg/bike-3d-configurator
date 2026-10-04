@@ -43,7 +43,7 @@ export const rawAccessories = [
   {
     id: 'accessory-veloce-bottle-cage',
     name: 'Bottle Cage',
-    brand: 'VELOCE',
+    brand: 'Veloce',
     category: 'extras',
     model: 'VLC-BC01',
     price: 2900,

@@ -1,6 +1,6 @@
 import type { Saddle } from '@/types/components';
 
-/** Real product catalog — brands and specifications from market data. */
+/** Mixed demonstration and market-reference data; verify values before commercial use. */
 export const rawSaddles = [
   // -----------------------------------------------------------------------
   // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
@@ -8,7 +8,7 @@ export const rawSaddles = [
   {
     id: 'saddle-veloce-race-143',
     name: 'Race 143',
-    brand: 'VELOCE',
+    brand: 'Veloce',
     category: 'selim',
     model: 'VLC-SD143',
     price: 15900,
@@ -16,15 +16,13 @@ export const rawSaddles = [
     description:
       'Selim curto de competição com calhas em carbono e canal central alargado. Indicado para posição agressiva.',
     specifications: [
-      { label: 'Modelo', value: 'VELOCE Race 143' },
+      { label: 'Modelo', value: 'Veloce Race 143' },
       { label: 'Calhas', value: 'Carbono' },
       { label: 'Largura', value: '143 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Peso', value: '145 g' },
     ],
     railMaterial: 'carbono',
     width: 143,
-    seatpostDiameter: 27.2,
   },
   {
     id: 'saddle-meridian-endurance-148',
@@ -40,12 +38,10 @@ export const rawSaddles = [
       { label: 'Modelo', value: 'Meridian Endurance 148' },
       { label: 'Calhas', value: 'Aço' },
       { label: 'Largura', value: '148 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Peso', value: '230 g' },
     ],
     railMaterial: 'aco',
     width: 148,
-    seatpostDiameter: 27.2,
   },
   {
     id: 'saddle-northwind-gravel-145',
@@ -61,12 +57,10 @@ export const rawSaddles = [
       { label: 'Modelo', value: 'Northwind Gravel 145' },
       { label: 'Calhas', value: 'Aço' },
       { label: 'Largura', value: '145 mm' },
-      { label: 'Espigão do selim', value: '31,6 mm' },
       { label: 'Peso', value: '245 g' },
     ],
     railMaterial: 'aco',
     width: 145,
-    seatpostDiameter: 31.6,
   },
   // -----------------------------------------------------------------------
   // Fizik
@@ -85,14 +79,12 @@ export const rawSaddles = [
       { label: 'Modelo', value: 'Fizik Argo Vento R1' },
       { label: 'Calhas', value: 'Carbono K:ium' },
       { label: 'Largura', value: '135 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Perfil', value: 'Flat (nariz curto)' },
       { label: 'Capa', value: 'Microfibra' },
       { label: 'Peso', value: '134 g' },
     ],
     railMaterial: 'carbono',
     width: 135,
-    seatpostDiameter: 27.2,
   },
   {
     id: 'saddle-fizik-argo-vento-r1-143',
@@ -108,14 +100,12 @@ export const rawSaddles = [
       { label: 'Modelo', value: 'Fizik Argo Vento R1' },
       { label: 'Calhas', value: 'Carbono K:ium' },
       { label: 'Largura', value: '143 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Perfil', value: 'Flat (nariz curto)' },
       { label: 'Capa', value: 'Microfibra' },
       { label: 'Peso', value: '138 g' },
     ],
     railMaterial: 'carbono',
     width: 143,
-    seatpostDiameter: 27.2,
   },
   {
     id: 'saddle-fizik-antares-r1-regular-143',
@@ -131,47 +121,43 @@ export const rawSaddles = [
       { label: 'Modelo', value: 'Fizik Antares R1 Regular' },
       { label: 'Calhas', value: 'K:ium (titânio)' },
       { label: 'Largura', value: '143 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Curvatura', value: 'Regular' },
       { label: 'Capa', value: 'Microfibra' },
       { label: 'Peso', value: '148 g' },
     ],
     railMaterial: 'carbono',
     width: 143,
-    seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
-  // Selle Italia
+  // Aster
   // -----------------------------------------------------------------------
   {
     id: 'saddle-selle-italia-slr-boost-145',
     name: 'SLR Boost Kit Carbonio 145',
-    brand: 'Selle Italia',
+    brand: 'Aster',
     category: 'selim',
     model: 'SI-SLR-BOOST-C-145',
     price: 31900,
     weight: 143,
     description:
-      'Selim de competição da Selle Italia com canal de alívio central longo, calhas em carbono e espuma de alta densidade Idmatch. Ergonomia italiana para distância longa e curta.',
+      'Selim de competição da Aster com canal de alívio central longo, calhas em carbono e espuma de alta densidade Idmatch. Ergonomia italiana para distância longa e curta.',
     specifications: [
-      { label: 'Modelo', value: 'Selle Italia SLR Boost' },
+      { label: 'Modelo', value: 'Aster SLR Boost' },
       { label: 'Calhas', value: 'Carbono' },
       { label: 'Largura', value: '145 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Canal', value: 'Central alargado' },
       { label: 'Peso', value: '143 g' },
     ],
     railMaterial: 'carbono',
     width: 145,
-    seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
-  // Specialized
+  // Aurelian
   // -----------------------------------------------------------------------
   {
-    id: 'saddle-specialized-power-expert-143',
+    id: 'saddle-aurelian-power-expert-143',
     name: 'Power Expert 143',
-    brand: 'Specialized',
+    brand: 'Aurelian',
     category: 'selim',
     model: 'SPZ-POWER-EXP-143',
     price: 19900,
@@ -179,21 +165,19 @@ export const rawSaddles = [
     description:
       'O selim de nariz curto que popularizou o formato short-nose. Canal MIMIC de alta resolução para alívio de pressão, calhas em cromo-molibdénio. Excelente para posições agressivas.',
     specifications: [
-      { label: 'Modelo', value: 'Specialized Power Expert' },
+      { label: 'Modelo', value: 'Aurelian Power Expert' },
       { label: 'Calhas', value: 'Cromo-molibdénio' },
       { label: 'Largura', value: '143 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Canal', value: 'MIMIC' },
       { label: 'Peso', value: '205 g' },
     ],
     railMaterial: 'aco',
     width: 143,
-    seatpostDiameter: 27.2,
   },
   {
-    id: 'saddle-specialized-power-arc-expert-155',
+    id: 'saddle-aurelian-power-arc-expert-155',
     name: 'Power Arc Expert 155',
-    brand: 'Specialized',
+    brand: 'Aurelian',
     category: 'selim',
     model: 'SPZ-POWER-ARC-EXP-155',
     price: 19900,
@@ -201,16 +185,14 @@ export const rawSaddles = [
     description:
       'Versão mais larga com formato Power Arc: o arco de 155 mm confere maior suporte e a geometria adaptativa muda de formato conforme a posição de pedalagem.',
     specifications: [
-      { label: 'Modelo', value: 'Specialized Power Arc Expert' },
+      { label: 'Modelo', value: 'Aurelian Power Arc Expert' },
       { label: 'Calhas', value: 'Cromo-molibdénio' },
       { label: 'Largura', value: '155 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Canal', value: 'MIMIC Arc' },
       { label: 'Peso', value: '215 g' },
     ],
     railMaterial: 'aco',
     width: 155,
-    seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
   // Brooks
@@ -229,13 +211,11 @@ export const rawSaddles = [
       { label: 'Modelo', value: 'Brooks Cambium C13' },
       { label: 'Calhas', value: 'Aço' },
       { label: 'Largura', value: '145 mm' },
-      { label: 'Espigão do selim', value: '27,2 mm' },
       { label: 'Material', value: 'Borracha natural vulcanizada' },
       { label: 'Peso', value: '280 g' },
     ],
     railMaterial: 'aco',
     width: 145,
-    seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
   // Ergon
@@ -254,12 +234,10 @@ export const rawSaddles = [
       { label: 'Modelo', value: 'Ergon SR Allroad Core Pro' },
       { label: 'Calhas', value: 'Carbono' },
       { label: 'Largura', value: '145 mm' },
-      { label: 'Espigão do selim', value: '31,6 mm' },
       { label: 'Uso', value: 'Gravel / Endurance' },
       { label: 'Peso', value: '238 g' },
     ],
     railMaterial: 'carbono',
     width: 145,
-    seatpostDiameter: 31.6,
   },
 ] as const satisfies readonly Saddle[];

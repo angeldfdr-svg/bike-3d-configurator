@@ -22,20 +22,21 @@ desktop.
 | Build | `next build --webpack` ✅ (5 rotas estáticas) |
 | Typecheck | `tsc --noEmit` ✅ (TypeScript estrito) |
 | Lint | `eslint .` ✅ (0 erros, 0 avisos) |
-| Testes | `vitest run` ✅ (194 testes) |
+| Testes | `vitest run` ✅ (193 testes) |
 | Smoke test | `npm run smoke` ✅ (25 verificações) |
 | Cena 3D | `npm run verify:3d` ✅ (30 verificações em Chromium real) |
 | Responsividade | 4 viewports ✅ (overflow, ordem de leitura, alvos de toque, enquadramento) |
 
 A bicicleta é visível e interativa em 3D, centrada e enquadrada em quatro vistas, com
 rotação, zoom e rotação automática. O enquadramento foi medido por píxeis em quatro
-viewports, não assumido. **Cada categoria lista os produtos reais do catálogo
-e a escolha muda a peça desenhada**: um pedaleiro mono-prato perde o prato interno, um
+viewports, não assumido. **O catálogo combina produtos ilustrativos originais com
+referências a produtos de mercado; preços e especificações ainda precisam de validação
+antes de uso comercial.** A escolha muda a peça desenhada: um pedaleiro mono-prato perde o prato interno, um
 grupo com travões de aro move os calibradores para o aro, um quadro de titânio aparece em
 metal nu. **O preço e o peso totais são calculados a cada escolha**, com o estado
-incompleto declarado e os componentes em falta nomeados. Ainda **não** existe motor de
-compatibilidade nem especificações calculadas: a interface mostra a estrutura final
-dessas áreas e identifica em que fase cada uma entra — nada é simulado.
+incompleto declarado e os componentes em falta nomeados. Existe um motor de
+compatibilidade baseado nos atributos estruturados disponíveis; os resultados continuam
+dependentes da validação dos dados do catálogo.
 
 ---
 
@@ -197,7 +198,7 @@ ComponentBase            id · name · brand · category · model · price · we
   │                      freehub · bottomBracket
   ├─ Crankset            length · chainrings · ratio · bottomBracket · speeds
   ├─ Handlebar           type · width · material · clamp · reach · drop
-  ├─ Saddle              railMaterial · width · seatpostDiameter
+  ├─ Saddle              railMaterial · width
   ├─ Tire                width · type · tpi · wheelSize
   └─ Accessory           slot · quantity
 ```
@@ -216,7 +217,8 @@ consumir). `tests/catalog.test.ts` garante que as duas não divergem.
 
 Os esquemas Zod em `src/lib/validation/catalog-schema.ts` são o contrato de runtime do
 catálogo. `validateCatalog()` é usado hoje pelos testes e será usado pela fronteira de API
-quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
+quando existir backend. O catálogo embutido tem 90 entradas, entre produtos ilustrativos e referências de
+mercado cuja exactidão ainda precisa de validação.
 
 ---
 
@@ -234,7 +236,7 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 
 **Fase 5 — peças intercambiáveis**
 
-- Cada categoria do configurador lista os **31 produtos reais** do catálogo, com nome,
+- Cada categoria do configurador lista os produtos disponíveis do catálogo, com nome,
   modelo, atributos técnicos, preço e peso. A escolha escreve diretamente no store.
 - **Variantes visuais derivadas dos atributos**, em `src/lib/3d/part-variants.ts`:
   quadro *aero* de carbono com tubos achatados e cablagem interna versus quadro *gravel*
@@ -278,18 +280,18 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
 
 **Fase 7 — compatibilidade**
 
-- `src/lib/compatibility.ts` declara **nove regras** sobre os atributos que o catálogo já
+- `src/lib/compatibility.ts` declara **oito regras** sobre os atributos que o catálogo já
   tinha: movimento pedaleiro (quadro/grupo/pedaleiro), núcleo de cassete (rodas/grupo),
   sistema de travagem (quadro/rodas/grupo), largura máxima de pneu (quadro/pneu),
-  tamanho de roda (rodas/pneu), número de velocidades (grupo/pedaleiro), diâmetro de
-  espigão (quadro/selim), padrão de eixo (quadro/rodas) e pneu tubeless em aro não
-  preparado.
+  tamanho de roda (rodas/pneu), número de velocidades (grupo/pedaleiro), padrão de eixo
+  (quadro/rodas) e pneu tubeless em aro não preparado. A relação quadro/espigão não é
+  inferida a partir do selim: a compatibilidade real depende do espigão e da cabeça do
+  espigão, componentes que ainda não têm categoria própria.
 - **Duas severidades.** `erro` impede a bicicleta de ser montada; `aviso` é permitido mas
   dito em voz alta — um pneu tubeless num aro que não é tubeless ready monta-se com
   câmara, e isso não pode bloquear ninguém.
-- **Cada conflito traz a razão e a saída**, com os valores reais dos dois produtos e os
-  nomes das alternativas que existem no catálogo: «Escolhe um selim de carris 31,6 mm —
-  Gravel 145.»
+- **Cada conflito traz a razão e a saída**, com os valores dos componentes e os nomes das
+  alternativas que existem no catálogo.
 - **Assinalado antes de escolher.** `conflictsWithBuild` corre as regras sobre uma
   configuração candidata, por isso o selector e o resumo nunca podem discordar sobre o
   que é compatível. O aviso vive **fora** do botão e é ligado por `aria-describedby`:
@@ -362,14 +364,15 @@ quando existir backend. O catálogo embutido tem 31 produtos demonstrativos.
   browser, memória em SSR/testes, API no futuro — sem alterar o store.
 - O store guarda ids, nunca produtos: a configuração é pequena, serializável para
   URL ou base de dados, e continua válida quando o catálogo muda.
-- 194 testes no total (catálogo, helpers de configuração, serialização, store, geometria
+- 193 testes no total (catálogo, helpers de configuração, serialização, store, geometria
   3D, variantes visuais, instâncias, preço e peso, compatibilidade e formatação).
 
 **Fase 2 — dados**
 
 - Modelo de domínio completo em `src/types/components.ts`, com union discriminado por
   categoria.
-- Catálogo demonstrativo de 31 produtos em `src/data/catalog`, dividido por categoria.
+- Catálogo de 90 entradas em `src/data/catalog`, combinando produtos ilustrativos e
+  referências a modelos de mercado ainda por verificar.
 - Atributos técnicos necessários às regras de compatibilidade: standard de movimento
   pedaleiro, sistema de travagem, núcleo de cassete, eixos, diâmetro de espigão, largura
   máxima de pneus, número de velocidades, abraçadeira do guiador.

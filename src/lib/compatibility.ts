@@ -11,7 +11,7 @@ import type {
 } from '@/types/components';
 import type { BikeConfiguration, ComponentSlot } from '@/types/configuration';
 
-import { findSelection } from './catalog';
+import { findSelection, normalizeProductId } from './catalog';
 import { formatLength, formatList } from './format';
 
 /**
@@ -38,7 +38,6 @@ export type CompatibilityRuleId =
   | 'largura-pneu'
   | 'tamanho-roda'
   | 'velocidades'
-  | 'espigao-selim'
   | 'eixos'
   | 'tubeless';
 
@@ -265,25 +264,6 @@ function speedsRule(source: Catalog, selection: Selection): CompatibilityIssue[]
   ];
 }
 
-function seatpostRule(source: Catalog, selection: Selection): CompatibilityIssue[] {
-  const { frame, saddle } = selection;
-
-  if (!clashes(frame?.seatpostDiameter, saddle?.seatpostDiameter)) return [];
-
-  const diameter = frame?.seatpostDiameter ?? saddle?.seatpostDiameter ?? 27.2;
-
-  return [
-    {
-      rule: 'espigao-selim',
-      severity: 'erro',
-      title: 'Diâmetro de espigão incompatível',
-      detail: `O quadro ${frame?.name} é de espigão ${formatLength(frame?.seatpostDiameter ?? 0)} e o selim ${saddle?.name} é de carris ${formatLength(saddle?.seatpostDiameter ?? 0)}.`,
-      resolution: `Escolhe um selim de carris ${formatLength(diameter)} — ${namesOf(source, 'saddles', (s) => s.seatpostDiameter === diameter)}.`,
-      slots: ['frameId', 'saddleId'],
-    },
-  ];
-}
-
 function axleRule(selection: Selection): CompatibilityIssue[] {
   const { frame, wheelset } = selection;
   const issues: CompatibilityIssue[] = [];
@@ -356,7 +336,6 @@ export function evaluateCompatibility(
     ...tireWidthRule(source, selection),
     ...wheelSizeRule(source, selection),
     ...speedsRule(source, selection),
-    ...seatpostRule(source, selection),
     ...axleRule(selection),
     ...tubelessRule(selection),
   ];
@@ -413,5 +392,6 @@ export function canSaveBuild(
 export function availableSizes(source: Catalog, frameId: string | null): readonly FrameSize[] {
   if (frameId === null) return [];
 
-  return source.frames.find((frame) => frame.id === frameId)?.sizes ?? [];
+  const normalizedId = normalizeProductId(frameId);
+  return source.frames.find((frame) => frame.id === normalizedId)?.sizes ?? [];
 }

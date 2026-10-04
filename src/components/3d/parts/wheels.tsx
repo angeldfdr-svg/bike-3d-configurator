@@ -125,7 +125,7 @@ export function Rim({
   return (
     <group name="rim">
       <mesh position={[cx, cy, 0]}>
-        <primitive object={torus(innerRadius - rimDepth / 2, rimDepth / 2, 8, 56)} attach="geometry" />
+        <primitive object={torus(innerRadius - rimDepth / 2, rimDepth / 2, 10, 72)} attach="geometry" />
         <primitive object={standardMaterial(variant.rimMaterial)} attach="material" />
       </mesh>
 
@@ -133,7 +133,7 @@ export function Rim({
       {variant.machinedSurface ? (
         <mesh position={[cx, cy, 0]}>
           <primitive
-            object={torus(innerRadius - rimDepth / 2, rimDepth / 2 - 0.004, 8, 56)}
+            object={torus(innerRadius - rimDepth / 2, rimDepth / 2 - 0.004, 10, 72)}
             attach="geometry"
           />
           <primitive object={standardMaterial('rawAlloy')} attach="material" />
@@ -196,13 +196,13 @@ export function Tire({
     <group name="tire">
       {/* Casing */}
       <mesh position={[cx, cy, 0]}>
-        <primitive object={torus(wheelRadius - tireWidth / 2, tireWidth / 2, 10, 64)} attach="geometry" />
+        <primitive object={torus(wheelRadius - tireWidth / 2, tireWidth / 2, 12, 96)} attach="geometry" />
         <primitive object={standardMaterial(variant.sidewall)} attach="material" />
       </mesh>
 
       {/* Tread line */}
       <mesh position={[cx, cy, 0]}>
-        <primitive object={torus(treadRadius, 0.0045, 8, 64)} attach="geometry" />
+        <primitive object={torus(treadRadius, 0.0045, 10, 96)} attach="geometry" />
         <primitive object={standardMaterial('rubber')} attach="material" />
       </mesh>
 

@@ -37,6 +37,7 @@ export type BikeState = {
 };
 
 export type BikeActions = {
+  replaceConfiguration(configuration: BikeConfiguration): void;
   selectFrame(frameId: string): void;
   selectWheelset(wheelsetId: string): void;
   selectGroupset(groupsetId: string): void;
@@ -55,6 +56,7 @@ export type BikeActions = {
   saveConfiguration(): Promise<void>;
   restoreSavedConfiguration(): void;
   clearSavedConfiguration(): Promise<void>;
+  reportPersistenceError(message: string): void;
 };
 
 export type BikeStore = BikeState & BikeActions;
@@ -90,6 +92,13 @@ function knownIds(source: Catalog): ReadonlySet<string> {
   return new Set(products.map((product) => product.id));
 }
 
+function availableId<T extends { readonly id: string }>(
+  products: readonly T[],
+  id: string | null,
+): string | null {
+  return id !== null && products.some((product) => product.id === id) ? id : null;
+}
+
 export function createBikeStoreState({
   repository,
   catalog: source = catalog,
@@ -98,6 +107,36 @@ export function createBikeStoreState({
 
   return (set, get) => ({
     ...initialState,
+
+    replaceConfiguration(configuration) {
+      const frame = source.frames.find((candidate) => candidate.id === configuration.frameId);
+
+      set({
+        configuration: {
+          frameId: frame?.id ?? null,
+          frameSize:
+            frame === undefined
+              ? null
+              : resolveFrameSize(frame.sizes, configuration.frameSize),
+          wheelsetId: availableId(source.wheelsets, configuration.wheelsetId),
+          groupsetId: availableId(source.groupsets, configuration.groupsetId),
+          cranksetId: availableId(source.cranksets, configuration.cranksetId),
+          handlebarId: availableId(source.handlebars, configuration.handlebarId),
+          saddleId: availableId(source.saddles, configuration.saddleId),
+          tireId: availableId(source.tires, configuration.tireId),
+          accessories: configuration.accessories
+            .filter((selected) =>
+              source.accessories.some((accessory) => accessory.id === selected.id),
+            )
+            .map((selected) => ({
+              id: selected.id,
+              quantity: Math.min(99, Math.max(1, Math.trunc(selected.quantity))),
+            })),
+        },
+        status: 'ready',
+        error: null,
+      });
+    },
 
     selectFrame(frameId) {
       const frame = source.frames.find((candidate) => candidate.id === frameId);
@@ -253,6 +292,10 @@ export function createBikeStoreState({
               : 'Não foi possível limpar a configuração guardada.',
         });
       }
+    },
+
+    reportPersistenceError(message) {
+      set({ status: 'error', error: message });
     },
   });
 }

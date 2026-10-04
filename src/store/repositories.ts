@@ -51,7 +51,7 @@ export function createMemoryRepository(
   };
 }
 
-/** `localStorage` backed repository. Degrades to memory when unavailable. */
+/** `localStorage` backed repository. Storage failures are returned to the store. */
 export function createLocalStorageRepository(
   key: string = CONFIGURATION_STORAGE_KEY,
 ): ConfigurationRepository {
@@ -64,10 +64,19 @@ export function createLocalStorageRepository(
         if (raw === null) return null;
 
         const { parseSavedConfiguration } = await import('@/lib/validation/configuration-schema');
+        const saved = parseSavedConfiguration(JSON.parse(raw) as unknown);
 
-        return parseSavedConfiguration(JSON.parse(raw) as unknown);
-      } catch {
-        return null;
+        if (saved === null) {
+          throw new Error('A configuração guardada tem um formato inválido.');
+        }
+
+        return saved;
+      } catch (error) {
+        throw new Error(
+          `Não foi possível carregar a configuração guardada: ${
+            error instanceof Error ? error.message : 'erro desconhecido'
+          }`,
+        );
       }
     },
     async save(configuration) {
@@ -82,8 +91,12 @@ export function createLocalStorageRepository(
         );
 
         window.localStorage.setItem(key, serializeSavedConfiguration(saved));
-      } catch {
-        // Storage full or blocked: the configuration stays in memory only.
+      } catch (error) {
+        throw new Error(
+          `Não foi possível guardar a configuração: ${
+            error instanceof Error ? error.message : 'erro desconhecido'
+          }`,
+        );
       }
 
       return saved;
@@ -91,8 +104,12 @@ export function createLocalStorageRepository(
     async clear() {
       try {
         window.localStorage.removeItem(key);
-      } catch {
-        // Nothing to do when storage is unavailable.
+      } catch (error) {
+        throw new Error(
+          `Não foi possível limpar a configuração guardada: ${
+            error instanceof Error ? error.message : 'erro desconhecido'
+          }`,
+        );
       }
     },
   };

@@ -331,7 +331,7 @@ function handlebarHighlights(handlebar: Handlebar): string {
 }
 
 function saddleHighlights(saddle: Saddle): string {
-  return `${formatLength(saddle.width)} de largura · carris ${saddle.railMaterial} · espigão ${formatLength(saddle.seatpostDiameter)}`;
+  return `${formatLength(saddle.width)} de largura · carris ${saddle.railMaterial}`;
 }
 
 function tireHighlights(tire: Tire): string {

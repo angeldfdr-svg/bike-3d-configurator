@@ -2,6 +2,8 @@
 
 import { useMemo } from 'react';
 
+import { RealBikeModel } from '@/components/3d/real-bike-model';
+import { resolvePartModel } from '@/components/3d/parts/glb-models';
 import { Levers } from '@/components/3d/parts/handlebar';
 import { partRegistry } from '@/components/3d/parts/registry';
 import { createShadowTexture } from '@/components/3d/shadow';
@@ -50,6 +52,24 @@ export function BikeModel() {
   }, [configuration]);
 
   const shadow = useMemo(() => createShadowTexture(), []);
+  const selectedFrameId = configuration.frameId ?? '';
+  const realModel = resolvePartModel(selectedFrameId);
+
+  if (realModel !== undefined) {
+    return (
+      <group name="bike">
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]}>
+          <planeGeometry args={[2.6, 1.2]} />
+          <meshBasicMaterial map={shadow} transparent depthWrite={false} opacity={0.9} />
+        </mesh>
+
+        <RealBikeModel
+          model={realModel}
+          target={{ position: realModel.position ?? [0, 0.2, 0], rotation: realModel.rotation ?? [0, 0, 0] }}
+        />
+      </group>
+    );
+  }
 
   return (
     <group name="bike">

@@ -14,6 +14,10 @@ type Controls = ElementRef<typeof OrbitControls>;
 
 /** Radians per second while auto rotation is on. */
 const AUTO_ROTATE_SPEED = 0.45;
+/** Temporary spin speed when a part changes (faster = more dramatic). */
+const PART_SPIN_SPEED = 1.1;
+/** How long (seconds) the brief spin lasts after a part change. */
+const PART_SPIN_DURATION = 2.0;
 /** Settling speed for preset transitions. */
 const SETTLE = 0.0015;
 
@@ -23,6 +27,10 @@ const SETTLE = 0.0015;
  * Preset views animate the camera to a framing computed from the bike, auto
  * rotation orbits it, and the pointer always takes over. Only one code path
  * writes the camera, so the three never fight each other.
+ *
+ * Brief spin: whenever the user picks a new component a 2-second burst of
+ * auto-rotation shows off the new part from every angle. The user can
+ * interrupt it at any time by dragging.
  */
 export function CameraRig({
   geometry,
@@ -33,14 +41,31 @@ export function CameraRig({
 }) {
   const view = useBikeStore((state) => state.camera.view);
   const autoRotate = useBikeStore((state) => state.camera.autoRotate);
+  const configuration = useBikeStore((state) => state.configuration);
   const camera = useThree((state) => state.camera);
-  // The canvas keeps its own measured size, so the framing follows the real
-  // shape of the stage instead of the one it was designed around.
   const size = useThree((state) => state.size);
   const aspect = stageAspect(size.width, size.height);
 
   const animating = useRef(true);
   const orbitAngle = useRef(0);
+  const spinRemaining = useRef(0);
+  const reducedMotion = useRef(false);
+  const userInteracting = useRef(false);
+  const prevConfig = useRef(configuration);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function updatePreference() {
+      reducedMotion.current = query.matches;
+      if (query.matches) spinRemaining.current = 0;
+    }
+
+    updatePreference();
+    query.addEventListener('change', updatePreference);
+
+    return () => query.removeEventListener('change', updatePreference);
+  }, []);
 
   // A new preset restarts the transition from wherever the camera currently is.
   useEffect(() => {
@@ -54,37 +79,81 @@ export function CameraRig({
     animating.current = true;
   }, [view, geometry, camera, controlsRef, aspect]);
 
+  // Detect component changes and trigger a brief spin.
+  useEffect(() => {
+    const prev = prevConfig.current;
+    const cur = configuration;
+
+    const changed =
+      prev.frameId !== cur.frameId ||
+      prev.wheelsetId !== cur.wheelsetId ||
+      prev.groupsetId !== cur.groupsetId ||
+      prev.cranksetId !== cur.cranksetId ||
+      prev.handlebarId !== cur.handlebarId ||
+      prev.saddleId !== cur.saddleId ||
+      prev.tireId !== cur.tireId;
+
+    if (changed && !reducedMotion.current) {
+      spinRemaining.current = PART_SPIN_DURATION;
+    }
+
+    prevConfig.current = cur;
+  }, [configuration]);
+
   useFrame((_, delta) => {
     const controls = controlsRef.current ?? undefined;
     const preset = resolveCameraPreset(view, geometry, aspect);
     const target = new Vector3(preset.target[0], preset.target[1], preset.target[2]);
     const desired = new Vector3(preset.position[0], preset.position[1], preset.position[2]);
 
-    if (autoRotate) {
-      const offset = camera.position.clone().sub(target);
-      const radius = Math.max(Math.hypot(offset.x, offset.z), 0.001);
-      orbitAngle.current += delta * AUTO_ROTATE_SPEED;
+    if (userInteracting.current) {
+      controls?.update();
+      camera.lookAt(controls?.target ?? target);
+      return;
+    }
 
-      camera.position.set(
-        target.x + Math.sin(orbitAngle.current) * radius,
-        camera.position.y,
-        target.z + Math.cos(orbitAngle.current) * radius,
-      );
-    } else if (animating.current) {
-      const step = 1 - Math.pow(SETTLE, delta);
-      camera.position.lerp(desired, step);
-      controls?.target.lerp(target, step);
+    if (reducedMotion.current) {
+      camera.position.copy(desired);
+      controls?.target.copy(target);
+      animating.current = false;
+    } else {
+      // Brief part-change spin takes priority over continuous auto-rotate.
+      const briefSpin = spinRemaining.current > 0;
 
-      // Both have to arrive. The camera can already be sitting on its preset
-      // while the orbit target is still wherever the scene put it, which used
-      // to leave the bike framed off centre until the next click.
-      const settled = presetSettled(
-        camera.position.distanceTo(desired),
-        controls === undefined ? null : controls.target.distanceTo(target),
-      );
+      if (briefSpin) {
+        spinRemaining.current = Math.max(0, spinRemaining.current - delta);
+        const offset = camera.position.clone().sub(target);
+        const radius = Math.max(Math.hypot(offset.x, offset.z), 0.001);
+        orbitAngle.current += delta * PART_SPIN_SPEED;
 
-      if (settled) {
-        animating.current = false;
+        camera.position.set(
+          target.x + Math.sin(orbitAngle.current) * radius,
+          camera.position.y,
+          target.z + Math.cos(orbitAngle.current) * radius,
+        );
+      } else if (autoRotate) {
+        const offset = camera.position.clone().sub(target);
+        const radius = Math.max(Math.hypot(offset.x, offset.z), 0.001);
+        orbitAngle.current += delta * AUTO_ROTATE_SPEED;
+
+        camera.position.set(
+          target.x + Math.sin(orbitAngle.current) * radius,
+          camera.position.y,
+          target.z + Math.cos(orbitAngle.current) * radius,
+        );
+      } else if (animating.current) {
+        const step = 1 - Math.pow(SETTLE, delta);
+        camera.position.lerp(desired, step);
+        controls?.target.lerp(target, step);
+
+        const settled = presetSettled(
+          camera.position.distanceTo(desired),
+          controls === undefined ? null : controls.target.distanceTo(target),
+        );
+
+        if (settled) {
+          animating.current = false;
+        }
       }
     }
 
@@ -105,7 +174,12 @@ export function CameraRig({
       minPolarAngle={0.15}
       maxPolarAngle={Math.PI / 2 + 0.12}
       onStart={() => {
+        userInteracting.current = true;
         animating.current = false;
+        spinRemaining.current = 0;
+      }}
+      onEnd={() => {
+        userInteracting.current = false;
       }}
     />
   );

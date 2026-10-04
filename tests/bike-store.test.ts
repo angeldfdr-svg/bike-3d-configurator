@@ -84,6 +84,52 @@ describe('selection', () => {
   });
 });
 
+describe('configuration replacement', () => {
+  it('restores every slot, the selected size, and accessories', () => {
+    const { store } = setup();
+    const configuration: BikeConfiguration = {
+      frameId,
+      frameSize: 'M',
+      wheelsetId,
+      groupsetId,
+      cranksetId,
+      handlebarId,
+      saddleId,
+      tireId,
+      accessories: [{ id: accessoryId, quantity: 2 }],
+    };
+
+    store.getState().replaceConfiguration(configuration);
+
+    expect(store.getState().configuration).toEqual(configuration);
+  });
+
+  it('drops stale product ids and clears a size when its frame is missing', () => {
+    const { store } = setup();
+    const configuration: BikeConfiguration = {
+      frameId: 'frame-removed-from-catalog',
+      frameSize: 'M',
+      wheelsetId: 'wheelset-removed-from-catalog',
+      groupsetId: null,
+      cranksetId: null,
+      handlebarId: null,
+      saddleId: null,
+      tireId: null,
+      accessories: [{ id: 'accessory-removed-from-catalog', quantity: 1 }],
+    };
+
+    store.getState().replaceConfiguration(configuration);
+
+    expect(store.getState().configuration).toEqual({
+      ...configuration,
+      frameId: null,
+      frameSize: null,
+      wheelsetId: null,
+      accessories: [],
+    });
+  });
+});
+
 describe('frame size', () => {
   it('selects a size the frame offers', () => {
     const { store } = setup();

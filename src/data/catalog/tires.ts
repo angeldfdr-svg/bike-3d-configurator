@@ -1,6 +1,6 @@
 import type { Tire } from '@/types/components';
 
-/** Real product catalog — brands and specifications from market data. */
+/** Mixed demonstration and market-reference data; verify values before commercial use. */
 export const rawTires = [
   // -----------------------------------------------------------------------
   // Pneus ilustrativos originais (mantidos para compatibilidade com testes)

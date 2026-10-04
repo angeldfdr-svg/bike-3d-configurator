@@ -67,7 +67,11 @@ export function CategoryPanel() {
                 </button>
               </h3>
 
-              <div id={panelId} hidden={!expanded} className="px-5 pb-5 pl-13">
+              <div
+                id={panelId}
+                hidden={!expanded}
+                className={`px-5 pb-5 pl-13 ${expanded ? 'animate-slide-down' : ''}`}
+              >
                 <p className="text-xs leading-relaxed text-fog-400">{category.summary}</p>
                 <ProductList categoryId={category.id} />
                 {category.id === 'quadro' ? <FrameSizePicker /> : null}

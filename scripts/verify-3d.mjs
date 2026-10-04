@@ -12,12 +12,13 @@
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
+import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const PORT = Number(process.env.VERIFY_PORT ?? 3200);
 const BASE_URL = `http://127.0.0.1:${PORT}`;
-const OUTPUT_DIR = new URL('../.verify/', import.meta.url).pathname;
-const nextBin = new URL('../node_modules/next/dist/bin/next', import.meta.url).pathname;
+const OUTPUT_DIR = fileURLToPath(new URL('../.verify/', import.meta.url));
+const nextBin = fileURLToPath(new URL('../node_modules/next/dist/bin/next', import.meta.url));
 
 const failures = [];
 let passed = 0;
@@ -64,7 +65,7 @@ async function main() {
   mkdirSync(OUTPUT_DIR, { recursive: true });
 
   const server = spawn(process.execPath, [nextBin, 'start', '-p', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname,
+    cwd: fileURLToPath(new URL('..', import.meta.url)),
     stdio: ['ignore', 'pipe', 'pipe'],
     env: { ...process.env, NODE_ENV: 'production' },
   });
@@ -304,28 +305,28 @@ async function main() {
     await page.screenshot({ timeout: 90_000, path: `${OUTPUT_DIR}configurator-summary.png` });
 
     // Phase 7: an incompatible product must be flagged before it is chosen.
-    // The frame is titanium gravel, whose seatpost is 31,6 mm; Race 143 is 27,2.
-    await page.getByRole('button', { name: /^Selim/ }).click();
-    const clashingSaddle = page.getByRole('button', { name: /Race 143/ }).first();
-    const flagged = await clashingSaddle.getAttribute('data-conflict');
+    // The frame and groupset use T47, while this crankset has a DUB axle.
+    await page.getByRole('button', { name: /^Pedaleiro/ }).click();
+    const clashingCrankset = page.getByRole('button', { name: /^DUB 172,5/ }).first();
+    const flagged = await clashingCrankset.getAttribute('data-conflict');
     report(
-      flagged === 'espigao-selim',
+      flagged === 'movimento-pedaleiro',
       'a product that clashes with the build is flagged',
       String(flagged),
     );
     await page.screenshot({ timeout: 90_000, path: `${OUTPUT_DIR}configurator-conflict.png` });
 
     // Choosing it anyway must be reported, never silently accepted.
-    await clashingSaddle.click();
+    await clashingCrankset.click();
     await page.waitForTimeout(700);
     const incompatible = await summaryText();
     report(
-      /Incompat/i.test(incompatible) && /Diâmetro de espigão incompatível/.test(incompatible),
+      /Incompat/i.test(incompatible) && /Movimento pedaleiro incompatível/.test(incompatible),
       'an incompatible build is reported with the reason',
       incompatible.slice(0, 140),
     );
     report(
-      /Escolhe um selim de carris/.test(incompatible),
+      /Escolhe um pedaleiro T47/.test(incompatible),
       'the report names the way out',
       incompatible.slice(0, 140),
     );
@@ -337,11 +338,11 @@ async function main() {
 
     // Fixing the conflict must clear it, and the build must become compatible
     // again — the only clash left was the one this step introduces.
-    await page.getByRole('button', { name: /Gravel 145/ }).first().click();
+    await page.getByRole('button', { name: /Sub-compact 170/ }).first().click();
     await page.waitForTimeout(700);
     const fixed = await summaryText();
     report(
-      !/Diâmetro de espigão incompatível/.test(fixed) &&
+      !/Movimento pedaleiro incompatível/.test(fixed) &&
         /compatíveis entre si/.test(fixed),
       'fixing the clash clears the report',
       fixed.slice(0, 140),

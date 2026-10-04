@@ -130,3 +130,128 @@
 @utility num {
   font-variant-numeric: tabular-nums;
 }
+
+/* ── Microanimation utilities ────────────────────────────────────────────── */
+
+@utility animate-rise {
+  animation: var(--animate-rise);
+}
+
+@utility animate-fade {
+  animation: var(--animate-fade);
+}
+
+/**
+ * Slide-down: expanding accordion panels, product lists and modal content.
+ * Applied to the content wrapper so the chevron rotates separately.
+ */
+@utility animate-slide-down {
+  animation: slideDown 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/**
+ * Pop-in: tiny scale pulse when a product card is selected or a badge
+ * changes value — gives the user instant tactile feedback.
+ */
+@utility animate-pop-in {
+  animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/**
+ * Shake: horizontal micro-oscillation for error state on the auth form.
+ * Duration matches the eye's natural flick saccade so it feels snappy.
+ */
+@utility animate-shake {
+  animation: shake 0.38s ease-out both;
+}
+
+/**
+ * Shimmer: skeleton loading state for any placeholder block.
+ */
+@utility animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-ink-850) 0%,
+    var(--color-ink-700) 50%,
+    var(--color-ink-850) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/**
+ * Pulse-dot: the live-update dot in the summary header.
+ */
+@utility animate-pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────────────── */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -0.5rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.94);
+  }
+  60% {
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  18% {
+    transform: translate3d(-5px, 0, 0);
+  }
+  36% {
+    transform: translate3d(5px, 0, 0);
+  }
+  54% {
+    transform: translate3d(-3px, 0, 0);
+  }
+  72% {
+    transform: translate3d(3px, 0, 0);
+  }
+  88% {
+    transform: translate3d(-1px, 0, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}

@@ -5,7 +5,7 @@ import {
   type ComponentSlot,
 } from '@/types/configuration';
 
-import { findSelection, type ConfigurationSelection } from './catalog';
+import { findSelection, normalizeProductId, type ConfigurationSelection } from './catalog';
 
 /**
  * Price and weight engine.
@@ -168,7 +168,8 @@ export function costBuild(source: Catalog, configuration: BikeConfiguration): Bu
   const accessories: PricedAccessory[] = [];
 
   for (const selected of configuration.accessories) {
-    const accessory = source.accessories.find((item) => item.id === selected.id);
+    const normalizedId = normalizeProductId(selected.id);
+    const accessory = source.accessories.find((item) => item.id === normalizedId);
 
     if (accessory === undefined) continue;
 

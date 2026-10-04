@@ -131,7 +131,7 @@ export function resolveFrameVariant(frame: BikeFrame | undefined): FrameVariant 
   // Frames built for 40 mm and wider tyres are round-tubed gravel frames;
   // anything narrower gets an aerodynamic profile.
   const gravel = frame.maxTireWidth >= 40;
-  const paint = resolveFramePaint(frame.material);
+  const paint = resolveFramePaint(frame);
 
   return {
     profile: gravel ? 'round' : 'aero',
@@ -142,14 +142,28 @@ export function resolveFrameVariant(frame: BikeFrame | undefined): FrameVariant 
   };
 }
 
-function resolveFramePaint(material: BikeFrame['material']): MaterialName {
-  switch (material) {
-    case 'titanio':
-      return 'rawTitanium';
-    case 'aluminio':
-    case 'aco':
-      return 'rawAlloy';
-    case 'carbono':
+function resolveFramePaint(frame: BikeFrame): MaterialName {
+  if (frame.material === 'titanio') return 'rawTitanium';
+  if (frame.material === 'aluminio' || frame.material === 'aco') return 'rawAlloy';
+
+  switch (frame.id) {
+    case 'frame-aurelian-tarmac-sl8':
+    case 'frame-altiro-r5':
+      return 'frameRed';
+    case 'frame-northwind-tcr-advanced-sl':
+    case 'frame-altiro-caledonia-5':
+      return 'frameBlue';
+    case 'frame-velora-madone-slr':
+      return 'frameWhite';
+    case 'frame-solstice-dogma-x':
+    case 'frame-aether-ultimate-cfg':
+      return 'frameBlack';
+    case 'frame-velora-emonda-slr':
+      return 'frameOrange';
+    case 'frame-aurelian-diverge-stix':
+      return 'frameBronze';
+    case 'frame-veloce-aero-sl':
+    case 'frame-veloce-endurance':
     default:
       return 'framePaint';
   }

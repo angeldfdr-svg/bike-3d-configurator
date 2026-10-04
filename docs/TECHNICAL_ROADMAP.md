@@ -13,9 +13,9 @@ Incrementos pequenos, TypeScript estrito, domínio independente da UI, ausência
 | 6 — Totais ✅ | Funções puras de preço/peso, políticas de quantidades e arredondamento, formatadores PT | Testes de soma, quantidades, estado incompleto e unidades; sem dupla contagem de peças incluídas no grupo |
 | 7 — Compatibilidade ✅ | Pipeline modular de regras, severidade e mensagens; compatibilidade de cassete/freehub, velocidades, BB, pneus, eixos, travagem, guiador/potência, espigão | Testes por regra e combinações; configurações inválidas explicitamente assinaladas e bloqueadas em ações relevantes |
 | 8 — Responsividade | Configurador desktop split; mobile 3D → componentes → resumo; controlos touch | Validação tablet/mobile, scroll, foco e ausência de overflow |
-| 9 — Acabamento | Microanimações, transições de seleção, estados vazios/loading/erro; motion só se necessário | Reduced motion, teclado, contraste e feedback de ações |
-| 10 — Qualidade | Suite domínio + integração + navegador, perfil de render, lazy GLB, limites de DPR e efeitos | Build/TS/lint/testes verdes; medição de desempenho documentada sem métricas inventadas |
-| 11 — Deploy | README completo, revisão de estrutura, env.example quando necessário, configuração de produção | Deploy documentado, sem segredos, lockfile, commits pequenos; revisão final de SEO |
+| 9 — Acabamento | Microanimações e transições de estado, rotação da bicicleta ao mudar de peça e breadcrumb no configurador | Reduced motion, teclado, contraste e feedback de ações; transições sem bloquear a configuração |
+| 10 — Qualidade | Testes de domínio com Vitest e testes de interface com Playwright; perfil e optimização de render 3D | Build/TS/lint/testes verdes; avaliar instancing (já implementado), DPR, efeitos e consumo em telemóvel; documentar medições reais |
+| 11 — Deploy e segurança | README completo, revisão de produção e headers CSP, X-Frame-Options e HSTS em `next.config.ts` | Deploy documentado, sem segredos, lockfile e revisão SEO; rever autenticação, CSRF e rate limiting quando existir backend |
 
 ## Contratos e limites futuros
 - Repositório de catálogo: fonte local inicialmente, adaptável a API sem acoplar componentes a fetch.
@@ -24,6 +24,39 @@ Incrementos pequenos, TypeScript estrito, domínio independente da UI, ausência
 - Adaptador de modelos associa IDs a geometrias procedurais ou GLB lazy e metadados de montagem.
 - Persistência por interface para local/API futura; autenticação, checkout, inventário e partilha não estão no escopo inicial.
 - Produtos e compatibilidades precisam de dados técnicos verificados antes de utilização comercial.
+
+## Melhorias planeadas — Fases 9 a 11
+
+### Fase 9 — microanimações e navegação
+- Adicionar microanimações e transições de estado consistentes, com suporte para
+  `prefers-reduced-motion` e sem prejudicar teclado, contraste ou acessibilidade.
+- Dar feedback visual ao mudar componentes e, quando apropriado, rodar a bicicleta
+  automaticamente para apresentar a peça alterada.
+- Adicionar breadcrumb no configurador.
+
+### Fase 10 — testes e desempenho
+- Manter e ampliar os testes de domínio com Vitest.
+- Cobrir fluxos e estados da interface com Playwright, além das verificações
+  automatizadas já existentes.
+- Medir o desempenho 3D e optimizar apenas com base em resultados observados. O
+  instancing já está implementado; reavaliar DPR, efeitos, carregamento lazy de GLB e
+  comportamento em telemóvel sem regredir a qualidade visual.
+
+### Fase 11 — segurança e preparação para produção
+- Rever e aplicar CSP, X-Frame-Options e HSTS em `next.config.ts`, validando a
+  compatibilidade com Next.js e WebGL antes do deploy.
+- A autenticação actual baseada em `localStorage` é adequada apenas para demonstração:
+  não guardar senhas em texto puro. Quando existir backend, migrar autenticação para
+  uma solução real (por exemplo, JWT/OAuth conforme a arquitectura) e guardar senhas
+  exclusivamente com hash forte, como bcrypt.
+- Implementar protecção CSRF para formulários que façam mutações server-side e rate
+  limiting no endpoint de login quando esses endpoints existirem.
+- A persistência de configurações associada a uma conta depende de autenticação e API
+  reais; até lá, a persistência local não deve ser apresentada como sincronização de
+  conta.
+- A revisão final de produção deve confirmar headers, autenticação, tratamento de
+  segredos e documentação do deploy; não introduzir endpoints fictícios para antecipar
+  estas protecções.
 
 ## Fase 1: sequência de commits
 1. `docs: record repository inspection and phased architecture`

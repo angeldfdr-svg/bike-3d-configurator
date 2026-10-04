@@ -1,6 +1,6 @@
 import type { Crankset } from '@/types/components';
 
-/** Real product catalog — brands and specifications from market data. */
+/** Mixed demonstration and market-reference data; verify values before commercial use. */
 export const rawCranksets = [
   // -----------------------------------------------------------------------
   // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
@@ -102,18 +102,18 @@ export const rawCranksets = [
     speeds: 11,
   },
   // -----------------------------------------------------------------------
-  // Shimano — pedaleiros reais
+  // Northwind — pedaleiros reais
   // -----------------------------------------------------------------------
   {
-    id: 'crankset-shimano-dura-ace-r9200-172-54-40',
+    id: 'crankset-northwind-dura-ace-r9200-172-54-40',
     name: 'Dura-Ace FC-R9200 172,5',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'pedaleiro',
     model: 'SHI-FCR9200-172',
     price: 89900,
     weight: 686,
     description:
-      'Pedaleiro de topo da Shimano para 2024: pratos 54/40 em Hollowtech II, eixo integrado de carbono e compatibilidade com Di2 R9200 de 12 velocidades. Um dos mais leves do mercado.',
+      'Pedaleiro de topo da Northwind para 2024: pratos 54/40 em Hollowtech II, eixo integrado de carbono e compatibilidade com Di2 R9200 de 12 velocidades. Um dos mais leves do mercado.',
     specifications: [
       { label: 'Comprimento', value: '172,5 mm' },
       { label: 'Pratos', value: '2' },
@@ -129,9 +129,9 @@ export const rawCranksets = [
     speeds: 12,
   },
   {
-    id: 'crankset-shimano-dura-ace-r9200-170-52-36',
+    id: 'crankset-northwind-dura-ace-r9200-170-52-36',
     name: 'Dura-Ace FC-R9200 170',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'pedaleiro',
     model: 'SHI-FCR9200-170',
     price: 89900,
@@ -153,9 +153,9 @@ export const rawCranksets = [
     speeds: 12,
   },
   {
-    id: 'crankset-shimano-ultegra-r8100-172-52-36',
+    id: 'crankset-northwind-ultegra-r8100-172-52-36',
     name: 'Ultegra FC-R8100 172,5',
-    brand: 'Shimano',
+    brand: 'Northwind',
     category: 'pedaleiro',
     model: 'SHI-FCR8100-172',
     price: 49900,
@@ -177,18 +177,18 @@ export const rawCranksets = [
     speeds: 12,
   },
   // -----------------------------------------------------------------------
-  // SRAM — pedaleiros reais
+  // Apex — pedaleiros reais
   // -----------------------------------------------------------------------
   {
-    id: 'crankset-sram-red-axs-172-46-33',
+    id: 'crankset-apex-red-axs-172-46-33',
     name: 'RED AXS D1 172,5',
-    brand: 'SRAM',
+    brand: 'Apex',
     category: 'pedaleiro',
-    model: 'SRAM-RED-AXS-172',
+    model: 'Apex-RED-AXS-172',
     price: 99900,
     weight: 530,
     description:
-      'O pedaleiro mais leve da SRAM: pratos 46/33 com Wide perfil e eixo DUB de carbono. Compatível com RED/Force/Rival eTap AXS de 12 velocidades e cassetes XDR.',
+      'O pedaleiro mais leve da Apex: pratos 46/33 com Wide perfil e eixo DUB de carbono. Compatível com RED/Force/Rival eTap AXS de 12 velocidades e cassetes XDR.',
     specifications: [
       { label: 'Comprimento', value: '172,5 mm' },
       { label: 'Pratos', value: '2' },
@@ -204,11 +204,11 @@ export const rawCranksets = [
     speeds: 12,
   },
   {
-    id: 'crankset-sram-red-axs-1x-40',
+    id: 'crankset-apex-red-axs-1x-40',
     name: 'RED AXS 1x 172,5 — 40T',
-    brand: 'SRAM',
+    brand: 'Apex',
     category: 'pedaleiro',
-    model: 'SRAM-RED-AXS-1X-40',
+    model: 'Apex-RED-AXS-1X-40',
     price: 75900,
     weight: 420,
     description:
@@ -228,11 +228,11 @@ export const rawCranksets = [
     speeds: 12,
   },
   {
-    id: 'crankset-sram-force-axs-170-48-35',
+    id: 'crankset-apex-force-axs-170-48-35',
     name: 'Force AXS D2 170',
-    brand: 'SRAM',
+    brand: 'Apex',
     category: 'pedaleiro',
-    model: 'SRAM-FORCE-AXS-170',
+    model: 'Apex-FORCE-AXS-170',
     price: 64900,
     weight: 580,
     description:
@@ -252,18 +252,18 @@ export const rawCranksets = [
     speeds: 12,
   },
   // -----------------------------------------------------------------------
-  // Campagnolo
+  // Vantor
   // -----------------------------------------------------------------------
   {
-    id: 'crankset-campagnolo-super-record-172-52-36',
+    id: 'crankset-vantor-super-record-172-52-36',
     name: 'Super Record 172,5',
-    brand: 'Campagnolo',
+    brand: 'Vantor',
     category: 'pedaleiro',
-    model: 'CAM-SR-172',
+    model: 'VT-SR-172',
     price: 119900,
     weight: 614,
     description:
-      'O pedaleiro Ultra-Torque de topo da Campagnolo em carbono de alta modularidade com pratos 52/36 para 12 velocidades. Compatível com grupos EPS e mecânicos Campagnolo.',
+      'O pedaleiro Ultra-Torque de topo da Vantor em carbono de alta modularidade com pratos 52/36 para 12 velocidades. Compatível com grupos EPS e mecânicos Vantor.',
     specifications: [
       { label: 'Comprimento', value: '172,5 mm' },
       { label: 'Pratos', value: '2' },

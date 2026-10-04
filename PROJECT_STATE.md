@@ -38,16 +38,44 @@ decisão anterior de produtos ilustrativos. Ver «Objectivo: catálogo real» ab
 | Fase | Conteúdo | Estado |
 | --- | --- | --- |
 | 1 | Arquitectura, configuração, landing page, shell do configurador, SEO | ✅ concluída |
-| 2 | Modelo de dados, catálogo (31 produtos), validação Zod, testes | ✅ concluída |
+| 2 | Modelo de dados, catálogo (90 entradas), validação Zod, testes | ✅ concluída |
 | 3 | Zustand: selecção, configuração, câmara, persistência | ✅ concluída |
 | 4 | Cena 3D (R3F, Drei, Suspense, fallback WebGL, vistas de câmara) | ✅ concluída |
 | 5 | Peças 3D intercambiáveis + registry para GLB/GLTF lazy | ✅ concluída |
 | 6 | Preço e peso em tempo real (funções puras + testes) | ✅ concluída |
 | 7 | Motor de compatibilidade modular (regras, severidade, mensagens) | ✅ concluída |
 | 8 | Responsividade do configurador (desktop split, mobile empilhado) | ✅ concluída |
-| 9 | Microanimações, transições, estados vazios/erro/carregamento | pendente |
-| 10 | Testes de domínio e interface, performance 3D | pendente |
-| 11 | Limpeza, revisão final, preparação para deploy | pendente |
+| 9 | Microanimações e transições de estado, rotação ao mudar peça, breadcrumb | parcial; falta validar |
+| 10 | Testes de domínio (Vitest), testes de interface (Playwright), revisão de performance 3D | pendente |
+| 11 | Limpeza, preparação para deploy e revisão de segurança | parcial; headers presentes, autenticação ainda só de demonstração |
+
+### Prioridades das próximas fases
+
+| Prioridade | Trabalho | Fase/condição |
+| --- | --- | --- |
+| 🔴 Alta | Microanimações e transições de estado | Fase 9 |
+| 🔴 Alta | Testes de domínio com Vitest e testes de interface com Playwright | Fase 10 |
+| 🟡 Média | Rotação automática para mostrar uma peça quando esta muda | Fase 9 |
+| 🟡 Média | Breadcrumb no configurador | Fase 9 |
+| 🟡 Média | Migrar a autenticação para backend real (JWT/OAuth) | Quando existir API; preparar/rever na Fase 11 |
+| 🟡 Média | Guardar configurações associadas à conta do utilizador | Quando existir API e autenticação reais |
+| 🟢 Baixa | Optimização adicional da performance 3D | Fase 10; instancing já implementado, medir antes de alterar |
+
+### Segurança — pendente para a Fase 11
+
+- A autenticação actual usa `localStorage` e é apenas adequada para demonstração,
+  não para produção. O hash PBKDF2 no cliente e o bloqueio em `sessionStorage` não
+  constituem autenticação nem rate limiting de servidor.
+- As senhas não devem ser guardadas em texto puro; com backend, usar hash forte, como
+  bcrypt.
+- CSP, X-Frame-Options e HSTS já estão configurados em `next.config.ts`; a CSP ainda
+  permite `unsafe-inline` e `unsafe-eval`, pelo que precisa de revisão antes de ser
+  considerada uma política estrita de produção. Confirmar também o domínio antes de
+  activar HSTS com `includeSubDomains`/`preload`.
+- CSRF é necessário quando houver formulários com mutações server-side; rate limiting
+  é necessário no endpoint de login quando este existir.
+- Não antecipar uma API fictícia: a migração da autenticação, as protecções dos
+  endpoints e a sincronização de configurações de conta dependem de backend real.
 
 ---
 
@@ -115,7 +143,7 @@ sobreposição usa.
 
 ## 4. Fase 7 — o que foi feito
 
-### 4.1 Nove regras (`src/lib/compatibility.ts`)
+### 4.1 Oito regras válidas (`src/lib/compatibility.ts`)
 
 | Regra | O que compara | Severidade |
 | --- | --- | --- |
@@ -125,7 +153,6 @@ sobreposição usa.
 | `largura-pneu` | `tire.width` vs `frame.maxTireWidth` | erro |
 | `tamanho-roda` | `wheelset.wheelSize` vs `tire.wheelSize` | erro |
 | `velocidades` | `groupset.speeds` vs `crankset.speeds` | erro |
-| `espigao-selim` | `frame.seatpostDiameter` vs `saddle.seatpostDiameter` | erro |
 | `eixos` | eixos do quadro vs das rodas, à frente e atrás | erro |
 | `tubeless` | pneu tubeless em aro não preparado | aviso |
 
@@ -142,9 +169,9 @@ funciona.
 A mensagem usa os valores reais dos dois produtos e nomeia as alternativas que existem no
 catálogo:
 
-> Diâmetro de espigão incompatível
-> O quadro Ti Gravel é de espigão 31,6 mm e o selim Race 143 é de carris 27,2 mm.
-> Escolhe um selim de carris 31,6 mm — Gravel 145.
+> O catálogo não modela ainda o espigão como componente. O diâmetro do espigão do
+> quadro não determina a compatibilidade do selim, que depende da cabeça do espigão e
+> das calhas do selim.
 
 As medidas passam por `formatLength`, para que uma mensagem em português nunca mostre
 `31.6 mm`.
@@ -337,7 +364,7 @@ A cena lê `configuration` e `camera` do store e nunca escreve no store.
 | --- | --- |
 | `npx tsc --noEmit` | ✅ 0 erros |
 | `npx eslint .` | ✅ 0 erros, 0 avisos |
-| `npx vitest run` | ✅ **194 testes** (29 catálogo + 20 configuração + 23 store + 26 geometria + 35 peças + 16 preço/peso + 39 compatibilidade + 6 formatação) |
+| `npx vitest run` | ✅ **193 testes** (29 catálogo + 20 configuração + 25 store + 26 geometria + 35 peças + 16 preço/peso + 36 compatibilidade + 6 formatação) |
 | `npx next build --webpack` | ✅ 5 rotas estáticas |
 | `npm run smoke` | ✅ 25 verificações |
 | `npm run verify:3d` | ✅ 30 verificações em Chromium real |
@@ -464,18 +491,43 @@ representativo de GPU real.
 
 ---
 
-## 11. Próximo passo — Fase 9
+## 11. Próximo passo — concluir Fase 9
 
-Microanimações, transições e estados:
+Microanimações, transições, navegação e estados:
 
-1. Transições de vista mais polidas, com respeito por `prefers-reduced-motion`.
-2. Estados vazios, de carregamento e de erro em cada painel.
-3. Confirmação visual ao montar um extra e ao mudar de tamanho de quadro.
-4. Revisão do `frameloop`: passar para `demand` + `invalidate()` se a Fase 10 medir
-   consumo excessivo em telemóvel.
+1. Verificar as microanimações, transições e estados vazios/de erro em todos os painéis.
+2. Validar em navegador a rotação ao mudar uma peça, a interrupção pelo utilizador e
+   `prefers-reduced-motion`.
+3. Validar breadcrumb, persistência da configuração completa e erros de armazenamento.
+4. Na Fase 10, rever o `frameloop`: passar para `demand` + `invalidate()` se as
+   medições indicarem consumo excessivo em telemóvel.
 
 **Critério de saída:** typecheck, lint, testes, build, smoke e `verify:3d` verdes, com
 as animações desligáveis e nenhum painel a poder ficar vazio sem explicação.
+
+## Fase 10 — plano de qualidade
+
+- Ampliar os testes de domínio com Vitest e cobrir interacções/estados da interface
+  com Playwright.
+- Medir a performance da cena 3D antes de optimizar. O instancing já está
+  implementado; verificar DPR, efeitos, carregamento lazy de GLB e consumo em
+  dispositivos móveis.
+- Registar apenas métricas medidas e manter build, typecheck, lint, testes, smoke e
+  `verify:3d` verdes.
+
+## Fase 11 — segurança e preparação para produção
+
+- Rever os headers CSP, X-Frame-Options e HSTS em `next.config.ts` e confirmar que
+  não bloqueiam Next.js nem WebGL.
+- Tratar a autenticação com `localStorage` como demonstração. Para produção, substituir
+  por autenticação suportada por backend (JWT/OAuth conforme decisão de arquitectura)
+  e nunca guardar senhas em texto puro: guardar apenas hashes fortes, como bcrypt.
+- Adicionar CSRF quando houver formulários com mutações server-side e rate limiting
+  quando existir endpoint de login.
+- Só associar configurações a contas depois de existir API/autenticação reais; até
+  então, a persistência local é apenas local.
+- Documentar o deploy e confirmar headers, gestão de segredos e configuração de
+  produção antes da publicação.
 
 ---
 
@@ -490,11 +542,11 @@ O que muda quando o catálogo real entrar:
 
 | Área | O que precisa de acontecer |
 | --- | --- |
-| Volume | 31 produtos passam a centenas ou milhares. A listagem tem de ser paginada, pesquisável e filtrável, não uma lista infinita. |
+| Volume | 90 entradas passam a centenas ou milhares. A listagem tem de ser paginada, pesquisável e filtrável, não uma lista infinita. |
 | Fonte | Os dados deixam de ser ficheiros `.ts` e passam a vir de uma API e de uma base de dados. `src/lib/catalog.ts` já toma a fonte como argumento, por isso a transição é trocar a origem, não reescrever os consumidores. |
 | Validação | O schema Zod já existe em `src/lib/validation/catalog-schema.ts`; passa a validar o payload da API em vez de os ficheiros locais. |
 | Precisão | Preço e peso reais vêm com data de atualização e fonte. O motor de preço tem de continuar a somar inteiros nas unidades declaradas. |
-| Compatibilidade | As nove regras actuais leem atributos estruturados; produtos reais trazem variações (vários tamanhos de quadro, vários acabamentos) que as regras têm de respeitar. |
+| Compatibilidade | As oito regras actuais leem atributos estruturados; produtos reais trazem variações (vários tamanhos de quadro, vários acabamentos) que as regras têm de respeitar. A compatibilidade selim/espigão aguarda modelação do espigão e da cabeça de fixação. |
 | Imagens | `ComponentBase.image` já existe e a interface já desenha um substituto. Faltam os assets reais. |
 | Marca | `VELOCE` é fictícia. Com produtos reais, a marca da loja e a marca dos produtos são coisas distintas. |
 

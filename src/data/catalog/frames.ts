@@ -1,6 +1,6 @@
 import type { BikeFrame } from '@/types/components';
 
-/** Real product catalog — brands and specifications from market data. */
+/** Mixed demonstration and market-reference data; verify values before commercial use. */
 export const rawFrames = [
   // -----------------------------------------------------------------------
   // Produtos ilustrativos originais (mantidos para compatibilidade com testes)
@@ -8,7 +8,7 @@ export const rawFrames = [
   {
     id: 'frame-veloce-aero-sl',
     name: 'Aero SL',
-    brand: 'VELOCE',
+    brand: 'Veloce',
     category: 'quadro',
     model: 'VLC-AERO-SL',
     price: 329000,
@@ -37,7 +37,7 @@ export const rawFrames = [
   {
     id: 'frame-veloce-endurance',
     name: 'Endurance',
-    brand: 'VELOCE',
+    brand: 'Veloce',
     category: 'quadro',
     model: 'VLC-END-01',
     price: 279000,
@@ -122,18 +122,18 @@ export const rawFrames = [
     seatpostDiameter: 31.6,
   },
   // -----------------------------------------------------------------------
-  // Specialized
+  // Aurelian
   // -----------------------------------------------------------------------
   {
-    id: 'frame-specialized-tarmac-sl8',
+    id: 'frame-aurelian-tarmac-sl8',
     name: 'Tarmac SL8',
-    brand: 'Specialized',
+    brand: 'Aurelian',
     category: 'quadro',
     model: 'S-WORKS-TARMAC-SL8',
     price: 499900,
     weight: 735,
     description:
-      'O quadro de competição mais avançado da Specialized: carbono FACT 12r, geometria Race que bate recordes de escalada e aerodinâmica, movimento T47 e aprovado pela UCI.',
+      'O quadro de competição mais avançado da Aurelian: carbono FACT 12r, geometria Race que bate recordes de escalada e aerodinâmica, movimento T47 e aprovado pela UCI.',
     specifications: [
       { label: 'Material', value: 'FACT 12r Carbon' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -154,15 +154,15 @@ export const rawFrames = [
     seatpostDiameter: 27.2,
   },
   {
-    id: 'frame-specialized-diverge-stix',
+    id: 'frame-aurelian-diverge-stix',
     name: 'Diverge STiX',
-    brand: 'Specialized',
+    brand: 'Aurelian',
     category: 'quadro',
     model: 'S-WORKS-DIVERGE-STIX',
     price: 389900,
     weight: 960,
     description:
-      'Quadro gravel de topo da Specialized com sistema Future Shock 3.0 integrado no tubo de selim. Compatível com pneus até 47 mm e pontos de carga bikepacking.',
+      'Quadro gravel de topo da Aurelian com sistema Future Shock 3.0 integrado no tubo de selim. Compatível com pneus até 47 mm e pontos de carga bikepacking.',
     specifications: [
       { label: 'Material', value: 'FACT 12r Carbon' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -183,18 +183,18 @@ export const rawFrames = [
     seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
-  // Trek
+  // Velora
   // -----------------------------------------------------------------------
   {
-    id: 'frame-trek-emonda-slr',
+    id: 'frame-velora-emonda-slr',
     name: 'Émonda SLR',
-    brand: 'Trek',
+    brand: 'Velora',
     category: 'quadro',
     model: 'TREK-EMONDA-SLR',
     price: 449900,
     weight: 695,
     description:
-      'O quadro de escalada mais leve da Trek. OCLV 800 Carbon, IsoSpeed desacoplado na junta selim/estai e compatível com pneus até 32 mm em configuração de corrida.',
+      'O quadro de escalada mais leve da Velora. OCLV 800 Carbon, IsoSpeed desacoplado na junta selim/estai e compatível com pneus até 32 mm em configuração de corrida.',
     specifications: [
       { label: 'Material', value: 'OCLV 800 Carbon' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -215,15 +215,15 @@ export const rawFrames = [
     seatpostDiameter: 31.6,
   },
   {
-    id: 'frame-trek-madone-slr',
+    id: 'frame-velora-madone-slr',
     name: 'Madone SLR',
-    brand: 'Trek',
+    brand: 'Velora',
     category: 'quadro',
     model: 'TREK-MADONE-SLR',
     price: 519900,
     weight: 820,
     description:
-      'Quadro aerodinâmico de topo da Trek com integração total de cabos e garfo integrado. IsoFlow em vez de triangulo traseiro convencional para atenuar vibrações.',
+      'Quadro aerodinâmico de topo da Velora com integração total de cabos e garfo integrado. IsoFlow em vez de triangulo traseiro convencional para atenuar vibrações.',
     specifications: [
       { label: 'Material', value: 'OCLV 800 Carbon' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -244,18 +244,18 @@ export const rawFrames = [
     seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
-  // Giant
+  // Northwind
   // -----------------------------------------------------------------------
   {
-    id: 'frame-giant-tcr-advanced-sl',
+    id: 'frame-northwind-tcr-advanced-sl',
     name: 'TCR Advanced SL',
-    brand: 'Giant',
+    brand: 'Northwind',
     category: 'quadro',
     model: 'GNT-TCR-ADV-SL',
     price: 379900,
     weight: 750,
     description:
-      'O quadro de escalada de referência da Giant com carbon Composite, geometria comprovada nas montanhas do Tour de France e compatibilidade com Di2 e eTap nativamente.',
+      'O quadro de escalada de referência da Northwind com carbon Composite, geometria comprovada nas montanhas do Tour de France e compatibilidade com Di2 e eTap nativamente.',
     specifications: [
       { label: 'Material', value: 'Advanced SL Grade Composite' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -276,18 +276,18 @@ export const rawFrames = [
     seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
-  // Pinarello
+  // Solstice
   // -----------------------------------------------------------------------
   {
-    id: 'frame-pinarello-dogma-x',
+    id: 'frame-solstice-dogma-x',
     name: 'Dogma X',
-    brand: 'Pinarello',
+    brand: 'Solstice',
     category: 'quadro',
     model: 'PIN-DOGMA-X',
     price: 599900,
     weight: 850,
     description:
-      'O quadro mais avançado da Pinarello: Toray T1100 Dream Carbon, assimétrico para compensar os esforços da transmissão e compatível com os pneus mais largos que alguma vez se viram num Dogma.',
+      'O quadro mais avançado da Solstice: Toray T1100 Dream Carbon, assimétrico para compensar os esforços da transmissão e compatível com os pneus mais largos que alguma vez se viram num Dogma.',
     specifications: [
       { label: 'Material', value: 'Toray T1100 Dream Carbon' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -308,18 +308,18 @@ export const rawFrames = [
     seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
-  // Cervélo
+  // Altiro
   // -----------------------------------------------------------------------
   {
-    id: 'frame-cervelo-r5',
+    id: 'frame-altiro-r5',
     name: 'R5',
-    brand: 'Cervélo',
+    brand: 'Altiro',
     category: 'quadro',
     model: 'CRV-R5',
     price: 469900,
     weight: 720,
     description:
-      'O quadro de escalada leve e rígido da Cervélo. Tubos ultrafinos, BB386EVO convertível para T47 e geometria provada em grande volta. Escolha dos escaladores de elite.',
+      'O quadro de escalada leve e rígido da Altiro. Tubos ultrafinos, BB386EVO convertível para T47 e geometria provada em grande volta. Escolha dos escaladores de elite.',
     specifications: [
       { label: 'Material', value: 'Carbono Squoval' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -340,15 +340,15 @@ export const rawFrames = [
     seatpostDiameter: 27.2,
   },
   {
-    id: 'frame-cervelo-caledonia-5',
+    id: 'frame-altiro-caledonia-5',
     name: 'Caledonia-5',
-    brand: 'Cervélo',
+    brand: 'Altiro',
     category: 'quadro',
     model: 'CRV-CAL5',
     price: 359900,
     weight: 950,
     description:
-      'O quadro de gravel/endurance da Cervélo: IsoSpeed integrado, espaço para pneus de 42 mm e geometria equilibrada para dias longos na estrada e pavimentos irregulares.',
+      'O quadro de gravel/endurance da Altiro: IsoSpeed integrado, espaço para pneus de 42 mm e geometria equilibrada para dias longos na estrada e pavimentos irregulares.',
     specifications: [
       { label: 'Material', value: 'Carbono Squoval' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },
@@ -369,18 +369,18 @@ export const rawFrames = [
     seatpostDiameter: 27.2,
   },
   // -----------------------------------------------------------------------
-  // Canyon
+  // Aether
   // -----------------------------------------------------------------------
   {
-    id: 'frame-canyon-ultimate-cfg',
+    id: 'frame-aether-ultimate-cfg',
     name: 'Ultimate CFG',
-    brand: 'Canyon',
+    brand: 'Aether',
     category: 'quadro',
     model: 'CYN-ULTIMATE-CFG',
     price: 329900,
     weight: 790,
     description:
-      'Quadro de escalada da Canyon com fibra de carbono de alta resistência VCLS 2.0 integrado e passagem interna de cabos. Relação qualidade/preço excecional para a categoria.',
+      'Quadro de escalada da Aether com fibra de carbono de alta resistência VCLS 2.0 integrado e passagem interna de cabos. Relação qualidade/preço excecional para a categoria.',
     specifications: [
       { label: 'Material', value: 'CF SLX Carbon' },
       { label: 'Tamanhos disponíveis', value: 'XS · S · M · L · XL' },

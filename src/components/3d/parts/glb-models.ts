@@ -22,6 +22,12 @@ export type GlbModelRef = {
   readonly url: string;
   /** Anchor point of the geometry the model is mounted on. */
   readonly anchor: 'rearAxle' | 'frontAxle' | 'bottomBracket' | 'handlebarCenter' | 'saddleCenter';
+  /** Optional placement offset in scene space. */
+  readonly position?: readonly [number, number, number];
+  /** Optional rotation applied to the loaded GLB. */
+  readonly rotation?: readonly [number, number, number];
+  /** Optional uniform scale for the asset. */
+  readonly scale?: number;
 };
 
 export const glbModels: Readonly<Record<string, GlbModelRef>> = {};

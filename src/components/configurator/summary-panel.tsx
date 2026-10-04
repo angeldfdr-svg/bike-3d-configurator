@@ -44,8 +44,13 @@ export function SummaryPanel() {
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
         <h2
           id="summary-title"
-          className="text-[0.8125rem] font-bold tracking-[0.18em] text-fog-100 uppercase"
+          className="flex items-center gap-2 text-[0.8125rem] font-bold tracking-[0.18em] text-fog-100 uppercase"
         >
+          <span
+            aria-hidden="true"
+            title="Atualiza em tempo real"
+            className="animate-pulse-dot inline-block size-1.5 rounded-full bg-lime-400"
+          />
           Resumo
         </h2>
         <div className="flex items-center gap-3">
@@ -65,7 +70,10 @@ export function SummaryPanel() {
             </dd>
           </div>
           <span
-            className={`num shrink-0 text-lg font-bold ${cost.complete ? 'text-fog-100' : 'text-fog-600'}`}
+            key={price}
+            className={`num animate-pop-in shrink-0 text-lg font-bold ${
+              cost.complete ? 'text-fog-100' : 'text-fog-600'
+            }`}
           >
             {cost.price === 0 ? '—' : price}
           </span>
@@ -79,7 +87,10 @@ export function SummaryPanel() {
             </dd>
           </div>
           <span
-            className={`num shrink-0 text-lg font-bold ${cost.complete ? 'text-fog-100' : 'text-fog-600'}`}
+            key={weight}
+            className={`num animate-pop-in shrink-0 text-lg font-bold ${
+              cost.complete ? 'text-fog-100' : 'text-fog-600'
+            }`}
           >
             {cost.weight === 0 ? '—' : weight}
           </span>

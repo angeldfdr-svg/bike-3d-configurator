@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     'componentes de bicicleta',
     'quadro carbono',
     'rodas carbono',
-    'grupo Shimano',
+    'grupo Northwind',
   ],
   alternates: {
     canonical: '/',
