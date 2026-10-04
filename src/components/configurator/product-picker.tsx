@@ -22,6 +22,7 @@ import type {
 import type { FrameSize } from '@/types/components';
 import type { BikeConfiguration } from '@/types/configuration';
 import { useBikeStore } from '@/store/bike-store';
+import { useVisualStore } from '@/store/visual-store';
 
 /**
  * Product selection.
@@ -34,6 +35,8 @@ import { useBikeStore } from '@/store/bike-store';
  * the build are computed in a later phase.
  */
 
+import { getModelVisuals, getComponentVisualMeta } from '@/data/model-visuals';
+
 type Slot = {
   readonly products: readonly Component[];
   readonly selectedId: (configuration: BikeConfiguration) => string | null;
@@ -42,24 +45,10 @@ type Slot = {
 
 function productThumbnail(product: Component): string | null {
   if (product.category === 'quadro') {
-    if (product.id.includes('gravel') || product.id.includes('diverge')) {
-      return '/images/bikes/canyon-grizl-gravel.jpg';
-    }
-    if (product.id === 'frame-solstice-dogma-x' || product.id === 'frame-aether-ultimate-cfg') {
-      return '/images/bikes/canyon-ultimate-stealth.jpg';
-    }
-    if (product.id === 'frame-velora-madone-slr') {
-      return '/images/bikes/canyon-aeroad-white.jpg';
-    }
-    if (product.id.includes('tcr') || product.id.includes('caledonia')) {
-      return '/images/bikes/canyon-aeroad-blue.jpg';
-    }
-    return '/images/bikes/canyon-aeroad-red.jpg';
+    const visuals = getModelVisuals(product.id);
+    return visuals.colorways[0]?.image ?? '/images/bikes/canyon-aeroad-red.jpg';
   }
-  if (product.category === 'rodas') {
-    return '/images/components/wheel-dt-swiss.jpg';
-  }
-  return null;
+  return getComponentVisualMeta(product.category, product.id).thumbnail;
 }
 
 /** Stable id for the element that describes a product's clash. */
@@ -145,7 +134,10 @@ export function ProductList({ categoryId }: { categoryId: string }) {
               // button's accessible name.
               aria-describedby={conflict ? conflictId(product.id) : undefined}
               data-conflict={conflict ? conflict.rule : undefined}
-              onClick={() => slot.select(product.id)}
+              onClick={() => {
+                slot.select(product.id);
+                useVisualStore.getState().setActiveCategory(categoryId);
+              }}
               className={cn(
                 'w-full rounded-xs border px-3 py-3 text-left transition-colors duration-200',
                 selected

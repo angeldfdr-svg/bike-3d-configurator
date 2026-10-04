@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#f8f9fa"/>
+      <stop offset="100%" stop-color="#e9ecef"/>
+    </radialGradient>
+    <linearGradient id="carbonMatte" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2c3036"/>
+      <stop offset="40%" stop-color="#181a1d"/>
+      <stop offset="100%" stop-color="#0d0e10"/>
+    </linearGradient>
+    <linearGradient id="carbonGloss" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a4f56"/>
+      <stop offset="25%" stop-color="#24272c"/>
+      <stop offset="70%" stop-color="#141618"/>
+      <stop offset="100%" stop-color="#08090a"/>
+    </linearGradient>
+    <linearGradient id="metalSilver" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8a939d"/>
+      <stop offset="50%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bgGlow)"/>
+
+  <!-- Subtle Studio Pedestal Shadow -->
+  <ellipse cx="400" cy="510" rx="280" ry="24" fill="#000000" opacity="0.12" filter="blur(14px)"/>
+
+  <g filter="url(#shadow)">
+    <!-- Stem Base Clamp & Spacers -->
+    <path d="M370 410 L430 410 L425 470 L375 470 Z" fill="url(#carbonGloss)"/>
+    <rect x="373" y="440" width="54" height="4" fill="#111" rx="1"/>
+    <rect x="374" y="452" width="52" height="4" fill="#111" rx="1"/>
+    <!-- Titanium Stem Bolts -->
+    <circle cx="385" cy="425" r="4.5" fill="url(#metalSilver)"/>
+    <circle cx="415" cy="425" r="4.5" fill="url(#metalSilver)"/>
+
+    <!-- Aerodynamic Integrated Stem Body -->
+    <path d="M360 360 L440 360 L428 412 L372 412 Z" fill="url(#carbonMatte)"/>
+    <path d="M366 360 L390 270 L410 270 L434 360 Z" fill="url(#carbonGloss)"/>
+
+    <!-- Integrated Computer Mount Base -->
+    <path d="M388 270 L412 270 L408 215 L392 215 Z" fill="#15171a"/>
+    <circle cx="400" cy="210" r="14" fill="#1e2227" stroke="#333" stroke-width="2"/>
+    <rect x="396" y="202" width="8" height="16" rx="2" fill="#0b0d0e"/>
+
+    <!-- Wing Shaped Aerodynamic Top Bars (Flat Tops) -->
+    <path d="M180 285 C260 275, 340 268, 400 268 C460 268, 540 275, 620 285 C635 287, 642 300, 630 312 C560 320, 480 324, 400 324 C320 324, 240 320, 170 312 C158 300, 165 287, 180 285 Z" fill="url(#carbonMatte)"/>
+    <!-- Aero Leading Edge Highlight -->
+    <path d="M200 282 Q400 266 600 282" stroke="#687280" stroke-width="2.5" fill="none" opacity="0.6"/>
+
+    <!-- Drops & Ergonomic Hooks (Left) -->
+    <path d="M175 295 C145 305, 125 340, 130 395 C134 435, 165 460, 205 460 C220 460, 230 450, 230 435 C230 422, 218 415, 202 415 C178 415, 164 395, 162 375 C160 345, 175 320, 195 310 Z" fill="url(#carbonGloss)"/>
+    <!-- Drops & Ergonomic Hooks (Right) -->
+    <path d="M625 295 C655 305, 675 340, 670 395 C666 435, 635 460, 595 460 C580 460, 570 450, 570 435 C570 422, 582 415, 598 415 C622 415, 636 395, 638 375 C640 345, 625 320, 605 310 Z" fill="url(#carbonGloss)"/>
+
+    <!-- Carbon Fiber Bar Tape Texture on Drops -->
+    <g opacity="0.4" stroke="#0a0b0d" stroke-width="3">
+      <line x1="140" y1="360" x2="165" y2="345"/>
+      <line x1="135" y1="380" x2="162" y2="365"/>
+      <line x1="135" y1="400" x2="162" y2="385"/>
+      <line x1="145" y1="420" x2="175" y2="405"/>
+      <line x1="165" y1="440" x2="195" y2="425"/>
+
+      <line x1="660" y1="360" x2="635" y2="345"/>
+      <line x1="665" y1="380" x2="638" y2="365"/>
+      <line x1="665" y1="400" x2="638" y2="385"/>
+      <line x1="655" y1="420" x2="625" y2="405"/>
+      <line x1="635" y1="440" x2="605" y2="425"/>
+    </g>
+
+    <!-- Canyon Style Minimalist Brand Mark on Top -->
+    <text x="400" y="303" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" letter-spacing="4" fill="#ffffff" opacity="0.85" text-anchor="middle">
+      CANYON CP0018 AERO
+    </text>
+  </g>
+</svg>

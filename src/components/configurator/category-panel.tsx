@@ -7,6 +7,7 @@ import { FrameSizePicker, ProductList } from '@/components/configurator/product-
 import { Badge } from '@/components/ui/badge';
 import { configuratorCategories } from '@/config/configurator';
 import { cn } from '@/lib/utils';
+import { useVisualStore } from '@/store/visual-store';
 
 /**
  * Category navigation for the configurator.
@@ -16,6 +17,13 @@ import { cn } from '@/lib/utils';
  */
 export function CategoryPanel() {
   const [openId, setOpenId] = useState<string | null>(configuratorCategories[0]?.id ?? null);
+  const setActiveCategory = useVisualStore((state) => state.setActiveCategory);
+
+  const handleToggle = (categoryId: string) => {
+    const next = openId === categoryId ? null : categoryId;
+    setOpenId(next);
+    setActiveCategory(next);
+  };
 
   return (
     <section
@@ -45,7 +53,7 @@ export function CategoryPanel() {
                   type="button"
                   aria-expanded={expanded}
                   aria-controls={panelId}
-                  onClick={() => setOpenId(expanded ? null : category.id)}
+                  onClick={() => handleToggle(category.id)}
                   className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors duration-200 hover:bg-ink-850/60"
                 >
                   <Icon className="size-4 shrink-0 text-lime-400" aria-hidden="true" />

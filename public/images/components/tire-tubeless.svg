@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#f8f9fa"/>
+      <stop offset="100%" stop-color="#e9ecef"/>
+    </radialGradient>
+    <linearGradient id="treadRubber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2d333b"/>
+      <stop offset="50%" stop-color="#181b20"/>
+      <stop offset="100%" stop-color="#0a0c0e"/>
+    </linearGradient>
+    <linearGradient id="tanWall" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4a373"/>
+      <stop offset="50%" stop-color="#bc6c25"/>
+      <stop offset="100%" stop-color="#8a531e"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bgGlow)"/>
+  <ellipse cx="400" cy="515" rx="250" ry="20" fill="#000000" opacity="0.12" filter="blur(12px)"/>
+
+  <g filter="url(#shadow)">
+    <!-- Outer Tire Arc (Tread profile) -->
+    <path d="M220 460 C180 340, 200 200, 310 120 C420 40, 560 60, 640 160 C710 250, 700 390, 620 460" fill="none" stroke="url(#treadRubber)" stroke-width="64" stroke-linecap="round"/>
+
+    <!-- Subtle Laser Grip Tread Pattern -->
+    <path d="M240 440 C205 330, 220 210, 320 140 C420 70, 545 90, 620 180 C680 260, 675 380, 605 440" fill="none" stroke="#374151" stroke-width="4" stroke-dasharray="8 12"/>
+
+    <!-- Classic Cotton Tan Wall / Tubeless Casing Accent -->
+    <path d="M255 430 C225 335, 240 225, 330 160 C420 95, 530 110, 600 190 C655 260, 650 370, 590 430" fill="none" stroke="url(#tanWall)" stroke-width="18"/>
+
+    <!-- Inner Bead (Kevlar Folding Bead) -->
+    <path d="M270 420 C245 340, 255 240, 340 180 C420 120, 515 135, 580 205 C630 270, 625 360, 575 420" fill="none" stroke="#111" stroke-width="8"/>
+
+    <!-- Brand Typography on Sidewall -->
+    <text x="440" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="900" letter-spacing="3" fill="#ffffff" transform="rotate(-12 440 105)">
+      GRAND PRIX 5000 S TR · 28MM
+    </text>
+  </g>
+</svg>
