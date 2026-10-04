@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Sparkles, ShieldCheck, Check, Layers, Eye, Disc3, Cog, Ruler } from 'lucide-react';
 import { catalog } from '@/data/catalog';
@@ -34,19 +34,19 @@ export function StagePanel() {
   // 1. Resolve current bicycle model and its dedicated colorways
   const modelVisuals = useMemo(() => getModelVisuals(frame?.id ?? null), [frame?.id]);
 
+  // Reset selected color when frame model changes
+  useEffect(() => {
+    setSelectedColorId(modelVisuals.defaultColorId);
+  }, [frame?.id, modelVisuals.defaultColorId, setSelectedColorId]);
+
   // 2. Resolve active colorway for this model
   const activeColorway: ModelColorway = useMemo(() => {
     if (selectedColorId) {
       const found = modelVisuals.colorways.find((c) => c.id === selectedColorId);
       if (found) return found;
     }
-    return modelVisuals.colorways[0] ?? {
-      id: 'default',
-      name: 'Cor Padrão',
-      hex: '#c91f37',
-      bgClass: 'bg-[#c91f37]',
-      image: '/images/bikes/canyon-aeroad-red.jpg',
-    };
+    const defaultColor = modelVisuals.colorways.find((c) => c.id === modelVisuals.defaultColorId);
+    return defaultColor ?? modelVisuals.colorways[0]!;
   }, [modelVisuals, selectedColorId]);
 
   // 3. Focal transform coordinates for camera views on the lateral studio photograph
@@ -129,13 +129,13 @@ export function StagePanel() {
         <div className="flex items-center gap-2.5">
           <span className="flex items-center gap-1.5 rounded-full border border-lime-400/30 bg-lime-400/10 px-2.5 py-0.5 text-[0.6875rem] font-bold tracking-wider text-lime-300 uppercase">
             <Sparkles className="size-3" />
-            Canyon Studio
+            {modelVisuals.brandName} Studio
           </span>
           <span className="text-xs font-semibold text-fog-100 sm:inline-block">
             {modelVisuals.modelTitle}
           </span>
-          <span className="hidden text-xs text-fog-400 sm:inline-block">
-            · {activeColorway.name}
+          <span className="hidden text-xs text-lime-400 font-mono sm:inline-block">
+            · {modelVisuals.badge}
           </span>
         </div>
 
@@ -195,12 +195,31 @@ export function StagePanel() {
           </div>
         )}
 
-        {/* Framing Watermark */}
-        <div className="pointer-events-none absolute right-6 bottom-4 select-none opacity-20">
-          <span className="text-4xl font-black tracking-widest text-ink-950/40 uppercase">
-            CANYON
+        {/* Framing Watermark with Selected Brand */}
+        <div className="pointer-events-none absolute right-6 bottom-4 select-none opacity-25">
+          <span className="text-4xl font-black tracking-widest text-ink-950/50 uppercase">
+            {modelVisuals.brandWatermark}
           </span>
         </div>
+
+        {/* Floating Brand & Model Badge when in Full View */}
+        {activeView === 'full' && (
+          <div className="absolute top-4 left-4 z-20 flex flex-col gap-1 rounded-lg border border-ink-950/15 bg-white/90 p-2.5 shadow-md backdrop-blur-md">
+            <div className="flex items-center gap-2">
+              <span className="rounded-xs bg-ink-950 px-2 py-0.5 text-[0.625rem] font-black tracking-widest text-white uppercase">
+                {modelVisuals.brandName}
+              </span>
+              <span className="text-xs font-bold text-ink-950">
+                {modelVisuals.modelTitle}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-[0.6875rem] text-ink-700">
+              <span className="font-semibold text-lime-700">{modelVisuals.badge}</span>
+              <span>·</span>
+              <span className="font-mono text-ink-600">{activeColorway.name}</span>
+            </div>
+          </div>
+        )}
 
         {/* Section View Tabs (Floating in Top-Right) */}
         <div className="absolute top-4 right-4 z-20 flex flex-wrap items-center gap-1 rounded-lg border border-ink-950/15 bg-white/85 p-1 shadow-md backdrop-blur-md">

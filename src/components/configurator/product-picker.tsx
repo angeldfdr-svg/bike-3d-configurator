@@ -46,7 +46,8 @@ type Slot = {
 function productThumbnail(product: Component): string | null {
   if (product.category === 'quadro') {
     const visuals = getModelVisuals(product.id);
-    return visuals.colorways[0]?.image ?? '/images/bikes/canyon-aeroad-red.jpg';
+    const defaultColor = visuals.colorways.find((c) => c.id === visuals.defaultColorId);
+    return defaultColor?.image ?? visuals.colorways[0]?.image ?? '/images/bikes/canyon-aeroad-red.jpg';
   }
   return getComponentVisualMeta(product.category, product.id).thumbnail;
 }
@@ -123,6 +124,7 @@ export function ProductList({ categoryId }: { categoryId: string }) {
         // the picker has to say so rather than hide behind the check mark.
         const conflicts = conflictsWithBuild(catalog, configuration, product);
         const conflict = conflicts[0];
+        const visualMeta = product.category === 'quadro' ? getModelVisuals(product.id) : null;
 
         return (
           <li key={product.id}>
@@ -149,18 +151,23 @@ export function ProductList({ categoryId }: { categoryId: string }) {
             >
               {(() => {
                 const thumbnail = productThumbnail(product);
+                const title = visualMeta ? visualMeta.modelTitle : product.name;
+                const subtitle = visualMeta
+                  ? `${visualMeta.brandName} · ${visualMeta.badge}`
+                  : `${product.brand} · ${product.model}`;
+
                 return (
                   <span className="flex items-start justify-between gap-3">
                     <span className="flex items-center gap-3 min-w-0">
                       {thumbnail ? (
                         <span className="relative size-12 shrink-0 overflow-hidden rounded-md border border-line bg-ink-950">
-                          <Image src={thumbnail} alt={product.name} fill sizes="48px" className="object-cover" />
+                          <Image src={thumbnail} alt={title} fill sizes="48px" className="object-cover" />
                         </span>
                       ) : null}
                       <span className="min-w-0">
-                        <span className="block text-sm font-semibold text-fog-50">{product.name}</span>
+                        <span className="block text-sm font-semibold text-fog-50">{title}</span>
                         <span className="num mt-0.5 block text-[0.6875rem] tracking-wide text-fog-500">
-                          {product.brand} · {product.model}
+                          {subtitle}
                         </span>
                       </span>
                     </span>
