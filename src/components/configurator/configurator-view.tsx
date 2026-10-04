@@ -1,4 +1,4 @@
-import { CameraControls } from '@/components/configurator/camera-controls';
+import { CanyonTrustBanner } from '@/components/configurator/canyon-trust-banner';
 import { CategoryPanel } from '@/components/configurator/category-panel';
 import { RoadmapPanel } from '@/components/configurator/roadmap-panel';
 import { StagePanel } from '@/components/configurator/stage-panel';
@@ -8,11 +8,9 @@ import { UserConfigurationSync } from '@/components/configurator/user-configurat
 /**
  * Configurator shell.
  *
- * Desktop: the 3D stage and the camera on the left, the components and the
+ * Desktop: The Canyon Studio view on the left, the components and the
  * summary on the right, with the project state spanning both columns below.
- * Tablet and phone: one column, in the reading order 3D -> components ->
- * summary -> project state. The roadmap is deliberately last: it is progress
- * information, not part of building a bike.
+ * Clean, photographic e-commerce presentation matching Canyon.com.
  */
 export function ConfiguratorView() {
   return (
@@ -21,7 +19,7 @@ export function ConfiguratorView() {
       <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:items-start">
         <div className="order-1 flex min-w-0 flex-col gap-4">
           <StagePanel />
-          <CameraControls />
+          <CanyonTrustBanner />
         </div>
 
         <div className="order-2 flex min-w-0 flex-col gap-6 lg:sticky lg:top-24">

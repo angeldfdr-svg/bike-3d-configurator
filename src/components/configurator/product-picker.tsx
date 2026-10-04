@@ -1,6 +1,7 @@
 'use client';
 
 import { AlertTriangle, Check } from 'lucide-react';
+import Image from 'next/image';
 
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -38,6 +39,28 @@ type Slot = {
   readonly selectedId: (configuration: BikeConfiguration) => string | null;
   readonly select: (id: string) => void;
 };
+
+function productThumbnail(product: Component): string | null {
+  if (product.category === 'quadro') {
+    if (product.id.includes('gravel') || product.id.includes('diverge')) {
+      return '/images/bikes/canyon-grizl-gravel.jpg';
+    }
+    if (product.id === 'frame-solstice-dogma-x' || product.id === 'frame-aether-ultimate-cfg') {
+      return '/images/bikes/canyon-ultimate-stealth.jpg';
+    }
+    if (product.id === 'frame-velora-madone-slr') {
+      return '/images/bikes/canyon-aeroad-white.jpg';
+    }
+    if (product.id.includes('tcr') || product.id.includes('caledonia')) {
+      return '/images/bikes/canyon-aeroad-blue.jpg';
+    }
+    return '/images/bikes/canyon-aeroad-red.jpg';
+  }
+  if (product.category === 'rodas') {
+    return '/images/components/wheel-dt-swiss.jpg';
+  }
+  return null;
+}
 
 /** Stable id for the element that describes a product's clash. */
 function conflictId(productId: string): string {
@@ -132,17 +155,29 @@ export function ProductList({ categoryId }: { categoryId: string }) {
                     : 'border-line hover:border-line-strong hover:bg-ink-850/60',
               )}
             >
-              <span className="flex items-start justify-between gap-3">
-                <span className="min-w-0">
-                  <span className="block text-sm font-semibold text-fog-50">{product.name}</span>
-                  <span className="num mt-0.5 block text-[0.6875rem] tracking-wide text-fog-500">
-                    {product.brand} · {product.model}
+              {(() => {
+                const thumbnail = productThumbnail(product);
+                return (
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="flex items-center gap-3 min-w-0">
+                      {thumbnail ? (
+                        <span className="relative size-12 shrink-0 overflow-hidden rounded-md border border-line bg-ink-950">
+                          <Image src={thumbnail} alt={product.name} fill sizes="48px" className="object-cover" />
+                        </span>
+                      ) : null}
+                      <span className="min-w-0">
+                        <span className="block text-sm font-semibold text-fog-50">{product.name}</span>
+                        <span className="num mt-0.5 block text-[0.6875rem] tracking-wide text-fog-500">
+                          {product.brand} · {product.model}
+                        </span>
+                      </span>
+                    </span>
+                    {selected ? (
+                      <Check className="mt-0.5 size-4 shrink-0 text-lime-400" aria-hidden="true" />
+                    ) : null}
                   </span>
-                </span>
-                {selected ? (
-                  <Check className="mt-0.5 size-4 shrink-0 text-lime-400" aria-hidden="true" />
-                ) : null}
-              </span>
+                );
+              })()}
 
               <span className="mt-2 block text-xs leading-relaxed text-fog-400">
                 {productHighlights(product)}
